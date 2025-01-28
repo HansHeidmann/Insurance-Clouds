@@ -1,9 +1,10 @@
 import Image from "next/image";
+import * as React from "react"
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
+    <div className="">
+      <main className="">
         <Image
           className="dark:invert"
           src="/next.svg"
@@ -12,8 +13,8 @@ export default function Home() {
           height={38}
           priority
         />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
+        <ol className="">
+          <li className="">
             Get started by editing{" "}
             <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
               src/app/page.tsx
@@ -48,7 +49,12 @@ export default function Home() {
             Read our docs
           </a>
         </div>
+        <div className="bg-red-500 text-white p-4">
+            If Tailwind is working, this will be a red box with white text.
+        </div>
       </main>
+
+
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
