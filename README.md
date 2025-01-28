@@ -1,3 +1,8 @@
+To add a new node_module:
+```
+yarn add <package-name>
+```
+
 To run the development server:
 ```bash
 yarn dev
