@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useDrag } from "react-dnd";
 
 const elements = [
@@ -26,6 +26,9 @@ interface DraggableElementProps {
 }
 
 const DraggableElement: React.FC<DraggableElementProps> = ({ element }) => {
+
+  const dragRef = useRef<HTMLDivElement>(null);
+  
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "FORM_ELEMENT",
     item: element, // Just pass the element, id will be assigned in FormArea.tsx
@@ -34,9 +37,11 @@ const DraggableElement: React.FC<DraggableElementProps> = ({ element }) => {
     }),
   }));
 
+  drag(dragRef);
+
   return (
     <div
-      ref={drag}
+      ref={dragRef}
       className={`p-2 m-2 border rounded bg-white cursor-pointer ${
         isDragging ? "opacity-50" : "opacity-100"
       }`}
