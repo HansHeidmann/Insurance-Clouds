@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { useDrag } from "react-dnd";
-import { FormElement } from "./types"; 
+import { FormElement } from "./types";
 
 const elements: Omit<FormElement, "id">[] = [
   { type: "input", label: "Name", inputType: "text" },
@@ -13,7 +13,7 @@ const elements: Omit<FormElement, "id">[] = [
 
 const Sidebar: React.FC = () => {
   return (
-    <div className="w-1/4 bg-gray-100 p-4">
+    <div className="w-1/3 bg-gray-100 p-4">
       <h2 className="text-lg font-bold">Form Elements</h2>
       {elements.map((el, index) => (
         <DraggableElement key={index} element={el} />
@@ -23,7 +23,7 @@ const Sidebar: React.FC = () => {
 };
 
 interface DraggableElementProps {
-  element: Omit<FormElement, "id">; // ✅ Use imported type
+  element: Omit<FormElement, "id">;
 }
 
 const DraggableElement: React.FC<DraggableElementProps> = ({ element }) => {
@@ -37,6 +37,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({ element }) => {
     }),
   }));
 
+  // Merge the drag function with the ref
   drag(dragRef);
 
   return (
