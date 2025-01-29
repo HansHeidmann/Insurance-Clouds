@@ -1,7 +1,8 @@
 import React, { useRef } from "react";
 import { useDrag } from "react-dnd";
+import { FormElement } from "./types"; 
 
-const elements = [
+const elements: Omit<FormElement, "id">[] = [
   { type: "input", label: "Name", inputType: "text" },
   { type: "input", label: "Email", inputType: "email" },
   { type: "input", label: "Phone", inputType: "phone" },
@@ -22,16 +23,15 @@ const Sidebar: React.FC = () => {
 };
 
 interface DraggableElementProps {
-  element: any;
+  element: Omit<FormElement, "id">; // ✅ Use imported type
 }
 
 const DraggableElement: React.FC<DraggableElementProps> = ({ element }) => {
-
   const dragRef = useRef<HTMLDivElement>(null);
-  
+
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "FORM_ELEMENT",
-    item: element, // Just pass the element, id will be assigned in FormArea.tsx
+    item: element,
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),

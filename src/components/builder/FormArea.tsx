@@ -1,30 +1,29 @@
 import React, { useRef } from "react";
 import { useDrop } from "react-dnd";
-import FormElementComponent from "./FormElement";
 import { v4 as uuidv4 } from "uuid";
+import FormElementComponent from "./FormElement";
+import { FormElement } from "./types"; 
 
 interface FormAreaProps {
-  formElements: any[];
-  setFormElements: React.Dispatch<React.SetStateAction<any[]>>;
+  formElements: FormElement[];
+  setFormElements: React.Dispatch<React.SetStateAction<FormElement[]>>;
 }
 
 const FormArea: React.FC<FormAreaProps> = ({ formElements, setFormElements }) => {
-
   const dropRef = useRef<HTMLDivElement>(null);
-  
+
   const [{ isOver }, drop] = useDrop(() => ({
     accept: "FORM_ELEMENT",
-    drop: (item: any) => {
-      // Assign a unique ID to each new dropped element
-      const newElement = { ...item, id: uuidv4() };
-      setFormElements((prevElements) => [...prevElements, newElement]); // Add to existing state
+    drop: (item: Omit<FormElement, "id">) => {
+      const newElement: FormElement = { ...item, id: uuidv4() };
+      setFormElements((prevElements) => [...prevElements, newElement]);
     },
     collect: (monitor) => ({
       isOver: !!monitor.isOver(),
     }),
   }));
 
-  drop(dropRef)
+  drop(dropRef);
 
   return (
     <div
