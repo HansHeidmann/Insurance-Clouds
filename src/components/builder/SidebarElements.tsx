@@ -15,10 +15,12 @@ const elements: Omit<FormElement, "id">[] = [
 const SidebarElements: React.FC = () => {
   return (
     <div>
-      <h2 className="text-lg font-bold">Form Elements</h2>
-      {elements.map((el, index) => (
-        <DraggableElement key={index} element={el} />
-      ))}
+      <h2 className="text-lg font-bold">Add Field</h2>
+      <div className="flex flex-wrap gap-2">
+        {elements.map((el, index) => (
+          <DraggableElement key={index} element={el} />
+        ))}
+      </div>
     </div>
   );
 };
@@ -42,7 +44,7 @@ const DraggableElement: React.FC<DraggableElementProps> = ({ element }) => {
   return (
     <div
       ref={dragRef} 
-      className={`p-2 m-2 border rounded bg-white cursor-pointer ${
+      className={`p-2 min-w-[160px] border rounded-3xl bg-white cursor-pointer ${
         isDragging ? "opacity-50" : "opacity-100"
       }`}
     >

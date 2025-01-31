@@ -18,7 +18,7 @@ const FormElementComponent: React.FC<FormElementProps> = ({
   setSelectedElement,
   setActiveTab,
 }) => {
-  const ref = useRef<HTMLDivElement>(null);
+  
 
   // Drag Logic
   const [{ isDragging }, drag] = useDrag({
@@ -28,6 +28,8 @@ const FormElementComponent: React.FC<FormElementProps> = ({
       isDragging: monitor.isDragging(),
     }),
   });
+
+  const ref = useRef<HTMLDivElement>(null);
 
   // Drop Logic (Handles Reordering)
   const [{ isOver }, drop] = useDrop({

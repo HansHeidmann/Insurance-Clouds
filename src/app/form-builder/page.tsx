@@ -45,7 +45,7 @@ export default function FormBuilderPage() {
     <DndProvider backend={HTML5Backend}>
       <div className="h-screen flex">
         {/* Sidebar Container */}
-        <div className="w-1/4 bg-gray-100 p-4">
+        <div className="w-1/4 min-w-[400px] bg-gray-100 p-4">
           <div className="flex mb-2">
             <TabButton label="Elements" isActive={activeTab === "elements"} onClick={() => setActiveTab("elements")} />
             <TabButton
@@ -63,6 +63,7 @@ export default function FormBuilderPage() {
           )}
         </div>
 
+        {/* FormBuildArea Container */}
         <FormBuildArea
           formElements={formElements}
           setFormElements={setFormElements}
