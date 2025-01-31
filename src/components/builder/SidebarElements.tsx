@@ -1,6 +1,7 @@
-import React, { useRef } from "react";
+import React from "react";
 import { useDrag } from "react-dnd";
 import { FormElement } from "./types";
+import { useRef } from "react";
 
 const elements: Omit<FormElement, "id">[] = [
   { type: "input", label: "Name", inputType: "text" },
@@ -11,9 +12,9 @@ const elements: Omit<FormElement, "id">[] = [
   { type: "radio", label: "Radio Buttons", options: ["Yes", "No"] },
 ];
 
-const Sidebar: React.FC = () => {
+const SidebarElements: React.FC = () => {
   return (
-    <div className="w-1/3 bg-gray-100 p-4">
+    <div>
       <h2 className="text-lg font-bold">Form Elements</h2>
       {elements.map((el, index) => (
         <DraggableElement key={index} element={el} />
@@ -27,8 +28,6 @@ interface DraggableElementProps {
 }
 
 const DraggableElement: React.FC<DraggableElementProps> = ({ element }) => {
-  const dragRef = useRef<HTMLDivElement>(null);
-
   const [{ isDragging }, drag] = useDrag(() => ({
     type: "FORM_ELEMENT",
     item: element,
@@ -37,12 +36,12 @@ const DraggableElement: React.FC<DraggableElementProps> = ({ element }) => {
     }),
   }));
 
-  // Merge the drag function with the ref
+  const dragRef = useRef<HTMLDivElement>(null);
   drag(dragRef);
 
   return (
     <div
-      ref={dragRef}
+      ref={dragRef} 
       className={`p-2 m-2 border rounded bg-white cursor-pointer ${
         isDragging ? "opacity-50" : "opacity-100"
       }`}
@@ -52,4 +51,4 @@ const DraggableElement: React.FC<DraggableElementProps> = ({ element }) => {
   );
 };
 
-export default Sidebar;
+export default SidebarElements;

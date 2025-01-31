@@ -1,26 +1,26 @@
-import Image from "next/image";
-import * as React from "react"
+"use client";
+
+import React from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  return (
-    <div className="min-h-screen grid grid-cols-[400px_1fr]">
-      {/* Left Panel */}
-      <div className="bg-white h-screen sticky top-0 overflow-y-scroll p-4">
-        {/* Scrollable Buttons */}
-        <div className="flex flex-col gap-4">
-          {/* Adding fewer buttons to show scrollbar visibility */}
-          {Array.from({ length: 20 }, (_, i) => (
-            <button key={i} className="bg-blue-500 text-white px-4 py-2 rounded-lg">
-              Button {i + 1}
-            </button>
-          ))}
-        </div>
-      </div>
+  const router = useRouter();
 
-      {/* Main Content */}
-      <div className="flex items-center justify-center bg-gray-200">
-        <h1 className="text-2xl font-bold">Centered Text</h1>
-      </div>
+  return (
+    <div className="flex justify-center items-center h-screen bg-gray-100">
+
+      <button
+        onClick={() => router.push("/form-builder")}
+        className="mx-2 px-6 py-3 text-lg font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 transition transform hover:scale-105"
+      >
+        Form Builder
+      </button>
+      <button
+        onClick={() => router.push("/form-viewer")}
+        className="mx-2 px-6 py-3 text-lg font-semibold text-white bg-green-600 rounded-lg shadow-md hover:bg-green-700 transition transform hover:scale-105"
+      >
+        Form Viewer
+      </button>
     </div>
   );
 }
