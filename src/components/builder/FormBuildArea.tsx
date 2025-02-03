@@ -36,7 +36,7 @@ const FormBuildArea: React.FC<FormBuildAreaProps> = ({
   drop(dropRef);
 
   return (
-    <div ref={dropRef} className={`w-3/4 p-4 border min-h-screen ${isOver ? "bg-green-100" : "bg-white"}`}>
+    <div ref={dropRef} className={`w-3/4 p-4 border min-h-screen ${isOver ? "bg-green-100" : "bg-yellow-100"}`}>
       <h2 className="text-lg font-bold">Form Builder</h2>
       {formElements.length === 0 && <p className="text-gray-400">Drag elements here</p>}
       {formElements.map((element, index) => (

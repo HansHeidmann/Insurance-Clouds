@@ -2,6 +2,7 @@ import React from "react";
 import { useDrag } from "react-dnd";
 import { FormElement } from "./types";
 import { useRef } from "react";
+import { FaGripVertical } from "react-icons/fa";
 
 const elements: Omit<FormElement, "id">[] = [
   { type: "input", label: "Name", inputType: "text" },
@@ -15,7 +16,7 @@ const elements: Omit<FormElement, "id">[] = [
 const SidebarElements: React.FC = () => {
   return (
     <div>
-      <h2 className="text-lg font-bold">Add Field</h2>
+      <h2 className="text-lg font-bold my-3">Add Field</h2>
       <div className="flex flex-wrap gap-2">
         {elements.map((el, index) => (
           <DraggableElement key={index} element={el} />
@@ -44,12 +45,14 @@ const DraggableElement: React.FC<DraggableElementProps> = ({ element }) => {
   return (
     <div
       ref={dragRef} 
-      className={`p-2 min-w-[160px] border rounded-3xl bg-white cursor-pointer ${
+      className={`p-3 min-w-[180px] border rounded-3xl bg-white cursor-grab flex items-center gap-x-2 ${
         isDragging ? "opacity-50" : "opacity-100"
       }`}
     >
-      {element.label}
+      <FaGripVertical className="text-gray-700 ml-1.5" />
+      <span className="font-semibold pt-0.5">{element.label}</span>
     </div>
+    
   );
 };
 
