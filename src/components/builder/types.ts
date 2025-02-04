@@ -1,7 +1,8 @@
-export type FormElementType = "input" | "textarea" | "select" | "radio";
+export type FormElementType = "undefined" | "input" | "textarea" | "select" | "radio" | "checkbox";
 
-export interface FormElement {
-  id?: string;
+
+export interface FormBuilderElement {
+  id: string;
   type: FormElementType;
   label: string;
   placeholder?: string;
