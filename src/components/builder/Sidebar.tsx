@@ -16,7 +16,7 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedElement, updateElement }) => 
   }, [selectedElement]);
 
   if (!editedElement) {
-    return <div className="p-5 text-gray-500">Select an element to edit</div>;
+    return <div className="text-gray-500">Select an element to edit</div>;
   }
 
   return (

@@ -26,37 +26,27 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ setFormName, formMatrix, 
       {formMatrix.map((row, rowIndex) => (
         <div key={rowIndex} className="flex gap-4 mb-4">
           {row.map((element, colIndex) => (
-            <div key={element.id || `${rowIndex}-${colIndex}`} className="bg-gray-200 p-1 drop-shadow-md rounded-lg">
-              <label>{element.label}</label>
-              {element.type === "input" && (
-                <input
-                  type={element.inputType}
-                  placeholder={element.placeholder}
-                  required={element.required}
-                />
-              )}
-              {element.type === "select" && (
-                <select required={element.required}>
-                  {element.options?.map((option, index) => (
-                    <option key={index} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              )}
-              {element.type === "checkbox" && <input type="checkbox" required={element.required} />}
-              <button 
-                onClick={() => setSelectedElement(element)} 
-                className="bg-blue-500 hover:bg-blue-300 text-white text-sm  drop-shadow-md rounded-lg p-2 m-2"
-              >
-                  <FaEdit />
-              </button>
-              <button
-                className="bg-red-500 hover:bg-red-300 text-white text-sm drop-shadow-md rounded-lg p-2 m-2"
-                onClick={() => deleteElement(rowIndex, colIndex)}
-              >
-                <FaTrash />
-              </button>
+            <div key={element.id || `${rowIndex}-${colIndex}`} className="bg-white p-4 drop-shadow-md rounded-lg">
+              <div className="space-x-2">
+                <label className="font-medium text-lg ">{element.label}</label>
+                
+                <button 
+                  onClick={() => setSelectedElement(element)} 
+                  className="bg-indigo-500 hover:bg-blue-300 text-white text-sm  drop-shadow-md rounded-lg p-2"
+                >
+                    <FaEdit />
+                </button>
+                <button
+                  className="bg-red-500 hover:bg-red-300 text-white text-sm drop-shadow-md rounded-lg p-2"
+                  onClick={() => deleteElement(rowIndex, colIndex)}
+                >
+                  <FaTrash />
+                </button>
+              </div>
+              <div>
+                <input className="rounded-md" disabled placeholder={element.placeholder}></input>
+              </div>
+              
             </div>
           ))}
           <button 
@@ -70,10 +60,26 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ setFormName, formMatrix, 
       <button
         onClick={addRow}
         className="bg-green-400 p-4 text-white text-sm drop-shadow-md rounded-lg"
-        >
-          <FaPlusCircle />
+      >
+        <FaPlusCircle />
+      </button>
+        
+        
+      {/* Big Buttons */}
+      <div className="flex justify-center space-x-4 mt-16">
+        <button className="bg-yellow-500 rounded-md py-5 px-9 shadow-lg font-sans text-md font-semibold text-white">
+          View
         </button>
+        <button className="bg-blue-500 rounded-md py-5 px-9 shadow-lg font-sans text-md font-semibold text-white">
+          Save
+        </button>
+      </div>
+
+
+
     </div>
+
+
   );
 };
 

@@ -20,7 +20,7 @@ export default function FormBuilderPage() {
     formMatrix: [],
   });
   useEffect(() => {
-    setForm({ formName: formName || "", formMatrix }); // Default to "" if undefined
+    setForm({ formName: formName || "", formMatrix });
   }, [formName, formMatrix]);
 
 
@@ -44,13 +44,13 @@ export default function FormBuilderPage() {
   };
 
   const addRow = () => {
-    setFormMatrix(prevMatrix => [...prevMatrix, [{ id: `${Date.now()}`, type: "undefined", label: "" }]]);
+    setFormMatrix(prevMatrix => [...prevMatrix, [{ id: `${Date.now()}`, type: "undefined", label: "Label" }]]);
   };
 
   const addColumn = (rowIndex: number) => {
     setFormMatrix(prevMatrix => {
       const newMatrix = [...prevMatrix];
-      newMatrix[rowIndex] = [...newMatrix[rowIndex], { id: `${Date.now()}`, type: "undefined", label: "" }];
+      newMatrix[rowIndex] = [...newMatrix[rowIndex], { id: `${Date.now()}`, type: "undefined", label: "Label" }];
       return newMatrix;
     });
   };
@@ -58,20 +58,6 @@ export default function FormBuilderPage() {
 
   return (
     <div className="h-screen flex flex-col">
-
-      {/* Top Row: Tabs on Left, Buttons on Right */}
-      <div className="flex items-center bg-gray-200 px-4 py-3 justify-between">
-        
-        {/* Buttons on the Right */}
-        <div className="flex space-x-4">
-          <button className="bg-purple-500 rounded-lg py-3 px-6 shadow font-sans text-lg font-semibold text-white">
-            Preview Form
-          </button>
-          <button className="bg-green-500 rounded-lg py-3 px-6 shadow font-sans text-lg font-semibold text-white">
-            Save Form
-          </button>
-        </div>
-      </div>
   
       <DndProvider backend={HTML5Backend}>
         <div className="flex flex-1">
