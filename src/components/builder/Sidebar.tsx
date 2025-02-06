@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FormBuilderElement, FormElementType } from "./types";
 import Image from "next/image";
+import { FaHashtag } from "react-icons/fa"; 
 
 interface SidebarProps {
   selectedElement: FormBuilderElement | null;
@@ -21,7 +22,7 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedElement, updateElement }) => 
   }
 
   const elementIcons: Record<FormElementType, string> = {
-    textbox: "text.png",
+    textbox: "textbox.png",
     name: "name.png",
     address: "address.png",
     phone: "phone.png",
@@ -29,10 +30,10 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedElement, updateElement }) => 
     date: "date.png",
     number: "number.png",
     url: "url.png",
-    choices: "choice.png",
-    options: "option.png",
+    choices: "choices.png",
+    options: "options.png",
     checkboxes: "checkbox.png",
-    calculation: "undefined.png",
+    calculation: "calculation.png",
     signature: "signature.png",
     file: "file.png",
     
@@ -97,22 +98,7 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedElement, updateElement }) => 
       />
 
       {/* Additional fields based on type */}
-      {editedElement.type === "text" && (
-        <>
-          <label className="block text-sm font-medium">Input Type</label>
-          <select
-            className="w-full p-2 border rounded mb-3"
-            value={editedElement.inputType || "text"}
-            onChange={(e) => setEditedElement({ ...editedElement, inputType: e.target.value as any })}
-          >
-            <option value="text">Text</option>
-            <option value="email">Email</option>
-            <option value="phone">Phone</option>
-          </select>
-        </>
-      )}
-
-      {editedElement.type === "select" && (
+      {(editedElement.type === "choices" || editedElement.type === "options") && (
         <>
           <label className="block text-sm font-medium">Options (comma-separated)</label>
           <input
