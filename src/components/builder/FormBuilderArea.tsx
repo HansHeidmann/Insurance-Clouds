@@ -46,7 +46,7 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ setFormName, formMatrix, 
                 {/* Label and Buttons */}
                 <div className="flex justify-between ">
                   <div className="flex items-end ">
-                    <label className="text-md -mb-1.5">{element.label}</label>
+                    <label className="text-md -mb-1.5 w-20">{element.label}</label>
                     {/* 
                     <label className="text-xl -mb-1.5 text-red-500">*</label>
                     */}
@@ -56,7 +56,6 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ setFormName, formMatrix, 
                       onClick={() => setSelectedElement(element)} 
                       className="bg-indigo-500 hover:bg-blue-300 text-white text-sm  drop-shadow-md rounded-lg p-2"
                     >
-                      
                         <FaEdit />
                     </button>
                     <button

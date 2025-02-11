@@ -10,6 +10,24 @@ import FormBuilderArea from "@/components/builder/FormBuilderArea";
 import Sidebar from "@/components/builder/Sidebar";
 import { v4 as uuidv4 } from "uuid";
 
+
+/* TODO 
+
+Builder:
+- show all correct property labels for each element type
+- and and remove buttons for multiple selection properties
+- save json to db
+- load json from db
+- drag and drop
+
+Viewer:
+- gray dotted bg
+- white rounded rect for viewer
+- parse the json into a Form Matrix
+- map the Form Matrix to HTML elements
+
+*/
+
 export default function FormBuilderPage() {
 
   const [selectedElement, setSelectedElement] = useState<FormBuilderElement | null>(null);
@@ -74,13 +92,15 @@ export default function FormBuilderPage() {
   }
 
   const addRow = () => {
-    setFormMatrix(prevMatrix => [...prevMatrix, [{ id: uuidv4(), type:"textbox", label: "Field Title", placeholder: "Placeholder" }]]);
+    const newElement: FormBuilderElement = { id: uuidv4(), label: "Field Title" }
+    setFormMatrix(prevMatrix => [...prevMatrix, [newElement]]);
+    setSelectedElement(newElement);
   };
 
   const addColumn = (rowIndex: number) => {
     setFormMatrix(prevMatrix => {
       const newMatrix = [...prevMatrix];
-      const newElement: FormBuilderElement = { id: uuidv4(), type: "textbox", label: "Field Title", placeholder: "Placeholder" }
+      const newElement: FormBuilderElement = { id: uuidv4(), label: "Field Title" }
       newMatrix[rowIndex] = [...newMatrix[rowIndex], newElement];
       setSelectedElement(newElement)
       return newMatrix;
@@ -103,6 +123,7 @@ export default function FormBuilderPage() {
             <FormBuilderArea
               setFormName={setFormName}
               formMatrix={formMatrix}
+              selectedElement={selectedElement}
               setSelectedElement={setSelectedElement}
               deleteElement={deleteElement}
               moveElement={moveElement}
