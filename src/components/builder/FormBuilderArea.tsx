@@ -1,10 +1,11 @@
 import React from "react";
-import { FormBuilderElement } from "./types";
 import { FaEdit, FaPlusCircle, FaTrash, FaCaretLeft, FaCaretRight } from "react-icons/fa";
+import { FormBuilderElement } from "./FormBuilderElement";
 
 interface FormBuilderProps {
   setFormName: (element: string) => void;
   formMatrix: FormBuilderElement[][];
+  selectedElement: FormBuilderElement | null;
   setSelectedElement: (element: FormBuilderElement) => void;
   deleteElement: (rowIndex: number, colIndex: number) => void;
   moveElement: (rowIndex: number, colIndex: number, direction: string) => void
@@ -46,7 +47,7 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ setFormName, formMatrix, 
                 {/* Label and Buttons */}
                 <div className="flex justify-between ">
                   <div className="flex items-end ">
-                    <label className="text-md -mb-1.5 w-20">{element.label}</label>
+                    <label className="text-md -mb-1.5">{element.label}</label>
                     {/* 
                     <label className="text-xl -mb-1.5 text-red-500">*</label>
                     */}
@@ -67,6 +68,10 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ setFormName, formMatrix, 
                   </div>  
                 </div>
 
+                {/* Help Text (optional) */}
+                {element.helpText && 
+                    <div>{element.helpText}</div>
+                }
 
                 {/* Inputs Preview */}
                 <div className="flex flex-col pt-2 space-y-0.5">
@@ -76,23 +81,8 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ setFormName, formMatrix, 
                       <input className="rounded-md placeholder-opacity-90 pl-1 border" disabled placeholder={element.type}></input>
                     </>
                   )}
-                  {element.type === "options" && element.options?.map((option, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <input type="radio" name={element.id} value={option} className="border" />
-                      <label>{option}</label>
-                    </div>
-                  ))}
-                  {element.type === "choices" && element.options && (
-                    <div className="flex flex-col">
-                      <select className="border rounded p-2">
-                        {element.options.map((option, index) => (
-                          <option key={index} value={option}>
-                            {option}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
+
+                  
                 
                 </div>
 
