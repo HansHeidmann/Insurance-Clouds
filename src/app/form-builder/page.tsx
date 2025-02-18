@@ -43,9 +43,9 @@ useEffect(() => {
 const updateElement = (updatedElement: FormBuilderElement) => {
 
     setFormMatrix(prevMatrix => {
-    return prevMatrix.map(row =>
-        row.map(element => (element.id === updatedElement.id ? updatedElement : element))
-    );
+        return prevMatrix.map(row =>
+            row.map(element => (element.id === updatedElement.id ? updatedElement : element))
+        );
     });
     // Ensure the sidebar also updates with the latest data
     setSelectedElement(updatedElement);
@@ -53,57 +53,50 @@ const updateElement = (updatedElement: FormBuilderElement) => {
 
 const deleteElement = (rowIndex: number, colIndex: number) => {
     setFormMatrix(prevMatrix => {
-    const newMatrix =  [...prevMatrix];
-    newMatrix[rowIndex] = newMatrix[rowIndex].filter((_, index) => index !== colIndex);
-    if (newMatrix[rowIndex].length === 0) {
-        newMatrix.splice(rowIndex, 1);
-    }
-    setSelectedElement(null);
-    return newMatrix;
+        const newMatrix =  [...prevMatrix];
+        newMatrix[rowIndex] = newMatrix[rowIndex].filter((_, index) => index !== colIndex);
+        if (newMatrix[rowIndex].length === 0) {
+            newMatrix.splice(rowIndex, 1);
+        }
+        setSelectedElement(null);
+        return newMatrix;
     });
 };
 
 const moveElement = (rowIndex: number, colIndex: number, direction: string) => {
     setFormMatrix(prevMatrix => {
-    const newMatrix =  structuredClone(prevMatrix);
-    if (!newMatrix[rowIndex][colIndex]) {
-        console.log("bad access");
-        return newMatrix;
-    }
-    if (direction === "left") {
-        if (colIndex > 0) {
-        console.log("left");
-        const tempElement = newMatrix[rowIndex][colIndex-1];
-        newMatrix[rowIndex][colIndex-1] = newMatrix[rowIndex][colIndex]
-        newMatrix[rowIndex][colIndex] = tempElement;
+        const newMatrix =  structuredClone(prevMatrix);
+        setSelectedElement(newMatrix[rowIndex][colIndex]);
+        if (!newMatrix[rowIndex][colIndex]) {
+            console.log("bad access");
+            return newMatrix;
         }
-    }
-    if (direction === "right") {
-        if (colIndex < newMatrix[rowIndex].length-1) {
-        console.log("right");
-        const tempElement = newMatrix[rowIndex][colIndex+1];
-        newMatrix[rowIndex][colIndex+1] = newMatrix[rowIndex][colIndex]
-        newMatrix[rowIndex][colIndex] = tempElement;
+        if (direction === "left" && colIndex > 0) {
+            [newMatrix[rowIndex][colIndex], newMatrix[rowIndex][colIndex - 1]] = [newMatrix[rowIndex][colIndex - 1], newMatrix[rowIndex][colIndex]];
         }
-    }
+        if (direction === "right" && colIndex < newMatrix[rowIndex].length-1) {
+            [newMatrix[rowIndex][colIndex], newMatrix[rowIndex][colIndex + 1]] = [newMatrix[rowIndex][colIndex + 1], newMatrix[rowIndex][colIndex]];
+        }
 
-    return newMatrix;
+        return newMatrix;
     })
 }
 
+
+
 const addRow = () => {
     const newElement: FormBuilderElement = FormElementFactory.getDefaultProperties("undefined");
-    setFormMatrix(prevMatrix => [...prevMatrix, [newElement]]);
     setSelectedElement(newElement);
+    setFormMatrix(prevMatrix => [...prevMatrix, [newElement]]);
 };
 
 const addColumn = (rowIndex: number) => {
     setFormMatrix(prevMatrix => {
-    const newMatrix = [...prevMatrix];
-    const newElement: FormBuilderElement = FormElementFactory.getDefaultProperties("undefined");
-    newMatrix[rowIndex] = [...newMatrix[rowIndex], newElement];
-    setSelectedElement(newElement);
-    return newMatrix;
+        const newMatrix = [...prevMatrix];
+        const newElement: FormBuilderElement = FormElementFactory.getDefaultProperties("undefined");
+        setSelectedElement(newElement);
+        newMatrix[rowIndex] = [...newMatrix[rowIndex], newElement];
+        return newMatrix;
     });
 };
 

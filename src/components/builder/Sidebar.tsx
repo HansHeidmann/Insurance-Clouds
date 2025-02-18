@@ -51,8 +51,8 @@ return (
         <>
             <label className="block pb-2 text-2xl font-medium">Select Field Type</label>
             <div className="flex flex-wrap gap-3">
-                {Object.entries(elementIcons) // ✅ Use Object.entries() instead of Object.keys()
-                    .filter(([type]) => type !== "undefined") // ✅ Correct filter syntax
+                {Object.entries(elementIcons) 
+                    .filter(([type]) => type !== "undefined") 
                     .map(([type, icon]) => {
                         const isSelected = type === selectedType;
 
@@ -69,12 +69,12 @@ return (
                                         ...editedElement, // Preserve ID and any other existing properties
                                         type: type as FormElementType,
                                         label: FormElementFactory.getDefaultLabel(type as FormElementType),
-                                        properties: FormElementFactory.getDefaultPropertiesForType(type as FormElementType), // ✅ Set Default Properties
+                                        properties: FormElementFactory.getDefaultPropertiesForType(type as FormElementType), 
                                     };
                                 
                                     setSelectedType(type as FormElementType);
                                     setEditedElement(updatedElement);
-                                    updateElement(updatedElement); // ✅ Ensures the new element is updated in the Form Matrix
+                                    updateElement(updatedElement); 
                                 }}
                                 
                             >
@@ -99,7 +99,7 @@ return (
         <label className="block text-md font-semibold">ID [debug]</label>
         <div className="flex items-center gap-2 mb-4">
             <input
-            className="w-full text-sm p-2 border rounded"
+            className="w-full text-sm p-2 border rounded bg-white"
             type="text"
             disabled
             value={editedElement.id}
@@ -107,7 +107,7 @@ return (
         </div>
 
         {/* Element Type Dropdown */}
-        <label className="block text-md font-semibold">Type</label>
+        <label className="block text-md font-semibold">Field Type</label>
         <select
             className="w-full p-2 border rounded mb-4"
             value={selectedType ?? ""}
@@ -134,9 +134,9 @@ return (
         </select>
 
 
-        {/* Element Required Radio (Yes/No) */}
-        <label className="block text-md font-semibold">Required?</label>
-        <div className="flex gap-4 items-center mb-4">
+        {/* Element Required (Yes/No) */}
+        <label className="block text-md font-semibold">Required Field</label>
+        <div className="flex flex-col items-start mb-4">
             <label className="flex items-center gap-2">
                 <input
                     type="radio"
@@ -161,7 +161,7 @@ return (
 
 
         {/* Label Input */}
-        <label className="block text-md font-semibold">Label</label>
+        <label className="block text-md font-semibold">Field Label</label>
         <input
             className="w-full p-2 border rounded mb-4"
             value={editedElement.label ?? ""}
@@ -173,6 +173,7 @@ return (
         <input
             className="w-full p-2 border rounded mb-4"
             value={editedElement.helpText ?? ""}
+            placeholder="Enter some helpful information (optional)"
             onChange={(e) => setEditedElement({ ...editedElement, helpText: e.target.value })}
         />
 
@@ -184,8 +185,9 @@ return (
             <label className="block text-md font-semibold mt-2">Properties</label>
         )}
 
+        <div  className="mb-4">
         {Object.entries(FormElementFactory.getDefaultPropertiesForType(editedElement.type)).map(([property, value]) => (
-            <div key={property} className="mb-10">
+            <div key={property}>
                 {/* If the property is an array (like "options"), show individual checkboxes */}
                 {Array.isArray(value) ? (
                     <>
@@ -254,7 +256,7 @@ return (
                     <div className="flex items-center gap-2">
                         <input
                             type="checkbox"
-                            checked={Boolean(editedElement.properties[property])} // ✅ Ensures correct boolean type
+                            checked={Boolean(editedElement.properties[property])}
                             onChange={(e) => {
                                 setEditedElement({
                                     ...editedElement,
@@ -265,18 +267,25 @@ return (
                                 });
                             }}
                         />
-                        <label className="block text-md">{property.replace(/([A-Z])/g, " $1")}</label>
+                        <label className="block text-md">
+                            {property
+                                .replace(/([A-Z0-9])/g, " $1") 
+                                .replace(/\b\w/g, (char) => char.toUpperCase())
+                            }
+                        </label>
+
                     </div>
                 )}
             </div>
         ))}
+        </div>
 
         {/* Save Button */}
         <button
-            className="w-full bg-blue-500 text-white shadow-md py-2 rounded hover:bg-blue-400 transition"
+            className="w-full mt-12 bg-blue-500 text-white text-lg font-bold shadow-md py-4 rounded hover:bg-blue-400 transition"
             onClick={() => {
                 if (editedElement) {
-                    updateElement(editedElement); // ✅ Ensures updates are saved to FormMatrix
+                    updateElement(editedElement); 
                 }
             }}
         >

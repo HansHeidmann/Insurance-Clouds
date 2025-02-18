@@ -24,7 +24,7 @@ export interface FormBuilderElement {
     label: string;
     helpText?: string;
     required: boolean;
-    properties: Record<string, boolean | string | string[]>; // ✅ Fixed
+    properties: Record<string, boolean | string | string[]>;
 }
 
 export class FormElementFactory {
@@ -35,7 +35,7 @@ export class FormElementFactory {
             label: FormElementFactory.getDefaultLabel(type),
             helpText: "",
             required: true,
-            properties: FormElementFactory.getDefaultPropertiesForType(type), // ✅ Ensures properties is always present
+            properties: FormElementFactory.getDefaultPropertiesForType(type),
         };
     }
 
