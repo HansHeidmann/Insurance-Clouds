@@ -11,12 +11,13 @@ import { FormBuilderElement, FormElementFactory } from "@/components/builder/For
 
 import Image from 'next/image'
 import { FaEdit, FaEye, FaPlay, FaSave } from "react-icons/fa";
+import { FaGear } from "react-icons/fa6";
 
 /* TODO 
 
 Builder:
 - show all correct property labels for each element type
-- and and remove buttons for multiple selection properties
+- 
 - save json to db
 - load json from db
 - drag and drop
@@ -30,6 +31,7 @@ Viewer:
 */
 
 export default function FormBuilderPage() {
+    const [activeTab, setActiveTab] = useState<string>("edit");
 
     const [selectedElement, setSelectedElement] = useState<FormBuilderElement | null>(null);
     const [formName, setFormName] = useState<string>("");
@@ -40,7 +42,7 @@ export default function FormBuilderPage() {
         formMatrix: [],
     });
     useEffect(() => {
-        setForm({ formName: formName || "", formMatrix });
+        setForm({ formName: formName, formMatrix });
     }, [formName, formMatrix]);
 
 
@@ -90,18 +92,18 @@ export default function FormBuilderPage() {
 
     const addRow = () => {
         const newElement: FormBuilderElement = FormElementFactory.getDefaultProperties("undefined");
-        setSelectedElement(newElement);
         setFormMatrix(prevMatrix => [...prevMatrix, [newElement]]);
+        setSelectedElement(newElement);
     };
 
     const addColumn = (rowIndex: number) => {
+        const newElement: FormBuilderElement = FormElementFactory.getDefaultProperties("undefined");
         setFormMatrix(prevMatrix => {
             const newMatrix = [...prevMatrix];
-            const newElement: FormBuilderElement = FormElementFactory.getDefaultProperties("undefined");
-            setSelectedElement(newElement);
             newMatrix[rowIndex] = [...newMatrix[rowIndex], newElement];
             return newMatrix;
         });
+        setSelectedElement(newElement);
     };
 
 
@@ -120,32 +122,57 @@ export default function FormBuilderPage() {
             </div>
 
             {/* Row of Buttons: Edit, JSON .... Preview, Save */}
-            <div className="flex items-end bg-gray-200">
+            <div className="flex items-end bg-gray-300">
                 <button
                     onClick={() => {
-                        //
+                        setActiveTab("edit");
                     }
                     }
-                    className="flex items-center ml-4 px-8 py-2 rounded-t-xl gap-2 bg-indigo-400 hover:bg-blue-300 text-white text-md  drop-shadow-md"
+                    className=
+                    {`
+                        ${activeTab == "edit" ? "bg-white" : "bg-purple-500"} 
+                        ${activeTab == "edit" ? "text-purple-500" : "text-white"} 
+                        mr-0.5 font-bold flex items-center px-6 py-2 rounded-t-xl gap-2 
+                    `}
                 >
                     <FaEdit />
                     <div>Edit</div>  
                 </button>
                 <button
                     onClick={() => {
-                        //
+                        setActiveTab("data");
                     }
                     }
-                    className="mr-auto flex items-center px-8 py-2 rounded-t-xl gap-2 bg-black hover:bg-blue-300 text-green-300 text-md  drop-shadow-md"
+                    className=
+                    {`
+                        ${activeTab == "data" ? "bg-white" : "bg-[#22BBEE]"} 
+                        ${activeTab == "data" ? "text-[#22BBEE]" : "text-white"} 
+                        mr-0.5 font-bold flex items-center px-6 py-2 rounded-t-xl gap-2 
+                    `}
                 >
-                    <FaEye />JSON
+                    <FaEye />
+                    <div>Data</div>  
+                </button>
+                <button
+                    onClick={() => {
+                        setActiveTab("settings");
+                    }}
+                    className=
+                    {`
+                        ${activeTab == "settings" ? "bg-white" : "bg-green-500"} 
+                        ${activeTab == "settings" ? "text-green-500" : "text-white"} 
+                        mr-0.5 font-bold flex items-center px-6 py-2 rounded-t-xl gap-2 
+                    `}
+                >
+                    <FaGear />
+                    <div>Settings</div>  
                 </button>
                 <button
                     onClick={() => {
                         //
                     }
                     }
-                    className="ml-auto flex items-center gap-2 hover:bg-purple-300 text-white font-bold text-md  drop-shadow-md p-4"
+                    className="ml-auto flex items-center p-4 gap-2 bg-orange-500 hover:bg-purple-300 shadow text-white font-semibold text-md  drop-shadow-md"
                 >
                     <FaPlay />Preview  
                 </button>
@@ -154,21 +181,26 @@ export default function FormBuilderPage() {
                         //
                     }
                     }
-                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-300 text-white font-bold text-md  drop-shadow-md p-4"
+                    className="flex items-center p-4 gap-2 bg-blue-600 hover:bg-blue-300 text-white font-bold text-md  drop-shadow-md"
                 >
                     <FaSave />Save
                 </button>
 
             </div>
-            <div className="flex flex-1">
+            <div className="flex flex-1 min-h-0">
 
                 {/* Sidebar (Fixed Width) */}
-                <div className="w-[380px] min-w-[380px] bg-white flex flex-col h-full overflow-y-auto">
-                    <Sidebar selectedElement={selectedElement} updateElement={updateElement} />
+                <div className="w-[380px] min-w-[380px] bg-white flex flex-col overflow-y-auto min-h-0">
+                    <Sidebar 
+                        activeTab={activeTab}
+                        form={form}
+                        selectedElement={selectedElement}
+                        updateElement={updateElement}
+                    />
                 </div>
 
-                {/* Form Builder Area (Flexible Width - Takes Up Remaining Space) */}
-                <div className="flex-grow  h-full overflow-y-auto bg-gray-300 p-8 bg-[url('/builder_bg_tile.jpg')] bg-repeat bg-[length:25px]">
+                {/* Main Area (Flexible Width - Takes Up Remaining Space) */}
+                <div className="flex-grow  h-full overflow-y-auto bg-gray-400 p-8 bg-[url('/builder_bg_tile.png')] bg-repeat bg-[length:25px]">
                     <DndProvider backend={HTML5Backend}>
                         <FormBuilderArea
                             setFormName={setFormName}
@@ -183,13 +215,8 @@ export default function FormBuilderPage() {
                     </DndProvider>
                 </div>
 
-                {/* JSON Viewer (Fixed Width) */}
-                <div className="w-[400px] bg-black p-8 h-full overflow-y-auto">
-                    <pre className="text-green-400 text-xl font-bold">JSON</pre>
-                    <pre className="whitespace-pre-wrap text-sm text-green-400">
-                        {JSON.stringify(form, null, 2)}
-                    </pre>
-                </div>
+
+
             </div>
 
         </div>

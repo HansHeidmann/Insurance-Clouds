@@ -22,7 +22,7 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ setFormName, formMatrix, 
                 setSelectedElement(null);
             }
             }
-            className="p-8 bg-white rounded-2xl shadow-md"
+            className="p-16 w-[850px] min-h-[1100px] mx-auto bg-white rounded-2xl shadow-md"
         >
 
             <input
@@ -40,7 +40,7 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ setFormName, formMatrix, 
                             key={element.id || `${rowIndex}-${colIndex}`}
                             className={
                                 `flex cursor-pointer bg-gray-100 p-2 drop-shadow-lg rounded-lg box-border
-                                ${element === selectedElement ? "bg-purple-300" : "border-white"}
+                                ${element === selectedElement ? "bg-purple-500" : "border-white"}
                                 `
                             }
                             onClick={(event) => {
@@ -277,17 +277,6 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ setFormName, formMatrix, 
             >
                 <FaPlusCircle />
             </button>
-
-
-            {/* Big Buttons */}
-            <div className="flex justify-center space-x-4 mt-16">
-                <button className="bg-orange-500 hover:bg-orange-300 rounded-md py-5 px-9 shadow-lg font-sans text-md font-semibold text-white">
-                    View
-                </button>
-                <button className="bg-blue-500  hover:bg-blue-300 rounded-md py-5 px-9 shadow-lg font-sans text-md font-semibold text-white">
-                    Save
-                </button>
-            </div>
 
 
 

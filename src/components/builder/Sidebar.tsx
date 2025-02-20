@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { FormBuilderElement, FormElementType, FormElementFactory } from "./FormBuilderElement";
-import { FaPlusCircle, FaTrash } from "react-icons/fa";
+import { FaCopy, FaDownload, FaPlusCircle, FaTrash } from "react-icons/fa";
 
 interface SidebarProps {
+    activeTab: string;
+    form: object;
     selectedElement: FormBuilderElement | null;
     updateElement: (updatedElement: FormBuilderElement) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ selectedElement, updateElement }) => {
+const Sidebar: React.FC<SidebarProps> = ({ activeTab, form, selectedElement, updateElement }) => {
     const [editedElement, setEditedElement] = useState<FormBuilderElement | null>(selectedElement);
     const [selectedType, setSelectedType] = useState<FormElementType | null>(selectedElement?.type || null);
 
@@ -37,32 +39,51 @@ const Sidebar: React.FC<SidebarProps> = ({ selectedElement, updateElement }) => 
         file: "file.png",
     };
 
+    if (activeTab == "data") {
+        return (
+            <div className="h-full p-4 bg-white ">
+                {/* JSON Viewer (Fixed Width) */}
+                <div className=" bg-white rounded-lg h-full overflow-y-auto">
+                    <div className="flex gap-2">
+                        <button className="mb-2 ml-auto flex w-min items-center gap-2 text-sm rounded-md px-4 py-2 text-white bg-blue-800 hover:bg-yellow-400 active:bg-yellow-500">
+                            <FaCopy/>Copy
+                        </button>
+                        <button className="mb-2 flex w-min items-center gap-2 text-sm rounded-md  px-4 py-2 text-white bg-red-800 hover:bg-red-500 active:bg-red-600">
+                            <FaDownload/>Download
+                        </button>
+                    </div>
+                    <pre className="whitespace-pre-wrap text-sm text-black">
+                        {JSON.stringify(form, null, 2)}
+                    </pre>
+                </div>
+            </div>
+        )
+    }
+
     if (!editedElement) {
         return (
             <>
-                <div className="p-4 text-gray-500">Select an element to edit</div>
+                <div className="p-4 bg-white text-black">Select an element to edit</div>
             </>
         )
     }
 
     return (
-        <div>
-            <div className="p-4">
+        <div className="p-4 bg-white">
+            <div className="bg-white rounded-lg">
 
                 {/* Show ICONS to select Type for new element */}
                 {editedElement.type === "undefined" && (
                     <>
-                        <label className="block pb-2 text-2xl font-medium">Select Field Type</label>
                         <div className="flex flex-wrap gap-3">
                             {Object.entries(elementIcons)
                                 .filter(([type]) => type !== "undefined")
                                 .map(([type, icon]) => {
-                                    const isSelected = type === selectedType;
 
                                     return (
                                         <div
                                             key={type}
-                                            className={`size-24 bg-white shadow-lg rounded-lg flex items-center justify-center flex-col cursor-pointer border-2 transition ${isSelected ? "border-blue-300" : "border-transparent"
+                                            className={`size-24 mx-auto bg-white shadow-lg rounded-lg flex items-center justify-center flex-col cursor-pointer border-2"
                                                 }`}
                                             onClick={() => {
                                                 if (!editedElement) return;
