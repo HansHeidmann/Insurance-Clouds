@@ -10,8 +10,12 @@ import Sidebar from "@/components/builder/Sidebar";
 import { FormBuilderElement, FormElementFactory } from "@/components/builder/FormBuilderElement";
 
 import Image from 'next/image'
-import { FaEdit, FaEye, FaPlay, FaSave } from "react-icons/fa";
+import { FaEdit, FaEye, FaPlay, FaSave, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
 import { FaGear } from "react-icons/fa6";
+
+import { supabase } from "@/lib/supabaseClient"; 
+
+import { useRouter } from "next/navigation";
 
 /* TODO 
 
@@ -31,6 +35,9 @@ Viewer:
 */
 
 export default function FormBuilderPage() {
+
+    const router = useRouter();
+
     const [activeTab, setActiveTab] = useState<string>("edit");
 
     const [selectedElement, setSelectedElement] = useState<FormBuilderElement | null>(null);
@@ -45,6 +52,19 @@ export default function FormBuilderPage() {
         setForm({ formName: formName, formMatrix });
     }, [formName, formMatrix]);
 
+    // Redirect based on whether user is logged in
+    useEffect(() => {
+        const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+          if (!session) {
+            router.push("/");
+          }
+        });
+      
+        return () => {
+          authListener.subscription.unsubscribe(); // Cleanup listener
+        };
+    }, [router]);
+      
 
     const updateElement = (updatedElement: FormBuilderElement) => {
 
@@ -118,7 +138,28 @@ export default function FormBuilderPage() {
                     height="100"
                     quality={100}
                 />
-                <div className="text-xl font-bold">Insurance Clouds™</div>
+                <div className="mr-auto text-xl font-bold">Insurance Clouds™</div>
+                {/*<Image
+                    src="/account.png"
+                    alt=""
+                    width="50"
+                    height="50"
+                    quality={100}
+                />*/}
+                <div className="flex flex-col">
+                    <button className="flex bg-blue-500 text-white text-sm rounded-lg py-2 px-4 items-center gap-2">
+                        <FaUserCircle />
+                        Account
+                    </button>
+                    <button 
+                        className="flex bg-red-500 text-white text-sm rounded-lg py-2 px-4 items-center gap-2"
+                        onClick={()=>{supabase.auth.signOut()}}
+                    >
+                            <FaSignOutAlt />
+                            Logout
+                    </button>
+                </div>
+                
             </div>
 
             {/* Row of Buttons: Edit, JSON .... Preview, Save */}
@@ -172,7 +213,7 @@ export default function FormBuilderPage() {
                         //
                     }
                     }
-                    className="ml-auto flex items-center p-4 gap-2 bg-orange-500 hover:bg-purple-300 shadow text-white font-semibold text-md  drop-shadow-md"
+                    className="ml-auto flex items-center p-4 gap-2 bg-gray-500 hover:bg-purple-300 shadow text-white font-semibold text-md  drop-shadow-md"
                 >
                     <FaPlay />Preview  
                 </button>
