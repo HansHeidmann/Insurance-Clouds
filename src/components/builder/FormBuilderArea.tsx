@@ -4,6 +4,7 @@ import { FormBuilderElement } from "./FormBuilderElement";
 
 
 interface FormBuilderProps {
+    formName: string;
     setFormName: (element: string) => void;
     formMatrix: FormBuilderElement[][];
     selectedElement: FormBuilderElement | null;
@@ -14,11 +15,10 @@ interface FormBuilderProps {
     addColumn: (rowIndex: number) => void;
 }
 
-const FormBuilderArea: React.FC<FormBuilderProps> = ({ setFormName, formMatrix, selectedElement, setSelectedElement, deleteElement, moveElement, addRow, addColumn }) => {
+const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, formMatrix, selectedElement, setSelectedElement, deleteElement, moveElement, addRow, addColumn }) => {
     return (
         <div
             onClick={() => {
-                console.log("test");
                 setSelectedElement(null);
             }
             }
@@ -28,6 +28,7 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ setFormName, formMatrix, 
             <input
                 className="text-3xl w-full mb-8 py-0 border-gray-200 border-4 border-l-0 border-t-0 border-r-0 focus:outline-none focus:ring-0 cursor-text"
                 placeholder="Form Name"
+                value={formName}
                 onChange={(e) => setFormName(e.target.value)}
             />
 

@@ -1,6 +1,10 @@
 "use client";
 
+import { supabase } from "@/lib/supabaseClient"; 
+
 import React, { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import Image from 'next/image'
 
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -9,61 +13,103 @@ import FormBuilderArea from "@/components/builder/FormBuilderArea";
 import Sidebar from "@/components/builder/Sidebar";
 import { FormBuilderElement, FormElementFactory } from "@/components/builder/FormBuilderElement";
 
-import Image from 'next/image'
 import { FaEdit, FaEye, FaPlay, FaSave, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
-import { FaGear } from "react-icons/fa6";
-
-import { supabase } from "@/lib/supabaseClient"; 
+import { FaGear, FaSheetPlastic } from "react-icons/fa6";
 
 import { useRouter } from "next/navigation";
+import { UUID } from "crypto";
 
-/* TODO 
 
-Builder:
-- show all correct property labels for each element type
-- 
-- save json to db
-- load json from db
-- drag and drop
-
-Viewer:
-- gray dotted bg
-- white rounded rect for viewer
-- parse the json into a Form Matrix
-- map the Form Matrix to HTML elements
-
-*/
+type Form = {
+    id: UUID;
+    author: UUID;
+    name: string;
+    formName: string;
+    created_at: string;
+};
 
 export default function FormBuilderPage() {
 
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const formId = searchParams.get("id"); // Get form ID from URL
 
     const [activeTab, setActiveTab] = useState<string>("edit");
-
     const [selectedElement, setSelectedElement] = useState<FormBuilderElement | null>(null);
     const [formName, setFormName] = useState<string>("");
     const [formMatrix, setFormMatrix] = useState<FormBuilderElement[][]>([]);
 
-    const [form, setForm] = useState<{ formName: string; formMatrix: FormBuilderElement[][] }>({
-        formName: "",
-        formMatrix: [],
-    });
-    useEffect(() => {
-        setForm({ formName: formName, formMatrix });
-    }, [formName, formMatrix]);
 
     // Redirect based on whether user is logged in
     useEffect(() => {
         const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-          if (!session) {
-            router.push("/");
-          }
+            if (!session) {
+                router.push("/");
+            }
         });
-      
         return () => {
-          authListener.subscription.unsubscribe(); // Cleanup listener
+            authListener.subscription.unsubscribe(); // Cleanup listener
         };
     }, [router]);
+
+    // Load Form (when page has finished loading)
+    useEffect(() => {
+        const loadForm = async () => {
+            if (!formId) return; // If no ID, it's a new form
+
+            const { data, error } = await supabase
+                .from("forms")
+                .select("*")
+                .eq("id", formId)
+                .single();
+
+            if (error) {
+                console.error("Error loading form:", error.message);
+                return;
+            }
+
+            if (data) {
+                setFormName(data.name);
+                setFormMatrix(data.json);
+            }
+        };
+
+        loadForm();
+    }, [formId]); // Run effect when `formId` changes
+
+  
+    // Save Form (for Save button pressed)
+    const saveForm = async () => {
+        if (!formName) {
+            alert("Form name is required!");
+            return;
+        }
+
+        let response;
+        if (formId) {
+            // Update Existing Form
+            response = await supabase.from("forms").update({
+                'name': formName,
+                'json': formMatrix,
+                'edited_at': new Date().toISOString()
+            }).eq("id", formId);
+        } else {
+            // Insert New Form
+            response = await supabase.from("forms").insert([{
+                'name': formName,
+                'json': formMatrix,
+            }]);
+        }
+
+        if (response.error) {
+            alert("Error saving form: " + response.error.message);
+        } else {
+            alert("Form saved successfully!");
+            router.push("/forms"); // Redirect after saving
+        }
+    };
+    
+
       
 
     const updateElement = (updatedElement: FormBuilderElement) => {
@@ -108,8 +154,6 @@ export default function FormBuilderPage() {
         })
     }
 
-
-
     const addRow = () => {
         const newElement: FormBuilderElement = FormElementFactory.getDefaultProperties("undefined");
         setFormMatrix(prevMatrix => [...prevMatrix, [newElement]]);
@@ -146,17 +190,24 @@ export default function FormBuilderPage() {
                     height="50"
                     quality={100}
                 />*/}
-                <div className="flex flex-col">
-                    <button className="flex bg-blue-500 text-white text-sm rounded-lg py-2 px-4 items-center gap-2">
+                <div className="flex flex-row gap-2">
+                    <button 
+                        className="flex bg-green-500 text-white font-bold text-sm rounded-lg py-2 px-4 items-center gap-2"
+                        onClick={()=> {router.push("/forms");}}    
+                    >
+                        <FaSheetPlastic />
+                        Forms
+                    </button>
+                    <button className="flex bg-blue-500 text-white text-sm font-bold  rounded-lg py-2 px-4 items-center gap-2">
                         <FaUserCircle />
                         Account
                     </button>
                     <button 
-                        className="flex bg-red-500 text-white text-sm rounded-lg py-2 px-4 items-center gap-2"
+                        className="flex bg-red-500 text-white text-sm font-bold  rounded-lg py-2 px-4 items-center gap-2"
                         onClick={()=>{supabase.auth.signOut()}}
                     >
-                            <FaSignOutAlt />
-                            Logout
+                        <FaSignOutAlt />
+                        Logout
                     </button>
                 </div>
                 
@@ -213,16 +264,16 @@ export default function FormBuilderPage() {
                         //
                     }
                     }
-                    className="ml-auto flex items-center p-4 gap-2 bg-gray-500 hover:bg-purple-300 shadow text-white font-semibold text-md  drop-shadow-md"
+                    className="ml-auto flex items-center p-4 gap-2 bg-indigo-400 hover:bg-purple-300 shadow text-white font-semibold text-md  drop-shadow-md"
                 >
                     <FaPlay />Preview  
                 </button>
                 <button
                     onClick={() => {
-                        //
+                        saveForm();
                     }
                     }
-                    className="flex items-center p-4 gap-2 bg-blue-600 hover:bg-blue-300 text-white font-bold text-md  drop-shadow-md"
+                    className="flex items-center p-4 gap-2 bg-indigo-600 hover:bg-blue-300 text-white font-bold text-md  drop-shadow-md"
                 >
                     <FaSave />Save
                 </button>
@@ -234,16 +285,17 @@ export default function FormBuilderPage() {
                 <div className="w-[380px] min-w-[380px] bg-white flex flex-col overflow-y-auto min-h-0">
                     <Sidebar 
                         activeTab={activeTab}
-                        form={form}
+                        formMatrix={formMatrix}
                         selectedElement={selectedElement}
                         updateElement={updateElement}
                     />
                 </div>
 
                 {/* Main Area (Flexible Width - Takes Up Remaining Space) */}
-                <div className="flex-grow  h-full overflow-y-auto bg-gray-400 p-8 bg-[url('/builder_bg_tile.png')] bg-repeat bg-[length:25px]">
+                <div className="flex-grow  h-full overflow-y-auto bg-gray-500 p-8 bg-[url('/builder_bg_tile.png')] bg-repeat bg-[length:25px]">
                     <DndProvider backend={HTML5Backend}>
                         <FormBuilderArea
+                            formName={formName}
                             setFormName={setFormName}
                             formMatrix={formMatrix}
                             selectedElement={selectedElement}

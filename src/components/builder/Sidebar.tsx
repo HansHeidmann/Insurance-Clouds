@@ -5,12 +5,12 @@ import { FaCopy, FaDownload, FaPlusCircle, FaTrash } from "react-icons/fa";
 
 interface SidebarProps {
     activeTab: string;
-    form: object;
+    formMatrix: FormBuilderElement[][];
     selectedElement: FormBuilderElement | null;
     updateElement: (updatedElement: FormBuilderElement) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ activeTab, form, selectedElement, updateElement }) => {
+const Sidebar: React.FC<SidebarProps> = ({ activeTab, formMatrix, selectedElement, updateElement }) => {
     const [editedElement, setEditedElement] = useState<FormBuilderElement | null>(selectedElement);
     const [selectedType, setSelectedType] = useState<FormElementType | null>(selectedElement?.type || null);
 
@@ -53,7 +53,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, form, selectedElement, upd
                         </button>
                     </div>
                     <pre className="whitespace-pre-wrap text-sm text-black">
-                        {JSON.stringify(form, null, 2)}
+                        {JSON.stringify(formMatrix, null, 2)}
                     </pre>
                 </div>
             </div>

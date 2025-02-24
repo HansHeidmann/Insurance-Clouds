@@ -20,7 +20,7 @@ export default function Home() {
     const checkUser = async () => {
       const { data } = await supabase.auth.getUser();
       if (data?.user) {
-        router.push("/form-builder"); // ✅ Redirects if user is logged in
+        router.push("/forms"); // Redirects if user is logged in
       }
     };
     checkUser();
@@ -53,7 +53,7 @@ export default function Home() {
       setError(response.error.message);
     } else {
       // Redirect to form-builder after successful login/signup
-      router.push("/form-builder");
+      router.push("/forms");
     }
   };
 
