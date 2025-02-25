@@ -3,7 +3,6 @@
 import { supabase } from "@/lib/supabaseClient"; 
 
 import React, { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 import Image from 'next/image'
 
 import { DndProvider } from "react-dnd";
@@ -16,7 +15,7 @@ import { FormBuilderElement, FormElementFactory } from "@/components/builder/For
 import { FaEdit, FaEye, FaPlay, FaSave, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
 import { FaGear, FaSheetPlastic } from "react-icons/fa6";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 import { UUID } from "crypto";
 
 
@@ -31,8 +30,9 @@ type Form = {
 export default function FormBuilderPage() {
 
     const router = useRouter();
-    const searchParams = useSearchParams();
-    const formId = searchParams.get("id"); // Get form ID from URL
+    const { id: formId } = useParams();
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     const [activeTab, setActiveTab] = useState<string>("edit");
     const [selectedElement, setSelectedElement] = useState<FormBuilderElement | null>(null);
@@ -54,58 +54,46 @@ export default function FormBuilderPage() {
 
     // Load Form (when page has finished loading)
     useEffect(() => {
-        const loadForm = async () => {
-            if (!formId) return; // If no ID, it's a new form
+        const fetchForm = async () => {
+            if (!formId) return;
 
-            const { data, error } = await supabase
-                .from("forms")
-                .select("*")
-                .eq("id", formId)
-                .single();
+            const res = await fetch(`/api/forms/${formId}`);
+            const data = await res.json();
 
-            if (error) {
-                console.error("Error loading form:", error.message);
-                return;
-            }
-
-            if (data) {
+            if (res.ok) {
                 setFormName(data.name);
                 setFormMatrix(data.json);
+            } else {
+                console.error("Error loading form:", data.error);
+                setError(data.error);
             }
+            setLoading(false);
         };
 
-        loadForm();
-    }, [formId]); // Run effect when `formId` changes
+        fetchForm();
+    }, [formId]);
 
   
     // Save Form (for Save button pressed)
     const saveForm = async () => {
-        if (!formName) {
+        if (!formName.trim()) {
             alert("Form name is required!");
             return;
         }
 
-        let response;
-        if (formId) {
-            // Update Existing Form
-            response = await supabase.from("forms").update({
-                'name': formName,
-                'json': formMatrix,
-                'edited_at': new Date().toISOString()
-            }).eq("id", formId);
-        } else {
-            // Insert New Form
-            response = await supabase.from("forms").insert([{
-                'name': formName,
-                'json': formMatrix,
-            }]);
-        }
+        const res = await fetch(`/api/forms/${formId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name: formName, json: formMatrix }),
+        });
 
-        if (response.error) {
-            alert("Error saving form: " + response.error.message);
-        } else {
+        const data = await res.json();
+
+        if (res.ok) {
             alert("Form saved successfully!");
-            router.push("/forms"); // Redirect after saving
+            router.push("/forms/all");
+        } else {
+            alert("Error saving form: " + data.error);
         }
     };
     
@@ -279,8 +267,8 @@ export default function FormBuilderPage() {
                 </button>
 
             </div>
-            <div className="flex flex-1 min-h-0">
 
+            <div className="flex flex-1 min-h-0">
                 {/* Sidebar (Fixed Width) */}
                 <div className="w-[380px] min-w-[380px] bg-white flex flex-col overflow-y-auto min-h-0">
                     <Sidebar 
