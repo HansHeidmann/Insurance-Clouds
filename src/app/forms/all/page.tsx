@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import Image from "next/image";
 import { FaPlusCircle, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
-import { FaCaretDown, FaCaretUp } from "react-icons/fa6";
+import { FaCaretDown, FaCaretUp, FaSheetPlastic } from "react-icons/fa6";
 
 type Form = {
     id: string;
@@ -72,8 +72,6 @@ export default function FormsPage() {
             alert("Error creating form. Please check the console.");
         }
     };
-    
-
 
     // DELETE a form
     const deleteForm = async (formId: string) => {
@@ -110,22 +108,30 @@ export default function FormsPage() {
 
     return (
         <>
+
             {/* Header */}
-            <div className="flex p-4 gap-4 items-center bg-white border-b">
-                <Image src="/logo.png" alt="Logo" width="75" height="100" quality={100} />
-                <div className="mr-auto text-xl font-bold text-gray-700">Insurance Clouds™</div>
-                <div className="flex gap-2">
-                    <button className="bg-blue-500 text-white text-sm font-bold rounded-lg py-2 px-4 flex items-center gap-2">
-                        <FaUserCircle />
-                        Account
-                    </button>
+            <div className="flex items-center bg-white border-b">
+                <button
+                    className="mr-auto p-4 flex items-center gap-4  hover:bg-gray-200"
+                >
+                    <Image src="/logo.png" alt="Logo" width="75" height="75" quality={100} />
+                    <div className="mr-auto text-xl font-bold text-gray-700">Insurance Clouds™</div>
+                </button>
+
+                <div className="flex pr-4">
                     <button
-                        className="bg-red-500 text-white text-sm font-bold rounded-lg py-2 px-4 flex items-center gap-2"
-                        onClick={() => supabase.auth.signOut()}
+                        className="ml-auto p-1 group relative items-center rounded-full border-2 border-transparent transition-all hover:border-blue-500 hover:shadow-md"
+                        onClick={() => router.push("/profile")}
                     >
-                        <FaSignOutAlt />
-                        Logout
+                        <Image
+                            src="/default-profile-picture.jpg"
+                            alt="Profile"
+                            width={50}
+                            height={50}
+                            className="rounded-full object-cover"
+                        />
                     </button>
+                    
                 </div>
             </div>
 

@@ -162,47 +162,34 @@ export default function FormBuilderPage() {
     return (
         <div className="h-screen flex flex-col flex-1">
 
-            <div className="flex p-4 gap-4 items-center">
-                <Image
-                    src="/logo.png"
-                    alt=""
-                    width="75"
-                    height="100"
-                    quality={100}
-                />
-                <div className="mr-auto text-xl font-bold">Insurance Clouds™</div>
-                {/*<Image
-                    src="/account.png"
-                    alt=""
-                    width="50"
-                    height="50"
-                    quality={100}
-                />*/}
-                <div className="flex flex-row gap-2">
-                    <button 
-                        className="flex bg-green-500 text-white font-bold text-sm rounded-lg py-2 px-4 items-center gap-2"
-                        onClick={()=> {router.push("/forms");}}    
+            {/* Header */}
+            <div className="flex items-center bg-white border-b">
+                <button
+                    className="mr-auto p-4 flex items-center gap-4  hover:bg-gray-200"
+                >
+                    <Image src="/logo.png" alt="Logo" width="75" height="75" quality={100} />
+                    <div className="mr-auto text-xl font-bold text-gray-700">Insurance Clouds™</div>
+                </button>
+
+                <div className="pr-4">
+                    <button
+                        className="ml-auto p-1 group relative items-center rounded-full border-2 border-transparent transition-all hover:border-blue-500 hover:shadow-md"
+                        onClick={() => router.push("/profile")}
                     >
-                        <FaSheetPlastic />
-                        Forms
-                    </button>
-                    <button className="flex bg-blue-500 text-white text-sm font-bold  rounded-lg py-2 px-4 items-center gap-2">
-                        <FaUserCircle />
-                        Account
-                    </button>
-                    <button 
-                        className="flex bg-red-500 text-white text-sm font-bold  rounded-lg py-2 px-4 items-center gap-2"
-                        onClick={()=>{supabase.auth.signOut()}}
-                    >
-                        <FaSignOutAlt />
-                        Logout
+                        <Image
+                            src="/default-profile-picture.jpg"
+                            alt="Profile"
+                            width={50}
+                            height={50}
+                            className="rounded-full object-cover"
+                        />
                     </button>
                 </div>
-                
             </div>
 
+
             {/* Row of Buttons: Edit, JSON .... Preview, Save */}
-            <div className="flex items-end bg-gray-300">
+            <div className="flex items-end bg-gray-200">
                 <button
                     onClick={() => {
                         setActiveTab("edit");

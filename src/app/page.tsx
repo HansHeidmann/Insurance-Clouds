@@ -53,7 +53,7 @@ export default function Home() {
       setError(response.error.message);
     } else {
       // Redirect to form-builder after successful login/signup
-      router.push("/forms");
+      router.push("/forms/all");
     }
   };
 

@@ -2,10 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
 import Image from "next/image";
-import { FaBackspace, FaBackward, FaCaretLeft, FaShare, FaSignOutAlt, FaUserCircle,  } from "react-icons/fa";
-import { FaBackwardStep, FaSheetPlastic } from "react-icons/fa6"
+import { FaCaretLeft, FaShare } from "react-icons/fa";
+import {  FaSheetPlastic } from "react-icons/fa6"
 
 type Form = {
     id: string;
@@ -55,17 +54,8 @@ export default function ViewFormPage() {
                         <FaSheetPlastic />
                         Forms
                     </button>
-                    <button className="flex bg-blue-500 text-white text-sm font-bold rounded-lg py-2 px-4 items-center gap-2">
-                        <FaUserCircle />
-                        Account
-                    </button>
-                    <button
-                        className="flex bg-red-500 text-white text-sm font-bold rounded-lg py-2 px-4 items-center gap-2"
-                        onClick={() => supabase.auth.signOut()}
-                    >
-                        <FaSignOutAlt />
-                        Logout
-                    </button>
+                    
+                    
                 </div>
             </div>
 
