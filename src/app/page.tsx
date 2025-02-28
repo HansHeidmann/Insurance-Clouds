@@ -3,110 +3,122 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { supabase } from "@/lib/supabaseClient"; // Import Supabase client
+import { supabase } from "@/lib/supabaseClient";
+import { FaUser, FaBuilding, FaFileAlt } from "react-icons/fa";
 
 export default function Home() {
-  const router = useRouter();
+    const router = useRouter();
+    const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(null);
+    const [avatarUrl, setAvatarUrl] = useState("/default-profile-picture.jpg");
 
-  // State for login/signup
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isSignup, setIsSignup] = useState(false); // Toggle login/signup
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+    // Check authentication status using Supabase
+    useEffect(() => {
+        const checkUser = async () => {
+            const { data, error } = await supabase.auth.getSession();
 
-  // Redirect based on whether user is logged in
-  useEffect(() => {
-    const checkUser = async () => {
-      const { data } = await supabase.auth.getUser();
-      if (data?.user) {
-        router.push("/forms/all"); // Redirects if user is logged in
-      }
-    };
-    checkUser();
-  }, [router]);
+            if (!data.session) {
+                console.log("nooope");
+                
+                router.push("/authenticate");
+                return;
+            }
 
-  
-  // Submit Button Pressed
-  const handleAuth = async () => {
-    setError(null);
-    setLoading(true);
+            const { data: userData } = await supabase.auth.getUser();
+            if (userData?.user) {
+                setUser(userData.user);
+                setAvatarUrl(userData.user.user_metadata?.avatar_url || "/default-profile-picture.jpg");
+            }
 
-    if (!email || !password) {
-      setError("Email and Password are required!");
-      setLoading(false);
-      return;
-    }
+            setLoading(false);
+        };
 
-    let response;
-    if (isSignup) {
-      // Sign up new user
-      response = await supabase.auth.signUp({ email, password });
-    } else {
-      // Log in existing user
-      response = await supabase.auth.signInWithPassword({ email, password });
-    }
+        checkUser();
 
-    setLoading(false);
+        // Listen for auth changes (logout/login)
+        const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+            if (!session) {
+                router.push("/authenticate");
+            }
+        });
 
-    if (response.error) {
-      setError(response.error.message);
-    } else {
-      // Redirect to form-builder after successful login/signup
-      router.push("/forms/all");
-    }
-  };
+        return () => {
+            listener.subscription.unsubscribe();
+        };
+    }, [router]);
 
-  return (
-    <div className="flex flex-col justify-center items-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-        <center>
-          <Image src="/logo.png" alt="" width="100" height="100" quality={100} />
-        </center>
-        <h1 className="text-2xl pt-4 pb-8 font-bold text-center">Insurance Clouds™</h1>
+    return (
+        <div className="min-h-screen bg-gray-100 flex flex-col">
+        
+            {/* Header */}
+            <div className="flex items-center bg-white border-b">
+                <button
+                    className="mr-auto p-4 flex items-center gap-4 hover:bg-gray-200"
+                    onClick={() => router.push("/")}
+                >
+                    <Image src="/logo.png" alt="Logo" width="75" height="75" quality={100} />
+                    <div className="mr-auto text-xl font-bold text-gray-700">Insurance Clouds™</div>
+                </button>
 
-        {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
+                <div className="pr-4">
+                    <button
+                        className="ml-auto p-1 group relative items-center rounded-full border-2 border-transparent transition-all hover:border-blue-500 hover:shadow-md"
+                        onClick={() => router.push("/profile")}
+                    >
+                        <Image
+                            src={avatarUrl}
+                            alt="Profile"
+                            width={50}
+                            height={50}
+                            className="rounded-full object-cover"
+                        />
+                    </button>
+                </div>
+            </div>
 
-        {/* Email Input */}
-        <input
-          type="email"
-          placeholder="Email"
-          className="w-full px-4 py-2 mb-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
+            {/* Main Content */}
+            <div className="flex flex-1 flex-col items-center justify-center text-center px-6">
+                {loading ? (
+                    <p className="text-gray-500">Checking authentication...</p>
+                ) : (
+                    <>
+                        <h1 className="text-6xl font-bold text-gray-800 mb-4">
+                            Welcome {user?.email || ""}
+                        </h1>
 
-        {/* Password Input */}
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full px-4 py-2 mb-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+                        {/* Navigation Buttons */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-4">
+                            
+                            {/* Forms Button */}
+                            <button
+                                onClick={() => router.push("/forms")}
+                                className="flex flex-col items-center justify-center bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all hover:bg-gray-50"
+                            >
+                                <FaFileAlt className="text-indigo-600 text-4xl mb-2" />
+                                <span className="text-lg font-semibold text-gray-800">Forms</span>
+                            </button>
 
-        {/* Submit Button */}
-        <button
-          onClick={handleAuth}
-          disabled={loading}
-          className={`w-full px-4 py-2 text-md font-semibold text-white bg-blue-600 rounded-lg shadow-md transition transform hover:scale-105 ${
-            loading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-700"
-          }`}
-        >
-          {loading ? "Processing..." : isSignup ? "Sign Up" : "Login"}
-        </button>
+                            {/* Organization Button */}
+                            <button
+                                onClick={() => router.push("/organization")}
+                                className="flex flex-col items-center justify-center bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all hover:bg-gray-50"
+                            >
+                                <FaBuilding className="text-green-600 text-4xl mb-2" />
+                                <span className="text-lg font-semibold text-gray-800">Organization</span>
+                            </button>
 
-        {/* Toggle Login/Signup */}
-        <p className="text-center text-sm mt-4">
-          {isSignup ? "Already have an account?" : "Don't have an account?"}{" "}
-          <button
-            onClick={() => setIsSignup(!isSignup)}
-            className="text-blue-500 font-semibold hover:underline"
-          >
-            {isSignup ? "Login" : "Sign Up"}
-          </button>
-        </p>
-      </div>
-    </div>
-  );
+                            {/* Profile Button */}
+                            <button
+                                onClick={() => router.push("/profile")}
+                                className="flex flex-col items-center justify-center bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-all hover:bg-gray-50"
+                            >
+                                <FaUser className="text-blue-600 text-4xl mb-2" />
+                                <span className="text-lg font-semibold text-gray-800">Profile</span>
+                            </button>
+                        </div>
+                    </>
+                )}
+            </div>
+        </div>
+    );
 }
