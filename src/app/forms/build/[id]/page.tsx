@@ -16,23 +16,14 @@ import { FaEdit, FaEye, FaPlay, FaSave, FaSignOutAlt, FaUserCircle } from "react
 import { FaGear, FaSheetPlastic } from "react-icons/fa6";
 
 import { useRouter, useParams } from "next/navigation";
-import { UUID } from "crypto";
 
 
-type Form = {
-    id: UUID;
-    author: UUID;
-    name: string;
-    formName: string;
-    created_at: string;
-};
+
 
 export default function FormBuilderPage() {
 
     const router = useRouter();
     const { id: formId } = useParams();
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
 
     const [activeTab, setActiveTab] = useState<string>("edit");
     const [selectedElement, setSelectedElement] = useState<FormBuilderElement | null>(null);

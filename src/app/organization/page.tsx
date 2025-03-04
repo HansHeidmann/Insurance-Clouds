@@ -4,21 +4,14 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
+import { Organization, User } from "@/lib/types";
 
-type User = {
-    id: string;
-    name: string;
-    email: string;
-    avatar_url: string | null;
-    role: string;
-    organization_id: string | null;
-};
+//
+// only admins should be able to publish a form
+// admins can change the role of other members in the org
+// admins can create forms and delete any other forms in the org
+// members can create forms and delete their own
 
-type Organization = {
-    id: string;
-    name: string;
-    admin_id: string;
-};
 
 export default function OrganizationPage() {
     const router = useRouter();
@@ -27,10 +20,10 @@ export default function OrganizationPage() {
     const [members, setMembers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [orgIdInput, setOrgIdInput] = useState(""); // Join organization input
-    const [newOrgName, setNewOrgName] = useState(""); // Create organization input
+    const [orgIdInput, setOrgIdInput] = useState("");
+    const [newOrgName, setNewOrgName] = useState("");
 
-    // Fetch the current user and organization data
+    // Fetch user and organization data
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
@@ -59,6 +52,7 @@ export default function OrganizationPage() {
 
                 setCurrentUser(user);
 
+                // If user is not in an organization, reset state
                 if (!user.organization_id) {
                     setOrganization(null);
                     setMembers([]);
@@ -82,7 +76,7 @@ export default function OrganizationPage() {
                 // Fetch organization members
                 const { data: membersData, error: membersError } = await supabase
                     .from("users")
-                    .select("id, name, role")
+                    .select("*")
                     .eq("organization_id", user.organization_id);
 
                 if (membersError) {
@@ -127,7 +121,6 @@ export default function OrganizationPage() {
         }
 
         try {
-            // Insert into organizations table
             const { data, error } = await supabase
                 .from("organizations")
                 .insert([{ name: newOrgName, admin_id: currentUser?.id }])
@@ -139,7 +132,6 @@ export default function OrganizationPage() {
                 return;
             }
 
-            // Update user with new organization_id
             await supabase
                 .from("users")
                 .update({ organization_id: data.id })
@@ -167,6 +159,45 @@ export default function OrganizationPage() {
         }
     };
 
+    // Update member role
+    const updateUserRole = async (userId: string, newRole: string) => {
+        if (!(currentUser?.role == "admin")) {
+            return;
+        }
+
+        if (newRole === "member") {
+            const { count, error } = await supabase
+                .from("users")
+                .select("*", { count: "exact" }) // Get the exact count of admins
+                .eq("organization_id", organization?.id)
+                .eq("role", "admin");
+    
+            if (error) {
+                alert("Error finding organization members: " + error.message);
+                return;
+            }
+
+            if (!count) return;
+    
+            if (count <= 1) {
+                alert("There must be at least one admin in the organization.");
+                return;
+            }
+        }
+
+
+        const { error } = await supabase
+            .from("users")
+            .update({ role: newRole })
+            .eq("id", userId);
+
+        if (error) {
+            alert("Error updating role: " + error.message);
+        } else {
+            location.reload();
+        }
+    };
+
     return (
         <>
             {/* Header */}
@@ -175,28 +206,11 @@ export default function OrganizationPage() {
                     <Image src="/logo.png" alt="Logo" width="75" height="75" quality={100} />
                     <div className="mr-auto text-2xl font-bold text-gray-700">Insurance Clouds™</div>
                 </button>
-
-                <div className="flex gap-4 items-center pr-4">
-                    <div className="flex flex-col">
-                        <div className="ml-auto text-xl font-bold text-gray-700">
-                            {organization?.name || "No Organization"}
-                        </div>
-                        <div className="ml-auto text-xl font-medium text-gray-700">
-                            {currentUser ? currentUser.name : "Loading..."}
-                        </div>
-                    </div>
-
-                    <button className="ml-auto p-1 group relative items-center rounded-full border-2 border-transparent transition-all hover:border-blue-500 hover:shadow-md"
-                        onClick={() => router.push("/profile")}>
-                        <Image src={currentUser?.avatar_url || "/default-profile-picture.jpg"} alt="Profile"
-                            width={50} height={50} className="rounded-full object-cover" />
-                    </button>
-                </div>
             </div>
 
-            {/* Organization Section */}
-            <div className="bg-gray-100 p-8 min-h-screen flex justify-center">
-                <div className="bg-white w-full max-w-4xl shadow-lg rounded-lg p-6">
+            {/* Main Section */}
+            <div className="flex bg-gray-100 p-8 h-screen justify-center">
+                <div className="flex flex-col h-min min-w-[500] bg-white shadow-lg rounded-lg p-6">
                     {loading ? (
                         <p className="text-center text-gray-500">Loading...</p>
                     ) : error ? (
@@ -204,37 +218,63 @@ export default function OrganizationPage() {
                     ) : currentUser?.organization_id ? (
                         <>
                             <h1 className="text-2xl font-bold text-gray-700 mb-6">{organization?.name}</h1>
-
-                            {/* Members Table */}
-                            <div className="bg-gray-100 p-4 rounded-lg mb-4">
-                                <h2 className="text-lg font-bold text-gray-700 mb-3">Members</h2>
-                                <table className="w-full border-collapse border border-gray-300">
-                                    <thead>
-                                        <tr className="bg-gray-200 text-gray-700">
-                                            <th className="border border-gray-300 px-4 py-2 text-left">Member Name</th>
-                                            <th className="border border-gray-300 px-4 py-2 text-left">Role</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {members.length > 0 ? (
-                                            members.map((member) => (
-                                                <tr key={member.id} className="bg-white hover:bg-gray-50">
-                                                    <td className="border border-gray-300 px-4 py-2">{member.name}</td>
-                                                    <td className="border border-gray-300 px-4 py-2">{member.role}</td>
-                                                </tr>
-                                            ))
-                                        ) : (
-                                            <tr>
-                                                <td colSpan={2} className="text-center p-4 text-gray-500">No members found.</td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
+                            
+                            {/* Members List */}
+                            
+                            {/* Members List */}
+                            <div className="shadow-md rounded-lg overflow-hidden">
+                                {members && members.length > 0 ? (
+                                    members.map((member) => (
+                                        <div
+                                            key={member.id}
+                                            className={`flex items-center justify-between space-x-4 p-4 border-b border-gray-300 transition ${
+                                                member.role == "admin" ? "bg-blue-100" : "bg-green-100"
+                                            } hover:bg-gray-100`}
+                                        >
+                                            <div className="flex gap-4 w-auto">
+                                                <Image
+                                                    src={member.avatar_url || "/default-profile-picture.jpg"}
+                                                    alt="Avatar"
+                                                    width={40}
+                                                    height={40}
+                                                    className="rounded-full object-cover"
+                                                />
+                                                 <div className="flex flex-col text-black">
+                                                    <div>{member.name}</div>
+                                                    <div className="text-xs">{member.email}</div>
+                                                </div>
+                                            </div>
+                                           
+                                            <div className="ml-auto text-gray-600">
+                                                {currentUser.role === "admin" ? (
+                                                    <select
+                                                        value={member.role}
+                                                        onChange={(e) => updateUserRole(member.id, e.target.value)}
+                                                        className="border border-gray-300 rounded px-2 py-1"
+                                                    >
+                                                        <option value="member">Member</option>
+                                                        <option value="admin">Admin</option>
+                                                    </select>
+                                                ) : (
+                                                    <select
+                                                        value={member.role}
+                                                        disabled
+                                                        className="border border-gray-300 rounded px-2 py-1"
+                                                    >
+                                                        <option value={member.role}>{member.role}</option>
+                                                    </select>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="text-center p-4 text-gray-500">No members found.</div>
+                                )}
                             </div>
 
+
                             <div className="text-right">
-                                <button onClick={leaveOrganization}
-                                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
+                                <button onClick={leaveOrganization} className="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
                                     Leave Organization
                                 </button>
                             </div>
@@ -250,6 +290,8 @@ export default function OrganizationPage() {
                             <button onClick={createOrganization} className="mt-2 px-4 py-2 bg-green-500 text-white rounded-lg">Create</button>
                         </>
                     )}
+
+
                 </div>
             </div>
         </>

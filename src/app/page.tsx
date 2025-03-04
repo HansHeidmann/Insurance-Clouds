@@ -5,38 +5,63 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
 import { FaUser, FaBuilding, FaFileAlt } from "react-icons/fa";
+import { User, Organization } from "@/types"; // Import types
 
 export default function Home() {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
-    const [user, setUser] = useState(null);
-    const [avatarUrl, setAvatarUrl] = useState("/default-profile-picture.jpg");
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [organization, setOrganization] = useState<Organization | null>(null);
 
-    // Check authentication status using Supabase
+    // Fetch user and organization data
     useEffect(() => {
-        const checkUser = async () => {
-            const { data, error } = await supabase.auth.getSession();
+        const fetchUser = async () => {
+            setLoading(true);
 
-            if (!data.session) {
-                console.log("nooope");
-                
+            // Get authenticated user
+            const { data: authData, error: authError } = await supabase.auth.getUser();
+
+            if (authError || !authData?.user) {
                 router.push("/authenticate");
                 return;
             }
 
-            const { data: userData } = await supabase.auth.getUser();
-            if (userData?.user) {
-                setUser(userData.user);
-                setAvatarUrl(userData.user.user_metadata?.avatar_url || "/default-profile-picture.jpg");
+            const userId = authData.user.id;
+
+            // Fetch user details from 'users' table
+            const { data: userData, error: userError } = await supabase
+                .from("users")
+                .select("*")
+                .eq("id", userId)
+                .single();
+
+            if (userError || !userData) {
+                setLoading(false);
+                return;
+            }
+
+            setCurrentUser(userData);
+
+            // If user is in an organization, fetch organization data
+            if (userData.organization_id) {
+                const { data: orgData, error: orgError } = await supabase
+                    .from("organizations")
+                    .select("*")
+                    .eq("id", userData.organization_id)
+                    .single();
+
+                if (!orgError) {
+                    setOrganization(orgData);
+                }
             }
 
             setLoading(false);
         };
 
-        checkUser();
+        fetchUser();
 
-        // Listen for auth changes (logout/login)
-        const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+        // Listen for authentication changes
+        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
             if (!session) {
                 router.push("/authenticate");
             }
@@ -49,7 +74,6 @@ export default function Home() {
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col">
-        
             {/* Header */}
             <div className="flex items-center bg-white border-b">
                 <button
@@ -66,7 +90,7 @@ export default function Home() {
                         onClick={() => router.push("/profile")}
                     >
                         <Image
-                            src={avatarUrl}
+                            src={currentUser?.avatar_url || "/default-profile-picture.jpg"}
                             alt="Profile"
                             width={50}
                             height={50}
@@ -83,12 +107,17 @@ export default function Home() {
                 ) : (
                     <>
                         <h1 className="text-6xl font-bold text-gray-800 mb-4">
-                            Welcome {user?.email || ""}
+                            Welcome {currentUser?.name || ""}
                         </h1>
+
+                        {organization && (
+                            <h2 className="text-2xl font-semibold text-gray-600">
+                                Organization: {organization.name}
+                            </h2>
+                        )}
 
                         {/* Navigation Buttons */}
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-4">
-                            
                             {/* Forms Button */}
                             <button
                                 onClick={() => router.push("/forms")}

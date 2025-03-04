@@ -1,22 +1,22 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
-import { FaSignOutAlt, FaUpload, FaGear } from "react-icons/fa";
+import { FaSignOutAlt, FaUpload } from "react-icons/fa";
+import { Organization, User } from "@/lib/types";
 
 export default function AccountPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // User State
-    const [userId, setUserId] = useState<string | null>(null);
-    const [displayName, setDisplayName] = useState("");
-    const [organizationName, setOrganizationName] = useState("");
-    const [email, setEmail] = useState("");
-    const [profileUrl, setProfileUrl] = useState("/default-profile-picture.jpg");
+    // User & Organization State
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [organization, setOrganization] = useState<Organization | null>(null);
+    const [newName, setNewName] = useState<string>("");
+    const [newEmail, setNewEmail] = useState<string>("");
 
     // Fetch Current User from Supabase
     useEffect(() => {
@@ -33,12 +33,11 @@ export default function AccountPage() {
                 }
 
                 const userId = authData.user.id;
-                setUserId(userId);
 
                 // Fetch user details from 'users' table
                 const { data: user, error: userError } = await supabase
                     .from("users")
-                    .select("id, name, email, avatar_url, organization_id")
+                    .select("*")
                     .eq("id", userId)
                     .single();
 
@@ -46,23 +45,21 @@ export default function AccountPage() {
                     throw new Error("Failed to load user data.");
                 }
 
-                setDisplayName(user.name || "");
-                setEmail(user.email || "");
-                setProfileUrl(user.avatar_url || "/default-profile-picture.jpg");
+                setCurrentUser(user);
+                setNewName(user.name);
+                setNewEmail(user.email);
 
-                // Fetch organization name
+                // Fetch organization details if user belongs to one
                 if (user.organization_id) {
-                    const { data: org, error: orgError } = await supabase
+                    const { data: orgData, error: orgError } = await supabase
                         .from("organizations")
-                        .select("name")
+                        .select("*")
                         .eq("id", user.organization_id)
                         .single();
 
                     if (!orgError) {
-                        setOrganizationName(org.name);
+                        setOrganization(orgData);
                     }
-                } else {
-                    setOrganizationName("No Organization");
                 }
             } catch (error: any) {
                 setError(error.message);
@@ -72,46 +69,43 @@ export default function AccountPage() {
         };
 
         fetchUser();
-    }, [router]);
+    }, []);
 
-    // Update Display Name
-    const updateDisplayName = async () => {
-        if (!userId) return;
+    // Update User Info (Name & Email)
+    // Update User Info (Name & Email)
+    const updateUser = async () => {
+        if (!currentUser) return;
 
-        const { error } = await supabase
-            .from("users")
-            .update({ name: displayName })
-            .eq("id", userId);
+        try {
+            // Step 1: Update Email in Supabase Auth
+            if (newEmail !== currentUser.email) {
+                const { error: authError } = await supabase.auth.updateUser({ email: newEmail });
 
-        if (error) {
-            setError("Error updating display name.");
-        } else {
-            alert("Display name updated!");
-        }
-    };
+                if (authError) {
+                    setError("Error updating email in authentication: " + authError.message);
+                    return;
+                }
 
-    // Update Email
-    const updateEmail = async () => {
-        if (!userId) return;
+                alert("Email updated! Please check your inbox to confirm the new email.");
+            }
 
-        // Update Supabase Auth email
-        const { error: authError } = await supabase.auth.updateUser({ email });
+            // Step 2: Update User Info in Database
+            const { error: userError } = await supabase
+                .from("users")
+                .update({ name: newName, email: newEmail })
+                .eq("id", currentUser.id);
 
-        if (authError) {
-            setError("Error updating email in authentication.");
-            return;
-        }
+            if (userError) {
+                setError("Error updating user profile.");
+                return;
+            }
 
-        // Update email in 'users' table
-        const { error: userError } = await supabase
-            .from("users")
-            .update({ email })
-            .eq("id", userId);
+            // Step 3: Update Local State
+            setCurrentUser({ ...currentUser, name: newName, email: newEmail });
 
-        if (userError) {
-            setError("Error updating email.");
-        } else {
-            alert("Email updated! Check your inbox for confirmation.");
+            alert("User information updated successfully!");
+        } catch (error: any) {
+            setError(error.message);
         }
     };
 
@@ -131,8 +125,8 @@ export default function AccountPage() {
                 >
                     <Image src="/logo.png" alt="Logo" width="75" height="75" quality={100} />
                     <div className="flex flex-col">
-                        <div className="mr-auto text-xl font-bold text-gray-700">{organizationName}</div>
-                        <div className="mr-auto text-xl font-medium text-gray-700">{displayName}</div>
+                        <div className="mr-auto text-xl font-bold text-gray-700">{organization?.name || "No Organization"}</div>
+                        <div className="mr-auto text-xl font-medium text-gray-700">{currentUser?.name}</div>
                     </div>
                 </button>
 
@@ -142,7 +136,7 @@ export default function AccountPage() {
                         onClick={() => router.push("/profile")}
                     >
                         <Image
-                            src={profileUrl}
+                            src={currentUser?.avatar_url || "/default-profile-picture.jpg"}
                             alt="Profile"
                             width={50}
                             height={50}
@@ -153,11 +147,12 @@ export default function AccountPage() {
             </div>
 
             {/* Account Section */}
-            <div className="bg-gray-100 p-8 flex-grow flex items-center justify-center">
+            <div className="bg-gray-100 p-8 flex justify-center">
                 <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
                     <div className="flex">
+                        <h1 className="text-2xl font-bold text-gray-700 mb-6">Account Settings</h1>
                         <button
-                            className="ml-auto flex bg-red-500 text-white text-xs font-bold rounded-lg py-2 px-2 items-center gap-2"
+                            className="ml-auto flex h-min bg-red-500 text-white text-xs font-bold rounded-lg py-2 px-2 items-center gap-2"
                             onClick={handleLogout}
                         >
                             <FaSignOutAlt />
@@ -174,7 +169,7 @@ export default function AccountPage() {
                                 {/* Profile Picture */}
                                 <div className="relative w-[100px] h-[100px]">
                                     <Image
-                                        src={profileUrl}
+                                        src={currentUser?.avatar_url || "/default-profile-picture.jpg"}
                                         alt="Profile Picture"
                                         width={100}
                                         height={100}
@@ -189,20 +184,14 @@ export default function AccountPage() {
 
                             {/* Update Display Name */}
                             <div className="mt-4">
-                                <label className="block text-md font-bold text-gray-700">Name</label>
+                                <label className="block text-md font-bold text-gray-700">Full Name</label>
                                 <div className="flex">
                                     <input
                                         type="text"
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        value={displayName}
-                                        onChange={(e) => setDisplayName(e.target.value)}
+                                        value={newName}
+                                        onChange={(e) => setNewName(e.target.value)}
                                     />
-                                    <button
-                                        onClick={updateDisplayName}
-                                        className="ml-2 px-4 py-2 text-sm font-bold bg-blue-500 text-white rounded-lg hover:bg-blue-700"
-                                    >
-                                        Update
-                                    </button>
                                 </div>
                             </div>
 
@@ -213,17 +202,19 @@ export default function AccountPage() {
                                     <input
                                         type="email"
                                         className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
+                                        value={newEmail}
+                                        onChange={(e) => setNewEmail(e.target.value)}
                                     />
-                                    <button
-                                        onClick={updateEmail}
-                                        className="ml-2 px-4 py-2 text-sm font-bold bg-blue-500 text-white rounded-lg hover:bg-blue-700"
-                                    >
-                                        Update
-                                    </button>
                                 </div>
                             </div>
+
+                            {/* Save Button */}
+                            <button
+                                onClick={updateUser}
+                                className="mt-4 w-full px-4 py-2 text-md font-bold bg-blue-500 text-white rounded-lg hover:bg-blue-700"
+                            >
+                                Save Changes
+                            </button>
                         </>
                     )}
                 </div>

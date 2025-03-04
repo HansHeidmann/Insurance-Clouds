@@ -11,6 +11,9 @@ export default function Authenticate() {
     // State for login/signup
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [fullName, setFullName] = useState("");
+    const [avatarFile, setAvatarFile] = useState<File | null>(null);
+    const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
     const [isSignup, setIsSignup] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
@@ -41,6 +44,37 @@ export default function Authenticate() {
         };
     }, [router]);
 
+    // Handle Avatar Preview
+    const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setAvatarFile(e.target.files[0]);
+            setAvatarPreview(URL.createObjectURL(e.target.files[0]));
+        }
+    };
+
+    // Upload Avatar to Supabase Storage and Get Public URL
+    const uploadAvatar = async (userId: string) => {
+        if (!avatarFile) return null;
+
+        const fileExt = avatarFile.name.split(".").pop();
+        const fileName = `${userId}.${fileExt}`;
+        const filePath = `avatars/${fileName}`;
+
+        const { data, error } = await supabase.storage.from("avatars").upload(filePath, avatarFile, {
+            cacheControl: "3600",
+            upsert: true,
+        });
+
+        if (error) {
+            setError("Error uploading avatar.");
+            return null;
+        }
+
+        // Get Public URL
+        const { data: publicURL } = supabase.storage.from("avatars").getPublicUrl(filePath);
+        return publicURL.publicUrl;
+    };
+
     // Handle login/signup
     const handleAuth = async () => {
         setError(null);
@@ -53,7 +87,15 @@ export default function Authenticate() {
         }
 
         let authResponse;
+        let avatarUrl = null;
+
         if (isSignup) {
+
+            if (!fullName) {
+                setError("Full Name is required for signup!");
+                setLoading(false);
+                return;
+            }
             // Sign Up (New User)
             authResponse = await supabase.auth.signUp({
                 email,
@@ -68,15 +110,18 @@ export default function Authenticate() {
 
             const user = authResponse.data.user;
             if (user) {
-                // Insert into users table
+                // Upload avatar to storage
+                avatarUrl = await uploadAvatar(user.id);
+
+                // Insert user into users table
                 const { error: userError } = await supabase.from("users").insert([
                     {
                         id: user.id,
                         email: user.email,
-                        name: email.split("@")[0], // Use email prefix as default name
-                        avatar_url: null,
+                        name: fullName,
+                        avatar_url: avatarUrl,
                         role: "member",
-                        organization_id: null
+                        organization_id: null,
                     }
                 ]);
 
@@ -119,7 +164,22 @@ export default function Authenticate() {
 
                 {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
 
+                {/* Full Name Input (Only for Signup) */}
+                {isSignup && (
+                    <>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                        <input
+                            type="text"
+                            placeholder="Full Name"
+                            className="w-full px-4 py-2 mb-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
+                        />
+                    </>
+                )}
+
                 {/* Email Input */}
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                 <input
                     type="email"
                     placeholder="Email"
@@ -129,6 +189,7 @@ export default function Authenticate() {
                 />
 
                 {/* Password Input */}
+                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
                 <input
                     type="password"
                     placeholder="Password"
@@ -137,12 +198,32 @@ export default function Authenticate() {
                     onChange={(e) => setPassword(e.target.value)}
                 />
 
+                {/* Avatar Upload (Only for Signup) */}
+                {isSignup && (
+                    <>
+                        <div className="flex items-center gap-1">
+                            <label className="text-sm font-medium text-gray-700 mb-1">Profile Picture</label>
+                            <label className="text-xs font-medium text-gray-500 mb-1">(optional)</label>
+                        </div>
+                        <input type="file" accept="image/*" onChange={handleAvatarChange} className="mb-3" />
+                        {avatarPreview && (
+                            <Image
+                                src={avatarPreview}
+                                alt="Avatar Preview"
+                                width={80}
+                                height={80}
+                                className="rounded-full object-cover mb-3"
+                            />
+                        )}
+                    </>
+                )}
+
                 {/* Submit Button */}
                 <button
                     onClick={handleAuth}
                     disabled={loading}
                     className={`w-full px-4 py-2 text-md font-semibold text-white 
-                        ${isSignup ? "bg-green-600" : "bg-blue-600"}  rounded-lg shadow-md transition transform hover:scale-105 
+                        ${isSignup ? "bg-green-600" : "bg-blue-600"} rounded-lg shadow-md transition transform hover:scale-105 
                         ${isSignup ? "hover:bg-green-500" : "hover:bg-blue-500"}
                     `}
                 >
@@ -152,10 +233,7 @@ export default function Authenticate() {
                 {/* Toggle Login/Signup */}
                 <p className="text-center text-sm mt-4">
                     {isSignup ? "Already have an account?" : "Don't have an account?"}{" "}
-                    <button
-                        onClick={() => setIsSignup(!isSignup)}
-                        className={`${isSignup ? "text-blue-600" : "text-green-600"} font-semibold hover:underline`}
-                    >
+                    <button onClick={() => setIsSignup(!isSignup)} className="text-blue-600 font-semibold hover:underline">
                         {isSignup ? "Login" : "Sign Up"}
                     </button>
                 </p>
