@@ -3,9 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { supabase } from "@/lib/supabaseClient";
 import { FaSignOutAlt, FaUpload } from "react-icons/fa";
 import { Organization, User } from "@/lib/types";
+import Header from "@/components/ui/MainHeader";
+import { DatabaseService } from "@/lib/DatabaseService";
 
 export default function AccountPage() {
     const router = useRouter();
@@ -17,49 +18,21 @@ export default function AccountPage() {
     const [organization, setOrganization] = useState<Organization | null>(null);
     const [newName, setNewName] = useState<string>("");
     const [newEmail, setNewEmail] = useState<string>("");
-
-    // Fetch Current User from Supabase
+    const [profileImage, setProfileImage] = useState<File | null>(null);
+    
+    // Fetch user and organization data
     useEffect(() => {
-        const fetchUser = async () => {
-            setLoading(true);
-            setError(null);
-
+        const fetchData = async () => {
             try {
-                // Get authenticated user
-                const { data: authData, error: authError } = await supabase.auth.getUser();
-                if (authError || !authData?.user) {
-                    router.push("/authenticate");
-                    return;
-                }
-
-                const userId = authData.user.id;
-
-                // Fetch user details from 'users' table
-                const { data: user, error: userError } = await supabase
-                    .from("users")
-                    .select("*")
-                    .eq("id", userId)
-                    .single();
-
-                if (userError || !user) {
-                    throw new Error("Failed to load user data.");
-                }
-
+                setLoading(true);
+                const user = await DatabaseService.getCurrentUser();
                 setCurrentUser(user);
-                setNewName(user.name);
-                setNewEmail(user.email);
+                setNewName(user?.name || "");
+                setNewEmail(user?.email || "");
 
-                // Fetch organization details if user belongs to one
-                if (user.organization_id) {
-                    const { data: orgData, error: orgError } = await supabase
-                        .from("organizations")
-                        .select("*")
-                        .eq("id", user.organization_id)
-                        .single();
-
-                    if (!orgError) {
-                        setOrganization(orgData);
-                    }
+                if (user?.organization_id) {
+                    const org = await DatabaseService.getCurrentOrganization();
+                    setOrganization(org);
                 }
             } catch (error: any) {
                 setError(error.message);
@@ -68,83 +41,57 @@ export default function AccountPage() {
             }
         };
 
-        fetchUser();
+        fetchData();
     }, []);
 
-    // Update User Info (Name & Email)
-    // Update User Info (Name & Email)
+    // Handle Updating User Info
     const updateUser = async () => {
-        if (!currentUser) return;
-
         try {
-            // Step 1: Update Email in Supabase Auth
-            if (newEmail !== currentUser.email) {
-                const { error: authError } = await supabase.auth.updateUser({ email: newEmail });
+            if (!currentUser) return;
+            setLoading(true);
+            
+            await DatabaseService.updateUser(newName, newEmail);
+            alert("Profile updated successfully!");
+        } catch (error: any) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-                if (authError) {
-                    setError("Error updating email in authentication: " + authError.message);
-                    return;
-                }
-
-                alert("Email updated! Please check your inbox to confirm the new email.");
-            }
-
-            // Step 2: Update User Info in Database
-            const { error: userError } = await supabase
-                .from("users")
-                .update({ name: newName, email: newEmail })
-                .eq("id", currentUser.id);
-
-            if (userError) {
-                setError("Error updating user profile.");
-                return;
-            }
-
-            // Step 3: Update Local State
-            setCurrentUser({ ...currentUser, name: newName, email: newEmail });
-
-            alert("User information updated successfully!");
+    // Handle Logout
+    const handleLogout = async () => {
+        try {
+            await DatabaseService.signOut();
+            router.push("/authenticate");
         } catch (error: any) {
             setError(error.message);
         }
     };
 
-    // Logout
-    const handleLogout = async () => {
-        await supabase.auth.signOut();
-        router.push("/authenticate");
+    // Handle Profile Picture Upload
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setProfileImage(file);
+        try {
+            setLoading(true);
+            await DatabaseService.updateUserAvatar(file);
+            const updatedUser = await DatabaseService.getCurrentUser()
+            setCurrentUser(updatedUser)
+            alert("Profile picture updated!");
+        } catch (error: any) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col">
             {/* Header */}
-            <div className="flex items-center bg-white border-b">
-                <button
-                    className="mr-auto p-4 flex items-center gap-4 hover:bg-gray-200"
-                    onClick={() => router.push("/")}
-                >
-                    <Image src="/logo.png" alt="Logo" width="75" height="75" quality={100} />
-                    <div className="flex flex-col">
-                        <div className="mr-auto text-xl font-bold text-gray-700">{organization?.name || "No Organization"}</div>
-                        <div className="mr-auto text-xl font-medium text-gray-700">{currentUser?.name}</div>
-                    </div>
-                </button>
-
-                <div className="flex pr-4">
-                    <button
-                        className="ml-auto p-1 group relative items-center rounded-full border-2 border-transparent transition-all hover:border-blue-500 hover:shadow-md"
-                        onClick={() => router.push("/profile")}
-                    >
-                        <Image
-                            src={currentUser?.avatar_url || "/default-profile-picture.jpg"}
-                            alt="Profile"
-                            width={50}
-                            height={50}
-                            className="rounded-full object-cover"
-                        />
-                    </button>
-                </div>
-            </div>
+            <Header currentUser={currentUser} organization={organization} />
 
             {/* Account Section */}
             <div className="bg-gray-100 p-8 flex justify-center">
@@ -177,6 +124,12 @@ export default function AccountPage() {
                                         quality={100}
                                     />
                                     <label className="absolute bottom-0 right-0 bg-gray-700 text-white text-xs p-2 rounded-full cursor-pointer">
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            className="hidden"
+                                            onChange={handleFileChange}
+                                        />
                                         <FaUpload />
                                     </label>
                                 </div>
@@ -185,27 +138,23 @@ export default function AccountPage() {
                             {/* Update Display Name */}
                             <div className="mt-4">
                                 <label className="block text-md font-bold text-gray-700">Full Name</label>
-                                <div className="flex">
-                                    <input
-                                        type="text"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        value={newName}
-                                        onChange={(e) => setNewName(e.target.value)}
-                                    />
-                                </div>
+                                <input
+                                    type="text"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    value={newName}
+                                    onChange={(e) => setNewName(e.target.value)}
+                                />
                             </div>
 
                             {/* Update Email */}
                             <div className="mt-4">
                                 <label className="block text-md font-bold text-gray-700">Email</label>
-                                <div className="flex">
-                                    <input
-                                        type="email"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        value={newEmail}
-                                        onChange={(e) => setNewEmail(e.target.value)}
-                                    />
-                                </div>
+                                <input
+                                    type="email"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    value={newEmail}
+                                    onChange={(e) => setNewEmail(e.target.value)}
+                                />
                             </div>
 
                             {/* Save Button */}

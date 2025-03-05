@@ -1,9 +1,8 @@
 "use client";
 
-import { supabase } from "@/lib/supabaseClient"; 
 
 import React, { useState, useEffect } from "react";
-import Image from 'next/image'
+
 
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -12,10 +11,11 @@ import FormBuilderArea from "@/components/builder/FormBuilderArea";
 import Sidebar from "@/components/builder/Sidebar";
 import { FormBuilderElement, FormElementFactory } from "@/components/builder/FormBuilderElement";
 
-import { FaEdit, FaEye, FaPlay, FaSave, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
-import { FaGear, FaSheetPlastic } from "react-icons/fa6";
+import { FaEdit, FaEye, FaPlay, FaSave } from "react-icons/fa";
+import { FaGear } from "react-icons/fa6";
 
 import { useRouter, useParams } from "next/navigation";
+
 
 
 
@@ -31,18 +31,6 @@ export default function FormBuilderPage() {
     const [formMatrix, setFormMatrix] = useState<FormBuilderElement[][]>([]);
 
 
-    // Redirect based on whether user is logged in
-    useEffect(() => {
-        const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-            if (!session) {
-                router.push("/");
-            }
-        });
-        return () => {
-            authListener.subscription.unsubscribe(); // Cleanup listener
-        };
-    }, [router]);
-
     // Load Form (when page has finished loading)
     useEffect(() => {
         const fetchForm = async () => {
@@ -55,10 +43,8 @@ export default function FormBuilderPage() {
                 setFormName(data.name);
                 setFormMatrix(data.json);
             } else {
-                console.error("Error loading form:", data.error);
-                setError(data.error);
+                console.error("Error loading form:", data.error);    
             }
-            setLoading(false);
         };
 
         fetchForm();
@@ -82,7 +68,7 @@ export default function FormBuilderPage() {
 
         if (res.ok) {
             alert("Form saved successfully!");
-            router.push("/forms/all");
+            router.push("/forms");
         } else {
             alert("Error saving form: " + data.error);
         }
@@ -154,29 +140,7 @@ export default function FormBuilderPage() {
         <div className="h-screen flex flex-col flex-1">
 
             {/* Header */}
-            <div className="flex items-center bg-white border-b">
-                <button
-                    className="mr-auto p-4 flex items-center gap-4  hover:bg-gray-200"
-                >
-                    <Image src="/logo.png" alt="Logo" width="75" height="75" quality={100} />
-                    <div className="mr-auto text-xl font-bold text-gray-700">Insurance Clouds™</div>
-                </button>
-
-                <div className="pr-4">
-                    <button
-                        className="ml-auto p-1 group relative items-center rounded-full border-2 border-transparent transition-all hover:border-blue-500 hover:shadow-md"
-                        onClick={() => router.push("/profile")}
-                    >
-                        <Image
-                            src="/default-profile-picture.jpg"
-                            alt="Profile"
-                            width={50}
-                            height={50}
-                            className="rounded-full object-cover"
-                        />
-                    </button>
-                </div>
-            </div>
+            
 
 
             {/* Row of Buttons: Edit, JSON .... Preview, Save */}

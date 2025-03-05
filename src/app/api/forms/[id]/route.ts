@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/SupabaseServer";
 
 // Fetch a single form by ID
 export async function GET(req: Request, { params }: { params: { id: string } }) {

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase } from "@/lib/SupabaseServer";
 
 // GET → Fetch organization details & members
 export async function GET(req: Request, { params }: { params: { id: string } }) {

@@ -2,8 +2,10 @@ import { UUID } from "crypto";
 
 
 export type User = {
-    id: string;
+    id: UUID;
     name: string;
+    first_name: string;
+    last_name: string;
     email: string;
     avatar_url: string | null;
     role: string;
@@ -11,15 +13,26 @@ export type User = {
 };
 
 export type Organization = {
-    id: string;
+    id: UUID;
     name: string;
     admin_id: string;
+    avatar_url: string;
 };
 
 export type Form = {
     id: UUID;
-    author: UUID;
+    author_id: string;
     name: string;
-    formName: string;
     created_at: string;
+    edited_at: string;
+    total_entries: number;
 };
+
+export type Member = {
+    id: UUID;
+    firstName: string;
+    lastName: string;
+    email: string;
+    avatar_url: string | null;
+    role: string | null;
+}
