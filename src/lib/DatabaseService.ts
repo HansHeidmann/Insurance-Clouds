@@ -1,15 +1,17 @@
-import { supabaseServer } from "@/lib/SupabaseServer"; // Uses Server Components API
+import { supabaseClient } from "@/lib/SupabaseClient"; // Uses Server Components API
 import { Member, Organization, User } from "./types";
+
+const supabase = supabaseClient;
 
 export class DatabaseService {
 
     // Get Current User
     static async getCurrentUser(): Promise<User | null>  {
-        const { data: { user }, error } = await supabaseServer.auth.getUser();
+        const { data: { user }, error } = await supabase.auth.getUser();
         if (error || !user) return null;
 
         // Fetch full user details from DB
-        const { data, error: userError } = await supabaseServer
+        const { data, error: userError } = await supabase
             .from("users")
             .select("*")
             .eq("id", user.id)
@@ -23,7 +25,7 @@ export class DatabaseService {
         const currentUser = await this.getCurrentUser();
         if (!currentUser) throw new Error("Unauthorized");
 
-        const { error } = await supabaseServer
+        const { error } = await supabase
             .from("users")
             .update({ name, email })
             .eq("id", currentUser.id);
@@ -40,7 +42,7 @@ export class DatabaseService {
         const filePath = `${currentUser.id}/${file.name}`;
 
         // Upload image to storage bucket
-        const { error } = await supabaseServer.storage
+        const { error } = await supabase.storage
             .from("user_avatars")
             .upload(filePath, file, { upsert: true });
 
@@ -50,7 +52,7 @@ export class DatabaseService {
         }
 
         // Get the public URL
-        const { data: publicUrlData } = supabaseServer.storage
+        const { data: publicUrlData } = supabase.storage
             .from("user_avatars")
             .getPublicUrl(filePath);
 
@@ -59,7 +61,7 @@ export class DatabaseService {
         const avatarUrl = publicUrlData.publicUrl;
 
         // Update user record with new avatar URL
-        const { error: updateError } = await supabaseServer
+        const { error: updateError } = await supabase
             .from("users")
             .update({ avatar_url: avatarUrl })
             .eq("id", currentUser.id);
@@ -81,7 +83,7 @@ export class DatabaseService {
         const currentUser = await this.getCurrentUser();
         if (!currentUser || !currentUser.organization_id) return null; 
     
-        const { data, error } = await supabaseServer
+        const { data, error } = await supabase
             .from("organizations")
             .select("*")
             .eq("id", currentUser.organization_id)
@@ -97,7 +99,7 @@ export class DatabaseService {
         const org = await this.getCurrentOrganization(); // Use await
         if (!org) throw new Error("No organization found.");
 
-        const { data, error } = await supabaseServer
+        const { data, error } = await supabase
             .from("users")
             .select("*")
             .eq("organization_id", org.id);
@@ -114,7 +116,7 @@ export class DatabaseService {
         const updateData: Partial<Organization> = { name: newName };
         if (newAvatarUrl) updateData.avatar_url = newAvatarUrl;
 
-        const { error } = await supabaseServer
+        const { error } = await supabase
             .from("organizations")
             .update(updateData)
             .eq("id", org.id);
@@ -133,7 +135,7 @@ export class DatabaseService {
 
     // Sign Up
     static async signUp(email: string, password: string, firstName: string, lastName: string) {
-        const { data, error } = await supabaseServer.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
             email,
             password
         });
@@ -144,7 +146,7 @@ export class DatabaseService {
         const user = data.user;
 
         if (user) {
-            const { error: userError } = await supabaseServer.from("users").insert([
+            const { error: userError } = await supabase.from("users").insert([
                 {
                     id: user.id,
                     email: user.email,
@@ -163,7 +165,7 @@ export class DatabaseService {
 
     // Sign In (Login Existing User)
     static async signIn(email: string, password: string) {
-        const { data, error } = await supabaseServer.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password,
         });
@@ -174,7 +176,7 @@ export class DatabaseService {
 
     // Sign Out (Logout)
     static async signOut() {
-        const { error } = await supabaseServer.auth.signOut();
+        const { error } = await supabase.auth.signOut();
         if (error) throw new Error(error.message);
     }
 }
