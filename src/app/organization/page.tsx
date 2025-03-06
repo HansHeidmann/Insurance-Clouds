@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 import { Organization, User, Member } from "@/lib/types";
-import { DatabaseService } from "@/lib/DatabaseService";
+import  DatabaseService  from "@/lib/DatabaseService";
 import Header from "@/components/ui/MainHeader";
 
 export default function OrganizationPage() {

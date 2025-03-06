@@ -1,0 +1,27 @@
+/users
+  - GET /users → Get all users (or filter with `?organization_id=123`)
+  - GET /users?self=true → Get logged-in user
+  - PATCH /users (body: { self: true, name: "..." }) → Update logged-in user
+  - DELETE /users (body: { self: true }) → Delete logged-in user
+  - GET /users (body: { userId: "123" }) → Get a specific user
+
+/organizations
+  - POST /organizations → Create an organization
+  - GET /organizations (body: { orgId: "123" }) → Get an organization
+  - PATCH /organizations (body: { orgId: "123", name: "New Name" }) → Update an organization
+  - DELETE /organizations (body: { orgId: "123" }) → Delete an organization
+  - GET /users?organization_id=123 → Get all members of an organization
+
+/forms
+  - GET /forms → Get all forms (or filter with `?organization_id=123`)
+  - GET /forms (body: { formId: "123" }) → Get a specific form
+  - POST /forms (body: { name: "...", organization_id: "123" }) → Create a new form
+  - PATCH /forms (body: { formId: "123", name: "..." }) → Update a form
+  - DELETE /forms (body: { formId: "123" }) → Delete a form
+
+/entries
+  - GET /entries → Get all entries (filter with `?form_id=123`)
+  - GET /entries (body: { entryId: "123" }) → Get a specific entry
+  - POST /entries (body: { formId: "123", data: {...} }) → Create an entry
+  - PATCH /entries (body: { entryId: "123", data: {...} }) → Update an entry
+  - DELETE /entries (body: { entryId: "123" }) → Delete an entry

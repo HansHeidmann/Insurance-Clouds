@@ -6,7 +6,7 @@ import Image from "next/image";
 import { FaSignOutAlt, FaUpload } from "react-icons/fa";
 import { Organization, User } from "@/lib/types";
 import Header from "@/components/ui/MainHeader";
-import { DatabaseService } from "@/lib/DatabaseService";
+import DatabaseService from "@/lib/DatabaseService";
 
 export default function AccountPage() {
     const router = useRouter();

@@ -1,9 +1,11 @@
-import { supabaseClient } from "@/lib/SupabaseClient"; // Uses Server Components API
+
+import { supabaseClient } from "@/lib/SupabaseClient"; 
 import { Member, Organization, User } from "./types";
 
-const supabase = supabaseClient;
 
-export class DatabaseService {
+const supabase = supabaseClient
+
+export default class DatabaseService {
 
     // Get Current User
     static async getCurrentUser(): Promise<User | null>  {
@@ -179,4 +181,5 @@ export class DatabaseService {
         const { error } = await supabase.auth.signOut();
         if (error) throw new Error(error.message);
     }
+
 }

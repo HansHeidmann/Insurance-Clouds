@@ -1,6 +1,6 @@
 "use client";
 
-import { DatabaseService } from "@/lib/DatabaseService";
+import DatabaseService from "@/lib/DatabaseService";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -124,9 +124,9 @@ export default function Authenticate() {
                     onClick={handleAuth}
                     disabled={loading}
                     className={`w-full px-4 py-2 text-md font-semibold text-white ${
-                        isSignup ? "bg-green-600" : "bg-blue-600"
-                    } rounded-lg shadow-md transition transform hover:scale-105 ${
-                        isSignup ? "hover:bg-green-500" : "hover:bg-blue-500"
+                        isSignup ? "bg-blue-500" : "bg-blue-500"
+                    } rounded-lg shadow-md transition transform hover:scale-95 ${
+                        isSignup ? "hover:bg-blue-600" : "hover:bg-blue-600"
                     }`}
                 >
                     {loading ? "Processing..." : isSignup ? "Sign Up" : "Login"}
