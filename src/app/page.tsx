@@ -6,6 +6,7 @@ import { FaUser, FaBuilding, FaFileAlt, FaHome } from "react-icons/fa";
 import { Organization, User } from "@/lib/types";
 import Header from "@/components/ui/MainHeader";
 import DatabaseService from "@/lib/DatabaseService";
+import { AuthServices } from "@/lib/AuthServices";
 
 export default function Home() {
     const router = useRouter();
@@ -13,32 +14,32 @@ export default function Home() {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [organization, setOrganization] = useState<Organization | null>(null);
 
-    // ✅ Fetch user and organization data
+    // Fetch user and organization data
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
 
-            try {
-                // Get the current user
-                const user = await DatabaseService.getCurrentUser();
+            // Get the current user
+            const authenticatedUser = await AuthServices.getAuthUser();
+            if (!authenticatedUser) {
+                router.push("/login");
+                return;
+            }
 
-                if (!user) {
-                    router.push("/authenticate");
-                    return;
-                }
-
-                setCurrentUser(user);
+            const currentUser = await DatabaseService.getCurrentUser();
+            if (currentUser) {
+                console.log(currentUser);
+                
+                setCurrentUser(currentUser);
 
                 // Fetch organization details if user is in an organization
-                if (user.organization_id) {
+                if (currentUser.organization_id) {
                     const org = await DatabaseService.getCurrentOrganization(user.organization_id);
                     setOrganization(org);
                 }
-            } catch (error) {
-                console.error("Error fetching user/org:", error);
-            } finally {
-                setLoading(false);
-            }
+            } 
+
+            setLoading(false)
         };
 
         fetchData();
@@ -55,15 +56,17 @@ export default function Home() {
                 <div className="bg-white p-6 rounded-lg shadow-md">
                     
                     <center>
-                        <FaHome className="size-60 text-gray-500" />
+                        <FaHome className="size-32 text-gray-500" />
                     </center>
 
                     {loading ? (
                         <h1 className="text-4xl font-bold text-gray-800 mb-4 text-center">Loading...</h1>
                     ) : (
-                        <h1 className="text-4xl font-bold text-gray-800 mb-4">
-                            Welcome back, {currentUser?.name || ""}!
-                        </h1>
+                        <center>
+                            <h1 className="text-4xl font-bold text-gray-800 mb-4">
+                                Welcome back, {`${currentUser?.first_name}` || ""}!
+                            </h1>
+                        </center>
                     )}
 
                     {/* Navigation Buttons */}

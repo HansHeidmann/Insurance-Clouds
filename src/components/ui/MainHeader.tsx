@@ -7,6 +7,7 @@ import {   } from "react-icons/fa";
 import { FaUser,  } from "react-icons/fa6";
 import { FaFileAlt, FaBuilding } from "react-icons/fa";
 import { User, Organization } from "@/lib/types"; // Import types
+import { AuthServices } from "@/lib/AuthServices";
 
 interface HeaderProps {
     currentUser: User | null;
@@ -27,6 +28,12 @@ export default function Header({ currentUser, organization }: HeaderProps) {
                     <div className="mr-auto text-xl font-bold text-gray-700">{organization?.name}</div>
                     <div className="mr-auto text-xl font-medium text-gray-700">{currentUser?.name}</div>
                 </div>
+            </button>
+
+            <button
+                onClick={() => AuthServices.signOut()}
+            >
+                Logout test
             </button>
 
             <div className="flex ml-auto gap-0.5 pr-3">

@@ -1,9 +1,12 @@
+// /app/login/page.tsx
+
 "use client";
 
 import DatabaseService from "@/lib/DatabaseService";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { AuthServices } from "@/lib/AuthServices";
 
 export default function Authenticate() {
     const router = useRouter();
@@ -20,7 +23,7 @@ export default function Authenticate() {
     // Check if user is already logged in
     useEffect(() => {
         const checkUser = async () => {
-            const currentUser = await DatabaseService.getCurrentUser();
+            const currentUser = await AuthServices.getAuthUser();
             if (currentUser) {
                 router.push("/"); // Redirect when logged in
             }
@@ -49,10 +52,10 @@ export default function Authenticate() {
                 }
 
                 // Sign Up (New User)
-                await DatabaseService.signUp(firstName, lastName, email, password);
+                await AuthServices.signUp(firstName, lastName, email, password);
             } else {
                 // Log In (Existing User)
-                await DatabaseService.signIn(email, password);
+                await AuthServices.signIn(email, password);
             }
 
             router.push("/"); // Redirect on success

@@ -24,15 +24,19 @@ export default function OrganizationPage() {
 
             try {
                 // Get current user
-                const user = await DatabaseService.getCurrentUser();
-                if (!user) {
-                    router.push("/authenticate");
+                const currentUser = await DatabaseService.getCurrentUser();
+                if (!currentUser) {
+                    router.push("/login");
                     return;
                 }
-                setCurrentUser(user);
+                setCurrentUser(currentUser);
+                console.log("test");
+                
 
                 // Fetch organization
-                if (user.organization_id) {
+                if (currentUser.organization_id) {
+                    console.log("test");
+                    
                     const org = await DatabaseService.getCurrentOrganization();
                     setOrganization(org);
 
