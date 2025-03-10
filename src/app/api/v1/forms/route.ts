@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabaseServer } from "@/lib/SupabaseServer";
+import { createClient } from "@/utils/supabase/server";
 
 // GET: Fetch All Forms (Optional Organization Filter)
 export async function GET(req: NextRequest) {
-    const supabase = supabaseServer();
+    const supabase = await createClient();
+    
     const searchParams = req.nextUrl.searchParams;
     const organizationId = searchParams.get("organization_id");
     const formId = searchParams.get("formId");
@@ -32,7 +33,8 @@ export async function GET(req: NextRequest) {
 
 // POST: Create a New Form
 export async function POST(req: NextRequest) {
-    const supabase = supabaseServer();
+    const supabase = await createClient();
+
     const { name, organization_id, author_id } = await req.json();
 
     if (!name || !organization_id || !author_id) {
@@ -53,7 +55,8 @@ export async function POST(req: NextRequest) {
 
 // PATCH: Update an Existing Form
 export async function PATCH(req: NextRequest) {
-    const supabase = supabaseServer();
+    const supabase = await createClient();
+
     const { formId, name } = await req.json();
 
     if (!formId) {
@@ -76,7 +79,8 @@ export async function PATCH(req: NextRequest) {
 
 // DELETE: Delete a Form
 export async function DELETE(req: NextRequest) {
-    const supabase = supabaseServer();
+    const supabase = await createClient();
+
     const { formId } = await req.json();
 
     if (!formId) {

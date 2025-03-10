@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabaseServer } from "@/lib/SupabaseServer";
+import { createClient } from "@/utils/supabase/server";
 
 // GET: Fetch All Entries (Optional Form Filter)
 export async function GET(req: NextRequest) {
-    const supabase = supabaseServer();
+    const supabase = await createClient();
+
     const searchParams = req.nextUrl.searchParams;
     const formId = searchParams.get("form_id");
     const entryId = searchParams.get("entryId");
@@ -32,7 +33,8 @@ export async function GET(req: NextRequest) {
 
 // POST: Create a New Entry
 export async function POST(req: NextRequest) {
-    const supabase = supabaseServer();
+    const supabase = await createClient();
+
     const { formId, data } = await req.json();
 
     if (!formId || !data) {
@@ -53,7 +55,8 @@ export async function POST(req: NextRequest) {
 
 // PATCH: Update an Existing Entry
 export async function PATCH(req: NextRequest) {
-    const supabase = supabaseServer();
+    const supabase = await createClient();
+
     const { entryId, data } = await req.json();
 
     if (!entryId || !data) {
@@ -73,7 +76,8 @@ export async function PATCH(req: NextRequest) {
 
 // DELETE: Delete an Entry
 export async function DELETE(req: NextRequest) {
-    const supabase = supabaseServer();
+    const supabase = await createClient();
+    
     const { entryId } = await req.json();
 
     if (!entryId) {

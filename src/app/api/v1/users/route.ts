@@ -1,8 +1,30 @@
-// api/users/route.ts
-//"use server";
-
+import { User } from "@/lib/types";
 import { createClient } from "@/utils/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
+
+
+// Helper function
+async function getCurrentUser(): Promise<User | null> {
+    const supabase = await createClient();
+    const { data: { user }, error: error } = await supabase.auth.getUser();
+    if (!user || error) {
+        return null;
+    }
+
+    // Fetch user details from DB
+    const { data: userData, error: userError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+    if (userError) {
+        return null
+    }
+
+    return userData;
+}
+
 
 // GET - Fetch users
 export async function GET(req: NextRequest) {
@@ -61,29 +83,33 @@ export async function POST(req: NextRequest) {
 
 // PATCH: Update Logged-in User
 export async function PATCH(req: NextRequest) {
+
     const supabase = await createClient();
-    const { self, name, email, avatar_url } = await req.json();
+    const currentUser = await getCurrentUser()
+    if (!currentUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    if (self) {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // Possible req.body and params
+    const { body } = await req.json();
+    const accessCode = req.nextUrl.searchParams.get("access_code");
+    //const newRole = req.nextUrl.searchParams.get("role");
 
-        const updateData: any = {};
-        if (name) updateData.name = name;
-        if (email) updateData.email = email;
-        if (avatar_url) updateData.avatar_url = avatar_url;
-
+    if (accessCode) {
+        // update currentUser's organization_id
         const { error } = await supabase
             .from("users")
-            .update(updateData)
-            .eq("id", user.id);
+            .update( {'organization_id': accessCode, 'role': "member"})
+            .eq("id", currentUser.id);
 
-        if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-
-        return NextResponse.json({ message: "User updated successfully" });
+        if (error) {
+            return NextResponse.json({ error: error.message }, { status: 500 });
+        }
+        
     }
 
-    return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    if (body) {}
+
+   
+    
 }
 
 // DELETE: Delete Logged-in User

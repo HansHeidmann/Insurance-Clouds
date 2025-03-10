@@ -2,7 +2,6 @@
 
 "use client";
 
-import DatabaseService from "@/lib/DatabaseService";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";

@@ -12,9 +12,9 @@ export default function OrganizationPage() {
     const router = useRouter();
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [organization, setOrganization] = useState<Organization | null>(null);
-    const [members, setMembers] = useState<Member[]>([]);
+    const [members, setMembers] = useState<Member[] | null>(null);
     const [loading, setLoading] = useState(true);
-    const [orgIdInput, setOrgIdInput] = useState("");
+    const [accessCode, setAccessCode] = useState("");
     const [newOrgName, setNewOrgName] = useState("");
 
     // Fetch User, Organization, and Members
@@ -23,29 +23,21 @@ export default function OrganizationPage() {
             setLoading(true);
 
             try {
-                // Get current user
+                // Get currentUser, the organization they are in, and that organization's members
                 const currentUser = await DatabaseService.getCurrentUser();
                 if (!currentUser) {
                     router.push("/login");
                     return;
                 }
                 setCurrentUser(currentUser);
-                console.log("test");
                 
+                const org = await DatabaseService.getCurrentOrganization();
+                setOrganization(org);
 
-                // Fetch organization
-                if (currentUser.organization_id) {
-                    console.log("test");
+                const members = await DatabaseService.getOrganizationMembers();
+                setMembers(members);
                     
-                    const org = await DatabaseService.getCurrentOrganization();
-                    setOrganization(org);
-
-                    // Fetch members
-                    if (org) {
-                        const orgMembers = await DatabaseService.getOrganizationMembers(org.id);
-                        setMembers(orgMembers);
-                    }
-                }
+                
             } catch (error) {
                 console.error("Error loading data:", error);
             } finally {
@@ -56,6 +48,36 @@ export default function OrganizationPage() {
         fetchData();
     }, [router]);
 
+
+    async function createOrganization() {
+        router.refresh()
+        // create org
+        await DatabaseService.createOrganization(newOrgName);
+        // update page vars
+        router.refresh()
+        /*
+        const org = await DatabaseService.getCurrentOrganization();
+        setOrganization(org);
+        const members = await DatabaseService.getOrganizationMembers();
+        setMembers(members);
+        */
+    }
+
+    async function joinOrganization() {
+        // join org
+        await DatabaseService.joinOrganization(accessCode);
+        // update page vars
+        const org = await DatabaseService.getCurrentOrganization();
+        setOrganization(org);
+        const members = await DatabaseService.getOrganizationMembers();
+        setMembers(members);
+    }
+
+
+
+    //
+    // Page
+    //
     return (
         <>
             {/* Header */}
@@ -66,7 +88,7 @@ export default function OrganizationPage() {
                 <div className="flex flex-col h-min min-w-[500px] bg-white shadow-lg rounded-lg p-6">
                     {loading ? (
                         <p className="text-center text-gray-500">Loading...</p>
-                    ) : currentUser?.organization_id ? (
+                    ) : currentUser && organization && members ? (
                         <>
                             <h1 className="text-2xl font-bold text-gray-700 mb-6">{organization?.name}</h1>
                             
@@ -116,8 +138,40 @@ export default function OrganizationPage() {
                         </>
                     ) : (
                         <>
-                            <h2 className="text-xl font-bold text-gray-700 mb-4">Join or Create an Organization</h2>
-                            <button className="px-4 py-2 bg-green-500 text-white rounded-lg">Create Organization</button>
+                            <h2 className="text-xl font-bold text-gray-700 mb-2">Create an Organization</h2>
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    placeholder="Organization Name"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    value={newOrgName}
+                                    onChange={(e) => setNewOrgName(e.target.value)}
+                                />
+                                <button 
+                                    className="px-4 py-2 bg-green-500 text-white font-semibold rounded-lg"
+                                    onClick={() => createOrganization()}
+                                >
+                                    Create
+                                </button>
+                            </div>
+
+                            <h2 className="text-xl font-bold text-gray-700 mb-2 mt-8">Join an Organization</h2>
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    placeholder="Access Code"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    value={accessCode}
+                                    onChange={(e) => setAccessCode(e.target.value)}
+                                />
+                                <button 
+                                    className="px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg"
+                                    onClick={() => joinOrganization()}
+                                >
+                                    Join
+                                </button>
+                            </div>
+                            
                         </>
                     )}
                 </div>

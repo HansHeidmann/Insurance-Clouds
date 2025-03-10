@@ -7,6 +7,7 @@ import { FaSignOutAlt, FaUpload } from "react-icons/fa";
 import { Organization, User } from "@/lib/types";
 import Header from "@/components/ui/MainHeader";
 import DatabaseService from "@/lib/DatabaseService";
+import { AuthServices } from "@/lib/AuthServices";
 
 export default function AccountPage() {
     const router = useRouter();
@@ -16,29 +17,30 @@ export default function AccountPage() {
     // User & Organization State
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [organization, setOrganization] = useState<Organization | null>(null);
-    const [newName, setNewName] = useState<string>("");
+    const [newFirstName, setNewFirstName] = useState<string>("");
+    const [newLastName, setNewLastName] = useState<string>("");
     const [newEmail, setNewEmail] = useState<string>("");
     const [profileImage, setProfileImage] = useState<File | null>(null);
     
     // Fetch user and organization data
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                setLoading(true);
-                const user = await DatabaseService.getCurrentUser();
-                setCurrentUser(user);
-                setNewName(user?.name || "");
-                setNewEmail(user?.email || "");
+        
+            setLoading(true);
+            const user = await DatabaseService.getCurrentUser();
 
-                if (user?.organization_id) {
-                    const org = await DatabaseService.getCurrentOrganization();
-                    setOrganization(org);
-                }
-            } catch (error: any) {
-                setError(error.message);
-            } finally {
-                setLoading(false);
+            setCurrentUser(user);
+            setNewFirstName(user?.first_name || "");
+            setNewLastName(user?.last_name || "");
+            setNewEmail(user?.email || "");
+
+            if (user?.organization_id) {
+                const org = await DatabaseService.getCurrentOrganization();
+                setOrganization(org);
             }
+         
+            setLoading(false);
+            
         };
 
         fetchData();
@@ -62,7 +64,7 @@ export default function AccountPage() {
     // Handle Logout
     const handleLogout = async () => {
         try {
-            await DatabaseService.signOut();
+            await AuthServices.signOut();
             router.push("/authenticate");
         } catch (error: any) {
             setError(error.message);
@@ -135,15 +137,26 @@ export default function AccountPage() {
                                 </div>
                             </center>
 
-                            {/* Update Display Name */}
-                            <div className="mt-4">
-                                <label className="block text-md font-bold text-gray-700">Full Name</label>
+                            {/* Update Name */}
+                            <div className="flex mt-8 gap-4">
+                                <div>
+                                <label className="block text-md font-bold text-gray-700">First Name</label>
                                 <input
                                     type="text"
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    value={newName}
-                                    onChange={(e) => setNewName(e.target.value)}
+                                    value={newFirstName}
+                                    onChange={(e) => setNewFirstName(e.target.value)}
                                 />
+                                </div>
+                                
+                                <div> <label className="block text-md font-bold text-gray-700">Last Name</label>
+                                <input
+                                    type="text"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    value={newLastName}
+                                    onChange={(e) => setNewLastName(e.target.value)}
+                                /></div>
+                               
                             </div>
 
                             {/* Update Email */}
