@@ -15,6 +15,7 @@ import { FaEdit, FaEye, FaPlay, FaSave } from "react-icons/fa";
 import { FaGear } from "react-icons/fa6";
 
 import { useRouter, useParams } from "next/navigation";
+import Header from "@/components/ui/MainHeader";
 
 
 
@@ -34,7 +35,9 @@ export default function FormBuilderPage() {
     // Load Form (when page has finished loading)
     useEffect(() => {
         const fetchForm = async () => {
-            if (!formId) return;
+            if (!formId) {
+                router.push("/forms")
+            };
 
             const res = await fetch(`/api/forms/${formId}`);
             const data = await res.json();
@@ -58,7 +61,7 @@ export default function FormBuilderPage() {
             return;
         }
 
-        const res = await fetch(`/api/forms/${formId}`, {
+        const res = await fetch(`/api/v1/forms/${formId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ name: formName, json: formMatrix }),
@@ -140,7 +143,7 @@ export default function FormBuilderPage() {
         <div className="h-screen flex flex-col flex-1">
 
             {/* Header */}
-            
+            <Header />
 
 
             {/* Row of Buttons: Edit, JSON .... Preview, Save */}

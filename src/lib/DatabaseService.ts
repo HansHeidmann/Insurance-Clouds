@@ -1,7 +1,12 @@
-import { Member, Organization, User } from "./types";
+import { Form, Organization, User } from "./types";
 
 
 export default class DatabaseService {
+
+    ///////////////
+    //
+    // User
+    //
 
     // Get Current User
     static async getCurrentUser(): Promise<User | null>  {
@@ -18,16 +23,6 @@ export default class DatabaseService {
             console.error(error);
             return null;
         }
-    }
-
-    // Update User Details
-    static async updateUser(name: string, email: string) {
-       
-    }
-        
-    // Update Avatar
-    static async updateUserAvatar(file: File) {
-       
     }
 
 
@@ -58,7 +53,7 @@ export default class DatabaseService {
     
 
     // Fetch Organization Members
-    static async getOrganizationMembers(): Promise<Member[] | null> {
+    static async getOrganizationMembers(): Promise<User[] | null> {
         const user = await this.getCurrentUser()
         if (user == null) return null;
         if (user.organization_id == null) return null;
@@ -95,9 +90,49 @@ export default class DatabaseService {
     }
 
 
-    // Update Organization Details
-    static async updateOrganization(newName: string, newAvatarUrl?: string) {
+
+    ///////////////
+    //
+    // Forms
+    //
+
+    static async createForm(): Promise<Form | null> {
+
+        const response = await fetch("/api/v1/forms", { method: "POST" });
+
+        if (!response.ok) {
+            console.warn("Failed to create form.");
+        }
+
+        const formData = await response.json();
+        const form: Form = formData.data;
+       
+        return form;
     
     }
+
+   
+
+    // Fetch Organization Members
+    static async getFormsForOrganization(): Promise<Form[] | null> {
+        const user = await this.getCurrentUser()
+        if (user == null) return null;
+        if (user.organization_id == null) return null;
+    
+        const response = await fetch(`/api/v1/forms`, {
+            method: "GET"
+        });
+
+        if (!response.ok) {
+            console.warn("Couldn't get Forms for Organization");
+            return null;
+        }
+
+        const members = await response.json();
+        return members;
+    }
+
+
+   
 
 }

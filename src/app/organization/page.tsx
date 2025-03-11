@@ -95,9 +95,9 @@ export default function OrganizationPage() {
                             {/* Members List */}
                             <div className="shadow-md rounded-lg overflow-hidden">
                                 {members.length > 0 ? (
-                                    members.map((member) => (
+                                    members.map((member, i) => (
                                         <div
-                                            key={member.id}
+                                            key={i}
                                             className={`flex items-center justify-between space-x-4 p-4 border-b border-gray-300 ${
                                                 member.role === "admin" ? "bg-blue-100" : "bg-green-100"
                                             } hover:bg-gray-100`}
@@ -111,8 +111,16 @@ export default function OrganizationPage() {
                                                     className="rounded-full object-cover"
                                                 />
                                                 <div className="flex flex-col text-black">
-                                                    <div>{member.firstName} {member.lastName}</div>
+                                                    { member.first_name && member.last_name ? (
+                                                        <>
+                                                            <div>{member.first_name} {member.last_name}</div>
+                                                            <div className="text-xs">{member.email}</div>
+                                                        </>
+                                                    ) : (
+                                                       
                                                     <div className="text-xs">{member.email}</div>
+                                                    )}
+                                                    
                                                 </div>
                                             </div>
                                             <div className="ml-auto text-gray-600">

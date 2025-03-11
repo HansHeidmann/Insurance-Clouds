@@ -28,13 +28,12 @@ export default function Home() {
 
             const currentUser = await DatabaseService.getCurrentUser();
             if (currentUser) {
-                console.log(currentUser);
                 
                 setCurrentUser(currentUser);
 
                 // Fetch organization details if user is in an organization
                 if (currentUser.organization_id) {
-                    const org = await DatabaseService.getCurrentOrganization(user.organization_id);
+                    const org = await DatabaseService.getCurrentOrganization();
                     setOrganization(org);
                 }
             } 
@@ -45,11 +44,21 @@ export default function Home() {
         fetchData();
     }, [router]);
 
+
+
+    if (loading) {
+        return (
+            <>
+                <Header />
+            </>
+        )
+    }
+
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col">
             
             {/* Header */}
-            <Header currentUser={currentUser} organization={organization} />
+            <Header />
 
             {/* Main Content */}
             <div className="bg-gray-100 p-8 flex justify-center">

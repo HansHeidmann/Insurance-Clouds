@@ -1,12 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { User } from "@/lib/types";
 
-// GET: Fetch All Forms (Optional Organization Filter)
+
+
+// Helper function
+async function getCurrentUser(): Promise<User | null> {
+    const supabase = await createClient();
+    const { data: { user }, error: error } = await supabase.auth.getUser();
+    if (!user || error) return null;
+    const { data: userData, error: userError } = await supabase
+        .from("users").select("*").eq("id", user.id).single();
+    if (userError) return null
+    return userData;
+}
+
+
+
+// GET
 export async function GET(req: NextRequest) {
     const supabase = await createClient();
-    
+
     const searchParams = req.nextUrl.searchParams;
-    const organizationId = searchParams.get("organization_id");
     const formId = searchParams.get("formId");
 
     // Fetch specific form if formId is provided
@@ -21,39 +36,46 @@ export async function GET(req: NextRequest) {
         return NextResponse.json(data);
     }
 
-    // Fetch all forms or filter by organization
-    let query = supabase.from("forms").select("*");
-    if (organizationId) query = query.eq("organization_id", organizationId);
+    const currentUser = await getCurrentUser();
+    // Fetch all forms if organization_id is provided
+    if (currentUser) {
+        const { data, error } = await supabase
+            .from("forms")
+            .select("*")
+            .eq("organization_id", currentUser.organization_id)
 
-    const { data, error } = await query;
-    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+        if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json(data);
+    }
 
-    return NextResponse.json(data);
+    return NextResponse.json({ error: "Error getting form(s)" }, { status: 500 });
 }
 
-// POST: Create a New Form
-export async function POST(req: NextRequest) {
+// POST
+export async function POST() {
     const supabase = await createClient();
 
-    const { name, organization_id, author_id } = await req.json();
-
-    if (!name || !organization_id || !author_id) {
-        return NextResponse.json({ error: "Name, organization ID, and author ID are required" }, { status: 400 });
+    const currentUser = await getCurrentUser();
+    if (!currentUser) {
+        return NextResponse.json({ error: "Couldn't retrieve currentUser" }, { status: 400 });
     }
 
     // Insert form into database
     const { data, error } = await supabase
         .from("forms")
-        .insert([{ name, organization_id, author_id }])
+        .insert([{ 
+            'organization_id': currentUser.organization_id,
+            'author_id': currentUser.id 
+        }])
         .select("id")
         .single();
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
-    return NextResponse.json({ message: "Form created successfully", formId: data.id });
+    return NextResponse.json({ data });
 }
 
-// PATCH: Update an Existing Form
+// PATCH
 export async function PATCH(req: NextRequest) {
     const supabase = await createClient();
 
@@ -69,7 +91,7 @@ export async function PATCH(req: NextRequest) {
     // Update form
     const { error } = await supabase
         .from("forms")
-        .update(updateData)
+        .update({})
         .eq("id", formId);
 
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
@@ -77,7 +99,7 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ message: "Form updated successfully" });
 }
 
-// DELETE: Delete a Form
+// DELETE
 export async function DELETE(req: NextRequest) {
     const supabase = await createClient();
 

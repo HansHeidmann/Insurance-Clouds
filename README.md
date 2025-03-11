@@ -1,20 +1,19 @@
-To add a new node_module:
+# Form Builder
+## Created by Hans Heidmann for Insurance Clouds™
+
+This is an app that allows you to create or join an organization then build forms which can be filled and the entries can be viewed.
+
+Clone and run:
 ```
-yarn add <package-name>
+yarn install
 ```
 
-To run the development server:
-```bash
+Then run:
+```
 yarn dev
 ```
-Then open: [http://localhost:3000](http://localhost:3000)
 
-
-
-## Deploy
-
-Official way to deploy a Next.js app: [Vercel](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme)
-
-## Notes
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Tech Stack:
+- Next.js v15 Stable
+- Tailwind
+- Managed PostgreSQL

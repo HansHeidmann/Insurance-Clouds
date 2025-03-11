@@ -1,5 +1,8 @@
 import { UUID } from "crypto";
 
+//
+// Database Types
+//
 
 export type User = {
     id: UUID;
@@ -15,24 +18,25 @@ export type User = {
 export type Organization = {
     id: UUID;
     name: string;
-    admin_id: string;
+    admin_id: UUID;
     avatar_url: string;
 };
 
 export type Form = {
     id: UUID;
-    author_id: string;
+    author_id: UUID;
+    organization_id: UUID
     name: string;
+    json: JSON;
     created_at: string;
     edited_at: string;
     total_entries: number;
 };
 
 export type Member = {
-    id: UUID;
     first_name: string;
     last_name: string;
     email: string;
     avatar_url: string | null;
-    role: string | null;
+    role: string;
 }

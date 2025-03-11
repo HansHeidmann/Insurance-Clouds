@@ -1,21 +1,37 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {   } from "react-icons/fa";
 import { FaUser,  } from "react-icons/fa6";
 import { FaFileAlt, FaBuilding } from "react-icons/fa";
-import { User, Organization } from "@/lib/types"; // Import types
+import { User, Organization } from "@/lib/types"; 
+import DatabaseService from "@/lib/DatabaseService";
 
 
-interface HeaderProps {
-    currentUser: User | null;
-    organization: Organization | null;
-}
+export default function Header() {
 
-export default function Header({ currentUser, organization }: HeaderProps) {
     const router = useRouter();
+
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
+    const [organization, setOrganization] = useState<Organization | null>(null);
+
+    // Fetch user and organization data
+    useEffect(() => {
+        const fetchData = async () => {
+
+            const user = await DatabaseService.getCurrentUser();
+            if(user) setCurrentUser(user);
+
+            if (user?.organization_id) {
+                const org = await DatabaseService.getCurrentOrganization();
+                if (org) setOrganization(org);
+            }     
+        };
+
+        fetchData();
+    }, []);
 
     return (
         <div className="flex items-center bg-white border-b">
