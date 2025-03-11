@@ -23,5 +23,5 @@ yarn dev
 
 ## Tech Stack
 - Next.js v15 Stable
-- Tailwind
+- Tailwind 3.4.17
 - Managed PostgreSQL
