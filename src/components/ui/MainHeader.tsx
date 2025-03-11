@@ -36,12 +36,12 @@ export default function Header() {
     return (
         <div className="flex items-center bg-white border-b">
             <button
-                className="mr-auto p-4 flex items-center gap-4 hover:bg-gray-200"
+                className="mr-auto p-4 flex items-center gap-4 hover:bg-black transition-colors duration-500 hover:text-white"
                 onClick={() => router.push("/")}
             >
                 <Image src="/logo.png" alt="Logo" width="75" height="75" quality={100} />
                 <div className="flex flex-col">
-                    <div className="mr-auto text-xl font-semibold text-gray-700">Insurance Clouds™</div>
+                    <div className="mr-auto text-xl font-semibold">Insurance Clouds™</div>
                     {/*}
                     <div className="mr-auto text-xl font-bold text-gray-700">{organization?.name}</div>
                     <div className="mr-auto text-xl font-medium text-gray-700">{currentUser?.name}</div>
@@ -53,7 +53,7 @@ export default function Header() {
             <div className="flex ml-auto gap-0.5 pr-3">
                 {/* Profile Button */}
                 <button
-                    className="p-1 group relative items-center rounded-full border-2 border-transparent transition-all hover:border-purple-500 hover:shadow-md"
+                    className="p-1 group relative items-center rounded-full border-2 border-transparent transition-all hover:border-green-500 hover:shadow-md"
                     onClick={() => router.push("/forms")}
                 >
                     {currentUser?.avatar_url ? (
@@ -66,7 +66,7 @@ export default function Header() {
                             quality={100}
                         />
                     ) : (
-                        <div className="w-[50px] h-[50px] bg-purple-500 flex items-center justify-center rounded-full">
+                        <div className="w-[50px] h-[50px] bg-green-500 flex items-center justify-center rounded-full">
                             <FaFileAlt className="text-white text-2xl" />
                         </div>
                     )}
@@ -74,7 +74,7 @@ export default function Header() {
 
                 {/* Organization Button */}
                 <button
-                    className="p-1 group relative items-center rounded-full border-2 border-transparent transition-all hover:border-green-500 hover:shadow-md"
+                    className="p-1 group relative items-center rounded-full border-2 border-transparent transition-all hover:border-purple-500 hover:shadow-md"
                     onClick={() => router.push("/organization")}
                 >
                     {organization?.avatar_url ? (
@@ -87,7 +87,7 @@ export default function Header() {
                             quality={100}
                         />
                     ) : (
-                        <div className="w-[50px] h-[50px] bg-green-500 flex items-center justify-center rounded-full">
+                        <div className="w-[50px] h-[50px] bg-purple-500 flex items-center justify-center rounded-full">
                             <FaBuilding className="text-white text-2xl" />
                         </div>
                     )}

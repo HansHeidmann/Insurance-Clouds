@@ -2,10 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FaPlusCircle, FaBuilding, FaEdit, FaEye } from "react-icons/fa";
+import { FaPlusCircle, FaBuilding, FaEdit, FaEye, FaTrash, FaTrashAlt, FaShareAlt, FaFileExport } from "react-icons/fa";
 import { Form, Organization, User } from "@/lib/types";
 import Header from "@/components/ui/MainHeader";
 import DatabaseService from "@/lib/DatabaseService";
+import { FaShare } from "react-icons/fa6";
 
 
 export default function FormsPage() {
@@ -54,7 +55,7 @@ export default function FormsPage() {
     return (
         <div className="min-h-screen bg-gray-100">
             {/* Header */}
-            <Header currentUser={currentUser} organization={organization} />
+            <Header />
 
             {/* Main Content */}
             <div className="p-8 max-w-5xl mx-auto">
@@ -71,9 +72,9 @@ export default function FormsPage() {
                         <div className="space-y-4">
 
                             <div className="flex flex-col">
-                                <h1 className="text-3xl font-bold text-gray-700 mb-6">{organization?.name}&apos;s Forms</h1>
+                                <h1 className="text-3xl font-bold text-gray-700 mb-4">Forms</h1>
                                 <button
-                                    className="mx-auto flex h-min w-min whitespace-nowrap bg-blue-500 text-white text-sm font-bold rounded-lg py-2 px-4 items-center gap-2"
+                                    className="mr-auto flex h-min w-min whitespace-nowrap bg-green-500 hover:bg-green-700 text-white text-sm font-bold rounded-lg py-4 px-4 items-center gap-2"
                                     onClick={()=>{createForm()}}
                                 >
                                     <FaPlusCircle />
@@ -85,27 +86,58 @@ export default function FormsPage() {
                                 <div key={form.id} className="bg-gray-50 p-4 rounded-lg shadow-sm hover:bg-gray-100 transition">
                                     <div className="flex justify-between items-center">
                                         {/* Form Info */}
-                                        <div>
-                                            <h3 className="text-lg font-semibold">{form.name}</h3>
-                                            <p className="text-sm text-gray-600">
-                                                Last Edited: {new Date(form.edited_at).toLocaleString()} | Created by: {form.author_id}
-                                            </p>
+                                        <div className="flex flex-col">
+                                            <h3 className="text-xl text-blue-500 font-bold">{form.name}</h3>
+                                            <hr className="border-gray-300"></hr>
+                                            <div>
+                                                {(() => {
+                                                    const author = members?.find(member => member.id === form.author_id);
+                                                    return <div>Author: {author ? `${author.first_name} ${author.last_name}` : "Unknown"}</div>;
+                                                })()}
+                                            </div>
+                                            <div className="text-sm text-gray-600">
+                                                Created: {new Date(form.created_at).toLocaleString()}
+                                            </div>
+                                            <div className="text-sm text-gray-600">
+                                                Edited: {new Date(form.edited_at).toLocaleString()}
+                                            </div>
+                                           
+                                            
                                         </div>
 
                                         {/* Actions */}
-                                        <div className="flex gap-3">
-                                            <button
-                                                onClick={() => router.push(`/forms/build/${form.id}`)}
-                                                className="px-4 py-2 text-sm bg-green-500 text-white rounded-lg hover:bg-blue-600 flex items-center gap-2"
-                                            >
-                                                <FaEdit /> Edit
-                                            </button>
-                                            <button
-                                                onClick={() => router.push(`/forms/view/${form.id}`)}
-                                                className="px-4 py-2 text-sm bg-pink-500 text-white rounded-lg hover:bg-green-600 flex items-center gap-2"
-                                            >
-                                                <FaEye /> View
-                                            </button>
+                                        <div className="flex flex-col gap-2">
+
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={()=>{}}
+                                                    className="px-4 py-2 text-md bg-[#91cc43] text-white font-semibold rounded-lg hover:bg-blue-600 flex items-center gap-2"
+                                                >
+                                                    <FaShareAlt />
+                                                </button>
+                                                <button
+                                                    onClick={() => router.push(`/forms/view/${form.id}`)}
+                                                    className="px-4 py-2 text-md bg-[#52c8fa] text-white font-semibold rounded-lg hover:bg-green-600 flex items-center gap-2"
+                                                >
+                                                    <FaEye />
+                                                </button>
+                                                
+                                            </div>
+                                           
+                                            <div className="flex gap-2">
+                                                <button
+                                                    onClick={() => router.push(`/forms/build/${form.id}`)}
+                                                    className="px-4 py-2 text-md bg-[#fcad03] text-white font-semibold rounded-lg hover:bg-blue-600 flex items-center gap-2"
+                                                >
+                                                    <FaEdit />
+                                                </button>
+                                                <button
+                                                    onClick={() => {}}
+                                                    className="px-4 py-2 text-sm bg-red-500 text-white font-semibold rounded-lg hover:bg-green-600 flex items-center gap-2"
+                                                >
+                                                    <FaTrash />
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

@@ -81,7 +81,7 @@ export default function OrganizationPage() {
     return (
         <>
             {/* Header */}
-            <Header currentUser={currentUser} organization={organization} />
+            <Header />
 
             {/* Main Section */}
             <div className="flex bg-gray-100 p-8 h-screen justify-center">

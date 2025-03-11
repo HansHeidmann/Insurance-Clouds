@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import { FaCaretLeft, FaShare } from "react-icons/fa";
 import {  FaSheetPlastic } from "react-icons/fa6"
+import Header from "@/components/ui/MainHeader";
 
 type Form = {
     id: string;
@@ -43,21 +44,7 @@ export default function ViewFormPage() {
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col">
             {/* Header Section */}
-            <div className="flex p-4 gap-4 items-center bg-white border-b">
-                <Image src="/logo.png" alt="Logo" width="75" height="100" quality={100} />
-                <div className="mr-auto text-xl font-bold text-gray-700">Insurance Clouds™</div>
-                <div className="flex flex-row gap-2">
-                    <button
-                        className="flex bg-green-500 text-white font-bold text-sm rounded-lg py-2 px-4 items-center gap-2"
-                        onClick={() => router.push("/forms")}
-                    >
-                        <FaSheetPlastic />
-                        Forms
-                    </button>
-                    
-                    
-                </div>
-            </div>
+            <Header />
 
             {/* Back button and share button bar*/}
             <div className="flex items-end bg-gray-200">

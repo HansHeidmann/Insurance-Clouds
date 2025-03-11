@@ -24,7 +24,8 @@ export type Organization = {
 
 export type Form = {
     id: UUID;
-    author_id: UUID;
+    author_id: UUID; // Initial creator of this Form
+    editor_id: UUID; // Most recent User to edit this Form
     organization_id: UUID
     name: string;
     json: JSON;

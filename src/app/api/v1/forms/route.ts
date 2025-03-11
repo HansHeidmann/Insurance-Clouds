@@ -36,13 +36,14 @@ export async function GET(req: NextRequest) {
         return NextResponse.json(data);
     }
 
+    // Get all forms if a specific ID isn't provided
     const currentUser = await getCurrentUser();
-    // Fetch all forms if organization_id is provided
     if (currentUser) {
         const { data, error } = await supabase
             .from("forms")
             .select("*")
             .eq("organization_id", currentUser.organization_id)
+            .order('edited_at', {ascending: false})
 
         if (error) return NextResponse.json({ error: error.message }, { status: 500 });
         return NextResponse.json(data);

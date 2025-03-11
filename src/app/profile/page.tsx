@@ -93,7 +93,7 @@ export default function AccountPage() {
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col">
             {/* Header */}
-            <Header currentUser={currentUser} organization={organization} />
+            <Header />
 
             {/* Account Section */}
             <div className="bg-gray-100 p-8 flex justify-center">
