@@ -1,7 +1,11 @@
 # Form Builder
 ## Created by Hans Heidmann for Insurance Clouds™
 
-This is an app that allows you to create or join an organization then build forms which can be filled and the entries can be viewed.
+This is an app that allows you to: 
+- create or join an organization
+- create dynamic forms
+- fill forms
+- view form entries
 
 Clone and run:
 ```
