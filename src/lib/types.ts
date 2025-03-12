@@ -28,6 +28,7 @@ export type Form = {
     editor_id: UUID; // Most recent User to edit this Form
     organization_id: UUID
     name: string;
+    description: string;
     json: JSON;
     created_at: string;
     edited_at: string;

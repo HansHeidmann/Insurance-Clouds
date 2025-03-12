@@ -2,21 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
-import Image from "next/image";
-import { FaCaretLeft, FaShare } from "react-icons/fa";
-import {  FaSheetPlastic } from "react-icons/fa6"
 import Header from "@/components/ui/MainHeader";
+import { Form } from "@/lib/types";
 
-type Form = {
-    id: string;
-    name: string;
-    json: JSON;
-    created_at: string;
-    edited_at: string;
-};
 
 export default function ViewFormPage() {
-    const router = useRouter();
+    //const router = useRouter();
     const { id: formId } = useParams();
     const [form, setForm] = useState<Form | null>(null);
     const [loading, setLoading] = useState(true);
@@ -46,34 +37,9 @@ export default function ViewFormPage() {
             {/* Header Section */}
             <Header />
 
-            {/* Back button and share button bar*/}
-            <div className="flex items-end bg-gray-200">
-                        
-                            
-                <button
-                    onClick={() => {
-                        router.push('/forms/all')
-                    }
-                    }
-                    className="mr-auto flex items-center p-4 gap-2 bg-gray-300 hover:bg-gray-400 text-gray-700 font-semibold"
-                >
-                    <FaCaretLeft />All Forms 
-                </button>
-                <button
-                    onClick={() => {
-                        
-                    }
-                    }
-                    className="flex items-center p-4 gap-2 bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold text-md"
-                >
-                    <FaShare />Share Form
-                </button>
-
-            </div>
-
             {/* Main Content */}
             <div className="flex flex-col items-center p-8">
-                <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-2xl">
+                <div className="bg-white w-[850px] min-h-[1100px] p-6 rounded-lg shadow-md">
                     {loading ? (
                         <p className="text-center text-gray-500">Loading form...</p>
                     ) : error ? (
@@ -81,8 +47,7 @@ export default function ViewFormPage() {
                     ) : form ? (
                         <>
                             <h1 className="text-2xl font-bold text-gray-800">{form.name}</h1>
-                            <p className="text-sm text-gray-500">Created: {new Date(form.created_at).toLocaleString()}</p>
-                            <p className="text-sm text-gray-500">Last Edited: {new Date(form.edited_at).toLocaleString()}</p>
+                            <h2 className="text-2xl font-bold text-gray-800">{form.description}</h2>
 
                             {/* Render Form Data (Instead of JSON) */}
                             <div className="mt-6 border-t pt-4">

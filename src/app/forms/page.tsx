@@ -2,14 +2,15 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FaPlusCircle, FaEdit, FaEye, FaTrash, FaShareAlt } from "react-icons/fa";
-import { Form, User } from "@/lib/types";
+import { FaPlusCircle, FaEye, FaTrash, FaShareAlt, FaHammer } from "react-icons/fa";
+import { Form, Organization, User } from "@/lib/types";
 import Header from "@/components/ui/MainHeader";
 import DatabaseService from "@/lib/DatabaseService";
 
 
 export default function FormsPage() {
     const router = useRouter();
+    const [organization, setOrganization] = useState<Organization | null>(null);
     const [members, setMembers] = useState<User[] | null>(null);
     const [forms, setForms] = useState<Form[] | null>(null);
     const [loading, setLoading] = useState(true);
@@ -21,6 +22,9 @@ export default function FormsPage() {
             setLoading(true);
 
             try {
+                const organization = await DatabaseService.getCurrentOrganization();
+                setOrganization(organization);
+
                 const members = await DatabaseService.getOrganizationMembers();
                 setMembers(members);
                 
@@ -63,26 +67,40 @@ export default function FormsPage() {
                         <p className="text-gray-500 text-center">No forms found for this organization.</p>
                     ) : (
 
-                        <div className="space-y-4">
+                        <div className="space-y-2">
 
-                            <div className="flex flex-col">
-                                <h1 className="text-3xl font-bold text-gray-700 mb-4">All Forms</h1>
+                            <div className="flex">
+                                <div className="mr-auto flex flex-col">
+                                    <h1 className="text-3xl font-bold text-gray-700">All Forms</h1>
+                                    <hr className="w-40"></hr>
+                                    <h2>{organization?.name}</h2>
+                                    
+                                </div>
+
                                 <button
-                                    className="mr-auto flex h-min w-min whitespace-nowrap bg-green-500 hover:bg-green-700 text-white text-sm font-bold rounded-lg py-4 px-4 items-center gap-2"
-                                    onClick={()=>{createForm()}}
+                                    className={`flex h-min w-min whitespace-nowrap bg-green-500 hover:bg-green-300 text-white text-md font-bold rounded-lg py-4 px-4 items-center gap-2 shadow-lg ${forms == null ? "animate-pulse" : ""}`}
+                                    onClick={() => createForm()}
                                 >
-                                    <FaPlusCircle />
-                                    New Form
+                                    <FaPlusCircle className="w-6 h-6 text-white" />
+                                    Create New Form
                                 </button>
+
                             </div>
+                            
 
                             {forms?.map((form) => (
-                                <div key={form.id} className="bg-gray-50 p-4 rounded-lg shadow-sm hover:bg-gray-100 transition">
-                                    <div className="flex justify-between items-center">
+                                <div key={form.id} className="bg-white hover:bg-blue-50 p-2 rounded-lg shadow-lg transition">
+                                    <div className="flex bg-white p-4 justify-between items-center rounded-md">
                                         {/* Form Info */}
                                         <div className="flex flex-col">
-                                            <h3 className="text-xl text-blue-500 font-bold">{form.name}</h3>
-                                            <hr className="border-gray-300"></hr>
+                                            <div className="flex flex-col w-min whitespace-nowrap">
+                                                <button className="text-left">
+                                                    <h3 className="text-xl text-blue-500 hover:text-blue-300 font-bold">{form.name}</h3>
+                                                </button>
+                                                
+                                                <hr className="w-full border-gray-300 mb-2"></hr>
+                                            </div>
+                                            
                                             <div>
                                                 
                                             </div>
@@ -90,14 +108,14 @@ export default function FormsPage() {
                                                 {(() => {
                                                     const date = new Date(form.created_at).toLocaleString()
                                                     const author = members?.find(member => member.id === form.author_id);
-                                                    return <div>{date} ~ {author ? `${author.first_name} ${author.last_name}` : "Unknown"}</div>;
+                                                    return <div>Created on: {date} by {author ? `${author.first_name} ${author.last_name}` : "Unknown"}</div>;
                                                 })()}
                                             </div>
                                             <div className="text-sm text-gray-600">
                                                 {(() => {
                                                     const date = new Date(form.edited_at).toLocaleString()
                                                     const author = members?.find(member => member.id === form.editor_id);
-                                                    return <div>{date} ~ {author ? `${author.first_name} ${author.last_name}` : "Unknown"}</div>;
+                                                    return <div>Last edited: {date} by {author ? `${author.first_name} ${author.last_name}` : "Unknown"}</div>;
                                                 })()}
                                             </div>
                                            
@@ -109,31 +127,31 @@ export default function FormsPage() {
 
                                             <div className="flex gap-2">
                                                 <button
-                                                    onClick={() => router.push(`/forms/preview/${form.id}`)}
-                                                    className="px-4 py-2 text-md bg-[#52c8fa] text-white font-semibold rounded-lg hover:bg-green-600 flex items-center gap-2"
+                                                    onClick={() => router.push(`/forms/fill/${form.id}`)}
+                                                    className="px-4 py-2 text-lg bg-[#52c8fa] text-white font-semibold rounded-lg hover:bg-black flex items-center gap-2"
                                                 >
-                                                    <FaEye />
+                                                    <FaEye className="w-5 h-4 text-white" />
                                                 </button>
                                                 <button
                                                     onClick={()=>{}}
-                                                    className="px-4 py-2 text-md bg-[#91cc43] text-white font-semibold rounded-lg hover:bg-blue-600 flex items-center gap-2"
+                                                    className="px-4 py-2 text-lg bg-[#91cc43] text-white font-semibold rounded-lg hover:bg-black flex items-center gap-2"
                                                 >
-                                                    <FaShareAlt />
+                                                    <FaShareAlt className="w-5 h-4 text-white" />
                                                 </button>
                                             </div>
                                            
                                             <div className="flex gap-2">
                                                 <button
                                                     onClick={() => router.push(`/forms/build/${form.id}`)}
-                                                    className="px-4 py-2 text-md bg-[#fcad03] text-white font-semibold rounded-lg hover:bg-blue-600 flex items-center gap-2"
+                                                    className="px-4 py-2 text-lg bg-[#fcad03] text-white font-semibold rounded-lg hover:bg-black flex items-center gap-2"
                                                 >
-                                                    <FaEdit />
+                                                    <FaHammer className="w-5 h-4 text-white" />
                                                 </button>
                                                 <button
                                                     onClick={() => {}}
-                                                    className="px-4 py-2 text-sm bg-red-500 text-white font-semibold rounded-lg hover:bg-green-600 flex items-center gap-2"
+                                                    className="px-4 py-2 text-lg bg-red-500 text-white font-semibold rounded-lg hover:bg-black flex items-center gap-2"
                                                 >
-                                                    <FaTrash />
+                                                    <FaTrash className="w-5 h-4 text-white"/>
                                                 </button>
                                             </div>
                                         </div>
