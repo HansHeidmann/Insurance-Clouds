@@ -11,6 +11,7 @@ export default class DatabaseService {
     // Get Current User
     static async getCurrentUser(): Promise<User | null>  {
         try {
+            
             const response = await fetch("/api/v1/users?self=true", {
                 method: "GET"
             });
@@ -54,11 +55,8 @@ export default class DatabaseService {
 
     // Fetch Organization Members
     static async getOrganizationMembers(): Promise<User[] | null> {
-        const user = await this.getCurrentUser()
-        if (user == null) return null;
-        if (user.organization_id == null) return null;
     
-        const response = await fetch(`/api/v1/users?organization_id=${user.organization_id}`, {
+        const response = await fetch(`/api/v1/organizations/members`, {
             method: "GET"
         });
 
@@ -115,9 +113,6 @@ export default class DatabaseService {
 
     // Fetch Organization Members
     static async getFormsForOrganization(): Promise<Form[] | null> {
-        const user = await this.getCurrentUser()
-        if (user == null) return null;
-        if (user.organization_id == null) return null;
     
         const response = await fetch(`/api/v1/forms`, {
             method: "GET"

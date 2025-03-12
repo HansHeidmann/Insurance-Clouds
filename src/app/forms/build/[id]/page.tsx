@@ -39,7 +39,7 @@ export default function FormBuilderPage() {
                 router.push("/forms")
             };
 
-            const res = await fetch(`/api/forms/${formId}`);
+            const res = await fetch(`/api/v1/forms/${formId}`);
             const data = await res.json();
 
             if (res.ok) {

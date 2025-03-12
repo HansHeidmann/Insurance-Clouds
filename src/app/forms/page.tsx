@@ -2,17 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FaPlusCircle, FaBuilding, FaEdit, FaEye, FaTrash, FaTrashAlt, FaShareAlt, FaFileExport } from "react-icons/fa";
-import { Form, Organization, User } from "@/lib/types";
+import { FaPlusCircle, FaEdit, FaEye, FaTrash, FaShareAlt } from "react-icons/fa";
+import { Form, User } from "@/lib/types";
 import Header from "@/components/ui/MainHeader";
 import DatabaseService from "@/lib/DatabaseService";
-import { FaShare } from "react-icons/fa6";
 
 
 export default function FormsPage() {
     const router = useRouter();
-    const [currentUser, setCurrentUser] = useState<User | null>(null);
-    const [organization, setOrganization] = useState<Organization | null>(null);
     const [members, setMembers] = useState<User[] | null>(null);
     const [forms, setForms] = useState<Form[] | null>(null);
     const [loading, setLoading] = useState(true);
@@ -24,9 +21,6 @@ export default function FormsPage() {
             setLoading(true);
 
             try {
-                const org = await DatabaseService.getCurrentOrganization();
-                setOrganization(org);
-
                 const members = await DatabaseService.getOrganizationMembers();
                 setMembers(members);
                 
@@ -72,7 +66,7 @@ export default function FormsPage() {
                         <div className="space-y-4">
 
                             <div className="flex flex-col">
-                                <h1 className="text-3xl font-bold text-gray-700 mb-4">Forms</h1>
+                                <h1 className="text-3xl font-bold text-gray-700 mb-4">All Forms</h1>
                                 <button
                                     className="mr-auto flex h-min w-min whitespace-nowrap bg-green-500 hover:bg-green-700 text-white text-sm font-bold rounded-lg py-4 px-4 items-center gap-2"
                                     onClick={()=>{createForm()}}
@@ -90,16 +84,21 @@ export default function FormsPage() {
                                             <h3 className="text-xl text-blue-500 font-bold">{form.name}</h3>
                                             <hr className="border-gray-300"></hr>
                                             <div>
+                                                
+                                            </div>
+                                            <div className="text-sm text-gray-600">
                                                 {(() => {
+                                                    const date = new Date(form.created_at).toLocaleString()
                                                     const author = members?.find(member => member.id === form.author_id);
-                                                    return <div>Author: {author ? `${author.first_name} ${author.last_name}` : "Unknown"}</div>;
+                                                    return <div>{date} ~ {author ? `${author.first_name} ${author.last_name}` : "Unknown"}</div>;
                                                 })()}
                                             </div>
                                             <div className="text-sm text-gray-600">
-                                                Created: {new Date(form.created_at).toLocaleString()}
-                                            </div>
-                                            <div className="text-sm text-gray-600">
-                                                Edited: {new Date(form.edited_at).toLocaleString()}
+                                                {(() => {
+                                                    const date = new Date(form.edited_at).toLocaleString()
+                                                    const author = members?.find(member => member.id === form.editor_id);
+                                                    return <div>{date} ~ {author ? `${author.first_name} ${author.last_name}` : "Unknown"}</div>;
+                                                })()}
                                             </div>
                                            
                                             
@@ -110,18 +109,17 @@ export default function FormsPage() {
 
                                             <div className="flex gap-2">
                                                 <button
+                                                    onClick={() => router.push(`/forms/preview/${form.id}`)}
+                                                    className="px-4 py-2 text-md bg-[#52c8fa] text-white font-semibold rounded-lg hover:bg-green-600 flex items-center gap-2"
+                                                >
+                                                    <FaEye />
+                                                </button>
+                                                <button
                                                     onClick={()=>{}}
                                                     className="px-4 py-2 text-md bg-[#91cc43] text-white font-semibold rounded-lg hover:bg-blue-600 flex items-center gap-2"
                                                 >
                                                     <FaShareAlt />
                                                 </button>
-                                                <button
-                                                    onClick={() => router.push(`/forms/view/${form.id}`)}
-                                                    className="px-4 py-2 text-md bg-[#52c8fa] text-white font-semibold rounded-lg hover:bg-green-600 flex items-center gap-2"
-                                                >
-                                                    <FaEye />
-                                                </button>
-                                                
                                             </div>
                                            
                                             <div className="flex gap-2">

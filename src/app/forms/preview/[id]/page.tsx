@@ -27,7 +27,7 @@ export default function ViewFormPage() {
 
         const fetchForm = async () => {
             setLoading(true);
-            const response = await fetch(`/api/forms/${formId}`);
+            const response = await fetch(`/api/v1/forms/${formId}`);
             const data = await response.json();
 
             if (!response.ok) {
