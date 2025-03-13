@@ -17,6 +17,15 @@ export default function OrganizationPage() {
     const [accessCode, setAccessCode] = useState("");
     const [newOrgName, setNewOrgName] = useState("");
 
+    /*
+    Page Flow
+    - get currentUser -- need to know if they are an admin to display options like changing peoples roles or deleting organization
+    - if currentUser.organization == null: show options to create or join an org
+    - else:
+    - get organization -- need to know this to display organization.name
+    - get members -- need these to populate the table
+    */
+
     // Fetch User, Organization, and Members
     useEffect(() => {
         const fetchData = async () => {
