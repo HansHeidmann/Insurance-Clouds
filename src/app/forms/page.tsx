@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FaPlusCircle, FaEye, FaTrash, FaShareAlt, FaHammer } from "react-icons/fa";
 import { Form, Organization, User } from "@/lib/types";
@@ -55,14 +56,25 @@ export default function FormsPage() {
             {/* Header */}
             <Header />
 
-            {/* Main Content */}
+            {/* gray bg */}
             <div className="p-8 max-w-5xl mx-auto">
                
-                {/* Forms List */}
-                <div className="bg-white p-6 rounded-lg shadow-lg">
+                {/* Main Container */}
+                <div className="bg-white p-8 rounded-lg shadow-lg">
+
+                    <h1 className="text-2xl font-bold text-black mb-4">All Forms</h1>
 
                     {loading ? (
-                        <p className="text-gray-500 text-center">Loading forms...</p>
+                        
+                        <Image 
+                                                    className="mx-auto"
+                                                    src="/loading.gif" 
+                                                    alt="loading" 
+                                                    width="100" 
+                                                    height="100" 
+                                                    quality={100}
+                                                />
+
                     ) : forms?.length === 0 ? (
                         <p className="text-gray-500 text-center">No forms found for this organization.</p>
                     ) : (
@@ -70,13 +82,7 @@ export default function FormsPage() {
                         <div className="space-y-2">
 
                             <div className="flex">
-                                <div className="mr-auto flex flex-col">
-                                    <h1 className="text-3xl font-bold text-gray-700">All Forms</h1>
-                                    <hr className="w-40"></hr>
-                                    <h2>{organization?.name}</h2>
-                                    
-                                </div>
-
+                            
                                 <button
                                     className={`flex h-min w-min whitespace-nowrap bg-green-500 hover:bg-green-300 text-white text-md font-bold rounded-lg py-4 px-4 items-center gap-2 shadow-lg ${forms == null ? "animate-pulse" : ""}`}
                                     onClick={() => createForm()}

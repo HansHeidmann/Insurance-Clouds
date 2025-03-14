@@ -4,10 +4,9 @@ import React, { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import Header from "@/components/ui/MainHeader";
 import { Form } from "@/lib/types";
-
+import { FormViewerElement } from "@/components/viewer/FormViewerElement";
 
 export default function ViewFormPage() {
-    //const router = useRouter();
     const { id: formId } = useParams();
     const [form, setForm] = useState<Form | null>(null);
     const [loading, setLoading] = useState(true);
@@ -32,57 +31,199 @@ export default function ViewFormPage() {
         fetchForm();
     }, [formId]);
 
+    // ✅ Ensure form.json exists & maintain row-based structure
+    const formRows = Array.isArray(form?.json) ? form.json : [];
+
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col">
-            {/* Header Section */}
             <Header />
 
-            {/* Main Content */}
-            <div className="flex flex-col items-center p-8">
-                <div className="bg-white w-[850px] min-h-[1100px] p-6 rounded-lg shadow-md">
-                    {loading ? (
-                        <p className="text-center text-gray-500">Loading form...</p>
-                    ) : error ? (
-                        <p className="text-center text-red-500">{error}</p>
-                    ) : form ? (
-                        <>
-                            <h1 className="text-2xl font-bold text-gray-800">{form.name}</h1>
-                            <h2 className="text-2xl font-bold text-gray-800">{form.description}</h2>
+            <div className="flex flex-col m-8 p-8 w-[850px] min-h-[1100px] mx-auto bg-white rounded-2xl shadow-md">
+                <div className="text-3xl font-bold mb-4">{form?.name}</div>
+                <div className="">
+                    {formRows.length > 0 ? (
+                        <div className="space-y-6">
+                            {formRows.map((row: FormViewerElement[], rowIndex: number) => (
+                                <div key={rowIndex} className="flex gap-4">
+                                    {row.map((element: FormViewerElement) => (
+                                        <div key={element.id} className="p-4 bg-white rounded-lg shadow-lg w-full">
+                                            {/* Label */}
+                                            <label className="block text-gray-700 font-semibold">
+                                                {element.label} {element.required && <span className="text-red-500">*</span>}
+                                            </label>
 
-                            {/* Render Form Data (Instead of JSON) */}
-                            <div className="mt-6 border-t pt-4">
-                                {Array.isArray(form.json) ? (
-                                    <div className="space-y-4">
-                                        {form.json.map((row: any[], rowIndex: number) => (
-                                            <div key={rowIndex} className="flex gap-4">
-                                                {row.map((element, colIndex) => (
-                                                    <div
-                                                        key={`${rowIndex}-${colIndex}`}
-                                                        className="p-4 bg-gray-50 rounded-lg shadow"
-                                                    >
-                                                        <p className="text-sm font-semibold text-gray-700">
-                                                            {element.label || "Unnamed Field"}
-                                                        </p>
-                                                        <input
-                                                            className="mt-1 w-full px-3 py-1.5 border rounded-md"
-                                                            placeholder={element.placeholder || "Enter data"}
-                                                            disabled
-                                                        />
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <p className="text-sm text-gray-500">No form data available.</p>
-                                )}
-                            </div>
-                        </>
+                                            {/* Help Text */}
+                                            {element.helpText && <p className="text-sm text-gray-500">{element.helpText}</p>}
+
+                                            {/* Render Input Field */}
+                                            {renderFormField(element)}
+                                        </div>
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
                     ) : (
-                        <p className="text-center text-gray-500">Form not found.</p>
+                        <p className="text-sm text-gray-500">No form data available.</p>
                     )}
                 </div>
+
+                <button 
+                    className="mx-auto mt-8 px-8 py-4 font-bold text-xl bg-blue-500 text-white rounded-lg shadow-lg"
+                >
+                    Submit
+                </button>
+            
             </div>
+
+
         </div>
     );
 }
+
+const renderFormField = (element: FormViewerElement) => {
+    switch (element.type) {
+        case "textbox":
+            return (
+                <input
+                    type="text"
+                    className="mt-2 w-full px-3 py-2 border rounded-md"
+                    placeholder={"Enter text"}
+                />
+            );
+        
+            case "name":
+                return (
+                    <div className="flex gap-2 mt-2">
+                        {Object.entries(element.properties).map(([key, value], index) =>
+                            value === true ? (
+                                <div key={index}>
+                                    {key == "title" &&
+                                        <input
+                                            type="text"
+                                            className="mt-1 w-full px-3 py-2 border rounded-md"
+                                            placeholder="Title"
+                                        />
+                                    }
+                                    {key == "firstName" &&
+                                        <input
+                                            type="text"
+                                            className="mt-1 w-full px-3 py-2 border rounded-md"
+                                            placeholder="First"
+                                        />
+                                    }
+                                    {key == "middleInitial" &&
+                                        <input
+                                            type="text"
+                                            className="mt-1 w-4 px-3 py-2 border rounded-md"
+                                            placeholder="I"
+                                        />
+                                    }
+                                    {key == "middleName" &&
+                                        <input
+                                            type="text"
+                                            className="mt-1 w-full px-3 py-2 border rounded-md"
+                                            placeholder="Middle"
+                                        />
+                                    }
+                                    {key == "lastName" &&
+                                        <input
+                                            type="text"
+                                            className="mt-1 w-full px-3 py-2 border rounded-md"
+                                            placeholder="Last"
+                                        />
+                                    }
+                                    {key == "suffix" &&
+                                        <input
+                                            type="text"
+                                            className="mt-1 w-full px-3 py-2 border rounded-md"
+                                            placeholder="Suffix"
+                                        />
+                                    }
+                                </div>
+                            ) : null
+                        )}
+                    </div>
+                );
+            
+        
+        case "email":
+            return (
+                <input
+                    type="email"
+                    className="mt-2 w-full px-3 py-2 border rounded-md"
+                    placeholder="me@example.com"
+                />
+            );
+
+        case "password":
+            return (
+                <input
+                    type="password"
+                    className="mt-2 w-full px-3 py-2 border rounded-md"
+                    placeholder="••••••••••••"
+                />
+            );
+
+        case "date":
+            return <input type="date" className="mt-2 w-full px-3 py-2 border rounded-md" />;
+
+        case "number":
+            return (
+                <input
+                    type="number"
+                    className="mt-2 w-full px-3 py-2 border rounded-md"
+                    placeholder="Enter number"
+                />
+            );
+
+        case "phone":
+            return (
+                <input
+                    type="tel"
+                    className="mt-2 w-full px-3 py-2 border rounded-md"
+                    placeholder="Enter phone number"
+                />
+            );
+
+        case "checkboxes":
+            return (
+                <div className="flex flex-col gap-2 mt-2">
+                    {(element.properties?.options as string[])?.map((option, i) => (
+                        <label key={i} className="flex items-center gap-2">
+                            <input type="checkbox" className="w-4 h-4" />
+                            {option}
+                        </label>
+                    ))}
+                </div>
+            );
+
+        case "options":
+            return (
+                <select className="mt-2 w-full px-3 py-2 border rounded-md">
+                    {(element.properties?.options as string[])?.map((option, i) => (
+                        <option key={i}>{option}</option>
+                    ))}
+                </select>
+            );
+
+        case "file":
+            return <input type="file" className="mt-2 w-full" />;
+
+        case "signature":
+            return (
+                <div className="mt-2 w-full h-32 border rounded-md flex items-center justify-center text-gray-500">
+                    Signature Field
+                </div>
+            );
+
+        case "calculation":
+            return (
+                <div className="mt-2 w-full px-3 py-2 border rounded-md bg-gray-200 text-gray-700">
+                    {element.properties?.formula || "No formula defined"}
+                </div>
+            );
+
+        default:
+            return <p className="text-gray-500">Unsupported field type</p>;
+    }
+};

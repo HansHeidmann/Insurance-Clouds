@@ -92,19 +92,39 @@ export default function OrganizationPage() {
             {/* Header */}
             <Header />
 
-            {/* Main Section */}
-            <div className="flex bg-gray-100 p-8 h-screen justify-center">
-                <div className="flex flex-col h-min min-w-[500px] bg-white shadow-lg rounded-lg p-6">
+            {/* gray bg */}
+            <div className="flex bg-gray-100 h-screen justify-center">
+
+                {/* Main Container */}
+                <div className="flex flex-col m-8 p-8 w-[850px] h-min mx-auto bg-white rounded-2xl shadow-md">
+                    
+                    <h1 className="text-2xl font-bold text-gray-700 mb-4">Organization</h1>
+
                     {loading ? (
-                        <p className="text-center text-gray-500">Loading...</p>
+
+                        <Image 
+                            className="mx-auto"
+                            src="/loading.gif" 
+                            alt="loading" 
+                            width="100" 
+                            height="100" 
+                            quality={100}
+                        />
+
                     ) : currentUser && organization && members ? (
                         <>
-                            <h1 className="text-2xl font-bold text-gray-700 mb-6">{organization?.name}</h1>
+                            
                             
                             {/* Members List */}
-                            <div className="shadow-md rounded-lg overflow-hidden">
+                            <div className="flex flex-col shadow-md rounded-lg overflow-hidden">
+
+                                <div className="w-full text-center py-2 bg-[#888888] text-white text-xl">
+                                     {organization?.name} Member List
+                                </div>
+                                 
                                 {members.length > 0 ? (
                                     members.map((member, i) => (
+                                        
                                         <div
                                             key={i}
                                             className={`flex items-center justify-between space-x-4 p-4 border-b border-gray-300 ${

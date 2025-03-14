@@ -100,18 +100,30 @@ export default function AccountPage() {
                 <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
                     <div className="flex">
                         <h1 className="text-2xl font-bold text-gray-700 mb-6">Account Settings</h1>
-                        <button
-                            className="ml-auto flex h-min bg-red-500 text-white text-xs font-bold rounded-lg py-2 px-2 items-center gap-2"
-                            onClick={handleLogout}
-                        >
-                            <FaSignOutAlt />
-                            Logout
-                        </button>
+
+                        { loading == false && 
+                            <button
+                                className="ml-auto flex h-min bg-red-500 text-white text-xs font-bold rounded-lg py-2 px-2 items-center gap-2"
+                                onClick={handleLogout}
+                            >
+                                <FaSignOutAlt />
+                                Logout
+                            </button>
+                        }
                     </div>
 
                     {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
                     {loading ? (
-                        <p className="text-gray-500 text-center">Loading...</p>
+                        
+                        <Image 
+                            className="mx-auto"
+                            src="/loading.gif" 
+                            alt="loading" 
+                            width="100" 
+                            height="100" 
+                            quality={100}
+                        />
+
                     ) : (
                         <>
                             <center>
