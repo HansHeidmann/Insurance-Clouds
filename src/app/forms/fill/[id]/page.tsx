@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import Header from "@/components/ui/MainHeader";
 import { Form } from "@/lib/types";
 import { FormViewerElement } from "@/components/viewer/FormViewerElement";
@@ -82,6 +82,35 @@ export default function ViewFormPage() {
 
 const renderFormField = (element: FormViewerElement) => {
     switch (element.type) {
+/*
+        export type FormElementType =
+    | "undefined"
+    | "textbox"
+    | "name"
+    | "address"
+    | "phone"
+    | "email"
+    | "password"
+    | "date"
+    | "number"
+    | "url"
+    | "choices"
+    | "options"
+    | "checkboxes"
+    | "calculation"
+    | "signature"
+    | "file";
+*/
+       
+        case "undefined":  // this should never happen
+            return (
+                <input
+                    type="text"
+                    className="mt-2 w-full px-3 py-2 border rounded-md"
+                    placeholder={"Undefined"}
+                />
+            );
+
         case "textbox":
             return (
                 <input
@@ -91,60 +120,122 @@ const renderFormField = (element: FormViewerElement) => {
                 />
             );
         
-            case "name":
-                return (
-                    <div className="flex gap-2 mt-2">
-                        {Object.entries(element.properties).map(([key, value], index) =>
-                            value === true ? (
-                                <div key={index}>
-                                    {key == "title" &&
-                                        <input
-                                            type="text"
-                                            className="mt-1 w-full px-3 py-2 border rounded-md"
-                                            placeholder="Title"
-                                        />
-                                    }
-                                    {key == "firstName" &&
-                                        <input
-                                            type="text"
-                                            className="mt-1 w-full px-3 py-2 border rounded-md"
-                                            placeholder="First"
-                                        />
-                                    }
-                                    {key == "middleInitial" &&
-                                        <input
-                                            type="text"
-                                            className="mt-1 w-4 px-3 py-2 border rounded-md"
-                                            placeholder="I"
-                                        />
-                                    }
-                                    {key == "middleName" &&
-                                        <input
-                                            type="text"
-                                            className="mt-1 w-full px-3 py-2 border rounded-md"
-                                            placeholder="Middle"
-                                        />
-                                    }
-                                    {key == "lastName" &&
-                                        <input
-                                            type="text"
-                                            className="mt-1 w-full px-3 py-2 border rounded-md"
-                                            placeholder="Last"
-                                        />
-                                    }
-                                    {key == "suffix" &&
-                                        <input
-                                            type="text"
-                                            className="mt-1 w-full px-3 py-2 border rounded-md"
-                                            placeholder="Suffix"
-                                        />
-                                    }
-                                </div>
-                            ) : null
-                        )}
-                    </div>
-                );
-            
+        case "name":
+            return (
+                <div className="flex gap-2 mt-2">
+                    {Object.entries(element.properties).map(([key, value], index) =>
+                        value === true ? (
+                            <div key={index}>
+                                {key == "title" &&
+                                    <input
+                                        type="text"
+                                        className="mt-1 w-full px-3 py-2 border rounded-md"
+                                        placeholder="Title"
+                                    />
+                                }
+                                {key == "firstName" &&
+                                    <input
+                                        type="text"
+                                        className="mt-1 w-full px-3 py-2 border rounded-md"
+                                        placeholder="First"
+                                    />
+                                }
+                                {key == "middleInitial" &&
+                                    <input
+                                        type="text"
+                                        className="mt-1 w-4 px-3 py-2 border rounded-md"
+                                        placeholder="I"
+                                    />
+                                }
+                                {key == "middleName" &&
+                                    <input
+                                        type="text"
+                                        className="mt-1 w-full px-3 py-2 border rounded-md"
+                                        placeholder="Middle"
+                                    />
+                                }
+                                {key == "lastName" &&
+                                    <input
+                                        type="text"
+                                        className="mt-1 w-full px-3 py-2 border rounded-md"
+                                        placeholder="Last"
+                                    />
+                                }
+                                {key == "suffix" &&
+                                    <input
+                                        type="text"
+                                        className="mt-1 w-full px-3 py-2 border rounded-md"
+                                        placeholder="Suffix"
+                                    />
+                                }
+                            </div>
+                        ) : null
+                    )}
+                </div>
+            );
+         
+        case "address":
+            return (
+                <div className="flex gap-2 mt-2">
+                    {Object.entries(element.properties).map(([key, value], index) =>
+                        value === true ? (
+                            <div key={index}>
+                                {key == "title" &&
+                                    <input
+                                        type="text"
+                                        className="mt-1 w-full px-3 py-2 border rounded-md"
+                                        placeholder="Title"
+                                    />
+                                }
+                                {key == "firstName" &&
+                                    <input
+                                        type="text"
+                                        className="mt-1 w-full px-3 py-2 border rounded-md"
+                                        placeholder="First"
+                                    />
+                                }
+                                {key == "middleInitial" &&
+                                    <input
+                                        type="text"
+                                        className="mt-1 w-4 px-3 py-2 border rounded-md"
+                                        placeholder="I"
+                                    />
+                                }
+                                {key == "middleName" &&
+                                    <input
+                                        type="text"
+                                        className="mt-1 w-full px-3 py-2 border rounded-md"
+                                        placeholder="Middle"
+                                    />
+                                }
+                                {key == "lastName" &&
+                                    <input
+                                        type="text"
+                                        className="mt-1 w-full px-3 py-2 border rounded-md"
+                                        placeholder="Last"
+                                    />
+                                }
+                                {key == "suffix" &&
+                                    <input
+                                        type="text"
+                                        className="mt-1 w-full px-3 py-2 border rounded-md"
+                                        placeholder="Suffix"
+                                    />
+                                }
+                            </div>
+                        ) : null
+                    )}
+                </div>
+            );    
+
+        case "phone":
+            return (
+                <input
+                    type="tel"
+                    className="mt-2 w-full px-3 py-2 border rounded-md"
+                    placeholder="Enter phone number"
+                />
+            );
         
         case "email":
             return (
@@ -176,14 +267,7 @@ const renderFormField = (element: FormViewerElement) => {
                 />
             );
 
-        case "phone":
-            return (
-                <input
-                    type="tel"
-                    className="mt-2 w-full px-3 py-2 border rounded-md"
-                    placeholder="Enter phone number"
-                />
-            );
+        
 
         case "checkboxes":
             return (
