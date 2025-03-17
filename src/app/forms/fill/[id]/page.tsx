@@ -31,7 +31,7 @@ export default function ViewFormPage() {
         fetchForm();
     }, [formId]);
 
-    // ✅ Ensure form.json exists & maintain row-based structure
+    // Ensure form.json exists & maintain row-based structure
     const formRows = Array.isArray(form?.json) ? form.json : [];
 
     return (
