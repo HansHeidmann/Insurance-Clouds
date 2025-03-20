@@ -173,60 +173,79 @@ const renderFormField = (element: FormViewerElement) => {
                     )}
                 </div>
             );
-         
+
+
         case "address":
             return (
-                <div className="flex gap-2 mt-2">
+                <div className="flex flex-col gap-2 mt-2">
                     {Object.entries(element.properties).map(([key, value], index) =>
                         value === true ? (
-                            <div key={index}>
-                                {key == "title" &&
+                            <div key={index} className="flex flex-col">
+                                {/* Address Line 1 */}
+                                {key === "addressLine1" && (
                                     <input
                                         type="text"
                                         className="mt-1 w-full px-3 py-2 border rounded-md"
-                                        placeholder="Title"
+                                        placeholder="Address Line 1"
+                                        maxLength={69}
                                     />
-                                }
-                                {key == "firstName" &&
+                                )}
+
+                                {/* Address Line 2 */}
+                                {key === "addressLine2" && (
                                     <input
                                         type="text"
                                         className="mt-1 w-full px-3 py-2 border rounded-md"
-                                        placeholder="First"
+                                        placeholder="Address Line 2"
+                                        maxLength={69}
                                     />
-                                }
-                                {key == "middleInitial" &&
-                                    <input
-                                        type="text"
-                                        className="mt-1 w-4 px-3 py-2 border rounded-md"
-                                        placeholder="I"
-                                    />
-                                }
-                                {key == "middleName" &&
+                                )}
+
+                                {/* City on Its Own Line */}
+                                {key === "city" && (
                                     <input
                                         type="text"
                                         className="mt-1 w-full px-3 py-2 border rounded-md"
-                                        placeholder="Middle"
+                                        placeholder="City"
+                                        maxLength={69}
                                     />
-                                }
-                                {key == "lastName" &&
-                                    <input
-                                        type="text"
-                                        className="mt-1 w-full px-3 py-2 border rounded-md"
-                                        placeholder="Last"
-                                    />
-                                }
-                                {key == "suffix" &&
-                                    <input
-                                        type="text"
-                                        className="mt-1 w-full px-3 py-2 border rounded-md"
-                                        placeholder="Suffix"
-                                    />
-                                }
+                                )}
+
+                                {/* State & Zip in the Same Row */}
+                                {key === "state" && (
+                                    <div className="flex flex-row gap-2 text-gray-400">
+                                        {/* State Dropdown */}
+                                        <select className="mt-1 w-1/2 px-3 py-2 border rounded-md bg-white">
+                                            <option value="">State</option>
+                                            {[
+                                                "AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA",
+                                                "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
+                                                "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
+                                                "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
+                                                "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"
+                                            ].map((state, i) => (
+                                                <option key={i} value={state}>{state}</option>
+                                            ))}
+                                        </select>
+
+                                        {/* Zip Code Input */}
+                                        <input
+                                            type="text"
+                                            className="mt-1 w-1/2 px-3 py-2 border rounded-md"
+                                            placeholder="Zip"
+                                            maxLength={5}
+                                            pattern="\d{5}"
+                                            inputMode="numeric"
+                                        />
+                                    </div>
+                                )}
                             </div>
                         ) : null
                     )}
                 </div>
-            );    
+            );
+
+            
 
         case "phone":
             return (
@@ -266,9 +285,37 @@ const renderFormField = (element: FormViewerElement) => {
                     placeholder="Enter number"
                 />
             );
-
         
+        case "url":
 
+
+            return (
+                <input
+                    type="url"
+                    className="mt-2 w-full px-3 py-2 border rounded-md"
+                    placeholder="https://example.com/"
+                    pattern="https?://.*" // Ensures HTTP or HTTPS
+                    inputMode="url"
+                />
+            );
+
+        case "choices":
+            return (
+                <div className="flex flex-col gap-2 mt-2">
+                    {(element.properties?.options as string[]).map((option, i) => (
+                        <label key={i} className="flex items-center gap-2">
+                            <input
+                                type="radio"
+                                name={`choices-${element.id}`}  // Ensures only one selection per group
+                                value={option}
+                                className="w-4 h-4"
+                            />
+                            {option}
+                        </label>
+                    ))}
+                </div>
+            );
+            
         case "checkboxes":
             return (
                 <div className="flex flex-col gap-2 mt-2">

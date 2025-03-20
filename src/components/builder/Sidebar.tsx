@@ -60,6 +60,17 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, formMatrix, selectedElemen
         )
     }
 
+    if (activeTab == "settings") {
+        return (
+            <div className="h-full p-4 bg-white ">
+                {/* JSON Viewer (Fixed Width) */}
+                <div className=" bg-white rounded-lg h-full overflow-y-auto">
+                    Coming soon...
+                </div>
+            </div>
+        )
+    }
+
     if (!editedElement) {
         return (
             <>

@@ -107,12 +107,22 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
                                 }
                                 
 
-
                                 {/* // Builder Preview of Inputs */}
                                 <div className="flex flex-col pt-1 space-y-0.5">
 
                                     {(element.type === "textbox") && (
-                                        <input className="rounded-md placeholder-opacity-90 pl-1 border" placeholder="Enter text"></input>
+                                        element.properties.multiline == true ? (
+                                            <textarea
+                                                className="rounded-md placeholder-opacity-90 pl-1 border w-56 h-24 resize-none"
+                                                placeholder="Enter text"
+                                            />
+                                        ) : (
+                                            <input
+                                                type="text"
+                                                className="rounded-md placeholder-opacity-90 pl-1 border w-full"
+                                                placeholder="Enter text"
+                                            />
+                                        )
                                     )}
 
                                     {(element.type === "name") && (
