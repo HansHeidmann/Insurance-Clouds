@@ -29,7 +29,6 @@ export default function FormBuilderPage() {
     const [formName, setFormName] = useState<string>("");
     const [formMatrix, setFormMatrix] = useState<FormBuilderElement[][]>([]);
 
-
     // Load Form (when page has finished loading)
     useEffect(() => {
         const fetchForm = async () => {
@@ -49,7 +48,7 @@ export default function FormBuilderPage() {
         };
 
         fetchForm();
-    }, [formId]);
+    }, [formId, router]);
 
   
     // Save Form (for Save button pressed)
@@ -76,7 +75,9 @@ export default function FormBuilderPage() {
     };
     
 
-      
+    const selectElement = (element: FormBuilderElement | null) => {
+        setSelectedElement(element);
+    }
 
     const updateElement = (updatedElement: FormBuilderElement) => {
 
@@ -230,7 +231,7 @@ export default function FormBuilderPage() {
                             setFormName={setFormName}
                             formMatrix={formMatrix}
                             selectedElement={selectedElement}
-                            setSelectedElement={setSelectedElement}
+                            selectElement={selectElement}
                             deleteElement={deleteElement}
                             moveElement={moveElement}
                             addRow={addRow}

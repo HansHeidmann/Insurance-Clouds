@@ -8,20 +8,17 @@ interface FormBuilderProps {
     setFormName: (element: string) => void;
     formMatrix: FormBuilderElement[][];
     selectedElement: FormBuilderElement | null;
-    setSelectedElement: (element: FormBuilderElement | null) => void;
+    selectElement: (element: FormBuilderElement | null) => void;
     deleteElement: (rowIndex: number, colIndex: number) => void;
     moveElement: (rowIndex: number, colIndex: number, direction: string) => void
     addRow: () => void;
     addColumn: (rowIndex: number) => void;
 }
 
-const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, formMatrix, selectedElement, setSelectedElement, deleteElement, moveElement, addRow, addColumn }) => {
+const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, formMatrix, selectedElement, selectElement, deleteElement, moveElement, addRow, addColumn }) => {
     return (
         <div
-            onClick={() => {
-                setSelectedElement(null);
-            }
-            }
+            onClick={() => { selectElement(null); }}
             className="p-16 w-[850px] min-h-[1100px] mx-auto bg-white rounded-2xl shadow-md"
         >
 
@@ -36,26 +33,25 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
 
                 <div key={rowIndex} className="flex gap-4 mb-4">
                     {row.map((element, colIndex) => (
-
                         <div
                             key={element.id || `${rowIndex}-${colIndex}`}
                             className={
                                 `flex cursor-pointer bg-gray-100 p-2 drop-shadow-lg rounded-lg box-border
-                                ${element === selectedElement ? "bg-purple-500" : "border-white"}
+                                hover:bg-gray-300 transition-colors duration-200
+                                ${element === selectedElement ? "bg-green-200 hover:bg-green-200" : "border-white"}
                                 `
                             }
                             onClick={(event) => {
-                                setSelectedElement(element)
+                                selectElement(element)
                                 event.stopPropagation();
-                            }
-                            }
+                            }}
                         >
                             {/* Drag & Drop Grip */}
                             <div className="flex items-center mr-2">
                                 <button
-                                    className="cursor-move h-10 px-0.5 bg-white hover:bg-gray-300 text-gray-500 drop-shadow-md rounded-sm"
+                                    className="cursor-move h-10 px-0.5 bg-white text-gray-500 drop-shadow-md rounded-sm"
                                     onClick={(e) => {
-                                        setSelectedElement(element)
+                                        selectElement(element)
                                         e.stopPropagation();
                                         moveElement(rowIndex, colIndex, "left")
                                     }
@@ -81,7 +77,7 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
                                         
                                         <button
                                             onClick={(event) => {
-                                                setSelectedElement(element)
+                                                selectElement(element)
                                                 event.stopPropagation();
                                             }
                                             }
@@ -235,10 +231,10 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
                             {/* Movement Controls */}
                             <div className="flex items-center ml-2">
                                 <button
-                                    className="hidden h-10 px-0.5 bg-white hover:bg-cyan-100 text-black text-sm drop-shadow-md rounded-sm"
+                                    className=" h-10 px-0.5 bg-white hover:bg-cyan-100 text-black text-sm drop-shadow-md rounded-sm"
                                     onClick={(e) => {
-                                        setSelectedElement(element)
-                                        e.stopPropagation();
+                                        //selectElement(element)
+                                        //e.stopPropagation();
                                         moveElement(rowIndex, colIndex, "left")
                                     }
                                     }
@@ -247,7 +243,7 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
                                 </button>
 
                                 <button
-                                    className="hidden bg-red-500 h-6 hover:bg-red-300 text-white text-xs drop-shadow-md rounded-lg p-1.5"
+                                    className=" bg-red-500 h-6 hover:bg-red-300 text-white text-xs drop-shadow-md rounded-lg p-1.5"
                                     onClick={() => {
                                         deleteElement(rowIndex, colIndex)
                                     }
@@ -256,9 +252,9 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
                                     <FaTrash />
                                 </button>
                                 <button
-                                    className="hidden h-10 px-0.5 bg-white hover:bg-cyan-100 text-black text-sm drop-shadow-md rounded-sm"
+                                    className=" h-10 px-0.5 bg-white hover:bg-cyan-100 text-black text-sm drop-shadow-md rounded-sm"
                                     onClick={(e) => {
-                                        setSelectedElement(element)
+                                        selectElement(element)
                                         e.stopPropagation();
                                         moveElement(rowIndex, colIndex, "right");
                                     }
