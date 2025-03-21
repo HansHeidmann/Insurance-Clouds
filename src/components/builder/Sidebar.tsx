@@ -314,17 +314,27 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, formMatrix, selectedElemen
                             ))}
                         </div>
 
+
+
                         {/* Save Button */}
+                        <div className="flex justify-center mt-4">
                         <button
-                            className="w-full mt-12 bg-blue-500 text-white text-lg font-bold shadow-md py-4 rounded hover:bg-blue-400 transition"
+                            className="
+                            flex px-10 py-3
+                            bg-blue-500 text-white text-lg font-bold shadow-md rounded
+                            hover:bg-blue-400 transition
+                            "
                             onClick={() => {
-                                if (editedElement) {
-                                    updateElement(editedElement);
-                                }
+                            if (editedElement) {
+                                updateElement(editedElement);
+                            }
                             }}
                         >
                             Save
                         </button>
+                        </div>
+
+                        
 
 
 

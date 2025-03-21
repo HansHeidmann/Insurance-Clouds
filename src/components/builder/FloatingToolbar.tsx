@@ -1,50 +1,97 @@
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
-import { FaTrash, FaEdit } from "react-icons/fa";
+import React from "react";
+import {
+  FaCaretLeft,
+  FaCaretRight,
+  FaArrowLeft,
+  FaArrowRight,
+  FaGripLinesVertical,
+} from "react-icons/fa";
+import { FaArrowsLeftRightToLine, FaTrash, FaXmark } from "react-icons/fa6";
 
 interface FloatingToolbarProps {
-    selectedElementRef: React.RefObject<HTMLDivElement> | null;
-    onDelete: () => void;
+  x: number;
+  y: number;
+  onDelete: () => void;
+  onMoveLeft?: () => void;
+  onMoveRight?: () => void;
+  onExpand?: () => void;
 }
 
-const FloatingToolbar: React.FC<FloatingToolbarProps> = ({ selectedElementRef, onDelete }) => {
-    const [position, setPosition] = useState({ top: 0, left: 0 });
+const FloatingToolbar: React.FC<FloatingToolbarProps> = ({
+  x,
+  y,
+  onDelete,
+  onMoveLeft,
+  onMoveRight,
+  onExpand,
+}) => {
+  return (
+    <div
+      style={{
+        position: "absolute",
+        top: `${y}px`,
+        left: `${x}px`,
+        transform: "translate(-50%, -100%)",
+        zIndex: 1000,
+      }}
+      className="flex items-center bg-white border border-gray-300 rounded-xl shadow-xl px-3 py-2 space-x-2 transition-all"
+    >
+      {/* Move Left */}
+      <button
+        onClick={onMoveLeft}
+        className="p-2 rounded-md transition-colors hover:bg-blue-500 hover:text-white"
+        title="Move Left"
+      >
+        <FaCaretLeft className="w-4 h-4" />
+      </button>
 
-    useEffect(() => {
-        if (!selectedElementRef?.current) return;
+      {/* Move Right */}
+      <button
+        onClick={onMoveRight}
+        className="p-2 rounded-md transition-colors hover:bg-blue-500 hover:text-white"
+        title="Move Right"
+      >
+        <FaCaretRight className="w-4 h-4" />
+      </button>
 
-        // Get the selected element's position
-        const rect = selectedElementRef.current.getBoundingClientRect();
-        setPosition({
-            top: rect.top + window.scrollY - 40, // 10px above + toolbar height
-            left: rect.left + window.scrollX + rect.width / 2 - 50, // Centered horizontally
-        });
+      {/* Divider */}
+      <div className="w-px h-5 bg-gray-300 mx-1" />
 
-    }, [selectedElementRef]);
+      {/* Expand Full Width */}
+      <button
+        onClick={onExpand}
+        className="p-2 rounded-md transition-colors hover:bg-indigo-500 hover:text-white"
+        title="Expand"
+      >
+        <FaArrowsLeftRightToLine className="w-4 h-4" />
+      </button>
 
-    return createPortal(
-        <div
-            style={{
-                position: "absolute",
-                top: `${position.top}px`,
-                left: `${position.left}px`,
-                background: "white",
-                padding: "8px",
-                borderRadius: "8px",
-                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-                zIndex: 1000,
-            }}
-            className="flex gap-2"
-        >
-            <button className="bg-blue-500 text-white p-2 rounded-md">
-                <FaEdit /> Edit
-            </button>
-            <button onClick={onDelete} className="bg-red-500 text-white p-2 rounded-md">
-                <FaTrash /> Delete
-            </button>
-        </div>,
-        document.body // Renders outside of the normal component tree
-    );
+      {/* Divider */}
+      <div className="w-px h-5 bg-gray-300 mx-1" />
+
+      {/* Center Grip */}
+      <div
+        className="p-2 rounded-md flex items-center transition-colors hover:bg-purple-400 hover:text-white"
+        title="Shrink"
+      >
+        <FaArrowRight className="w-2 h-2" />
+        <FaGripLinesVertical className="w-2 h-3 " />
+        <FaArrowLeft className="w-2 h-2" />
+      </div>
+
+      {/* Divider */}
+      <div className="w-px h-5 bg-gray-300 mx-1" />
+
+      {/* Delete */}
+      <button
+        onClick={onDelete}
+        className="p-2 rounded-md text-black-600 transition-colors hover:bg-red-500 hover:text-white"
+        title="Delete"
+      >
+        <FaXmark className="w-4 h-4 subpixel-antialiased" />
+      </button>
+    </div>
+  );
 };
 
 export default FloatingToolbar;

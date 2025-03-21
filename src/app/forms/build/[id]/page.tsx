@@ -1,7 +1,7 @@
 "use client";
 
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 
 import { DndProvider } from "react-dnd";
@@ -16,6 +16,7 @@ import { FaGear } from "react-icons/fa6";
 
 import { useRouter, useParams } from "next/navigation";
 import Header from "@/components/ui/MainHeader";
+import FloatingToolbar from "@/components/builder/FloatingToolbar";
 
 
 
@@ -49,6 +50,20 @@ export default function FormBuilderPage() {
 
         fetchForm();
     }, [formId, router]);
+
+
+    // FloatingToolbar
+    const selectedElementRef = useRef<HTMLDivElement | null>(null);
+    const [toolbarPos, setToolbarPos] = useState({ x: 0, y: 0 });
+    useEffect(() => {
+        if (selectedElementRef.current) {
+            const rect = selectedElementRef.current.getBoundingClientRect();
+            setToolbarPos({
+            x: rect.left + window.scrollX + rect.width / 2,
+            y: rect.top + window.scrollY - 0, // 10px above the element
+            });
+        }
+    }, [selectedElement]);
 
   
     // Save Form (for Save button pressed)
@@ -154,9 +169,9 @@ export default function FormBuilderPage() {
                     }
                     className=
                     {`
-                        ${activeTab == "edit" ? "bg-white" : "bg-purple-500"} 
-                        ${activeTab == "edit" ? "text-purple-500" : "text-white"} 
-                        mr-0.5 font-bold flex items-center px-6 py-2 rounded-t-xl gap-2 
+                        ${activeTab == "edit" ? "bg-white" : "bg-[#a259b1]"} 
+                        ${activeTab == "edit" ? "text-[#a259b1]" : "text-white"} 
+                        mr-0.5 flex items-center px-6 py-2 rounded-t-xl gap-2 
                     `}
                 >
                     <FaEdit />
@@ -169,9 +184,9 @@ export default function FormBuilderPage() {
                     }
                     className=
                     {`
-                        ${activeTab == "data" ? "bg-white" : "bg-[#22BBEE]"} 
-                        ${activeTab == "data" ? "text-[#22BBEE]" : "text-white"} 
-                        mr-0.5 font-bold flex items-center px-6 py-2 rounded-t-xl gap-2 
+                        ${activeTab == "data" ? "bg-white" : "bg-[#68b159]"} 
+                        ${activeTab == "data" ? "text-[#68b159]" : "text-white"} 
+                        mr-0.5 flex items-center px-6 py-2 rounded-t-xl gap-2 
                     `}
                 >
                     <FaEye />
@@ -183,9 +198,9 @@ export default function FormBuilderPage() {
                     }}
                     className=
                     {`
-                        ${activeTab == "settings" ? "bg-white" : "bg-green-500"} 
-                        ${activeTab == "settings" ? "text-green-500" : "text-white"} 
-                        mr-0.5 font-bold flex items-center px-6 py-2 rounded-t-xl gap-2 
+                        ${activeTab == "settings" ? "bg-white" : "bg-[#5978b1]"} 
+                        ${activeTab == "settings" ? "text-[#5978b1]" : "text-white"} 
+                        mr-0.5 flex items-center px-6 py-2 rounded-t-xl gap-2 
                     `}
                 >
                     <FaGear />
@@ -236,10 +251,22 @@ export default function FormBuilderPage() {
                             moveElement={moveElement}
                             addRow={addRow}
                             addColumn={addColumn}
+
+                            selectedElementRef={selectedElementRef}
                         />
                     </DndProvider>
                 </div>
-
+                
+                {selectedElement && (
+                    <FloatingToolbar
+                        x={toolbarPos.x}
+                        y={toolbarPos.y}
+                        onDelete={() => {
+                        const { rowIndex, colIndex } = findElementIndex(formMatrix, selectedElement);
+                        deleteElement(rowIndex, colIndex);
+                        }}
+                    />
+                )}
 
 
             </div>

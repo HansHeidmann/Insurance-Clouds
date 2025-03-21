@@ -36,12 +36,12 @@ export default function Header() {
     return (
         <div className="flex items-center bg-white border-b">
             <button
-                className="mr-auto p-4 flex items-center gap-4 hover:bg-black transition-colors duration-500 hover:text-white"
+                className="mr-auto p-4 flex items-center gap-4 transition duration-500 hover:scale-10  hover:animate-pulse"
                 onClick={() => router.push("/")}
             >
-                <Image src="/logo.png" alt="Logo" width="75" height="75" quality={100} />
+                <Image className="" src="/logo.png" alt="Logo" width="75" height="75" quality={100} />
                 <div className="flex flex-col">
-                    <div className="mr-auto text-xl font-semibold">Insurance Clouds™</div>
+                    <div className="mr-auto text-xl font-semibold ">Insurance Clouds™</div>
                     {/*}
                     <div className="mr-auto text-xl font-bold text-gray-700">{organization?.name}</div>
                     <div className="mr-auto text-xl font-medium text-gray-700">{currentUser?.name}</div>
@@ -66,7 +66,7 @@ export default function Header() {
                             quality={100}
                         />
                     ) : (
-                        <div className="w-[50px] h-[50px] bg-green-500 flex items-center justify-center rounded-full">
+                        <div className="w-[50px] h-[50px] bg-green-500 flex items-center justify-center rounded-full shadow-md">
                             <FaFileAlt className="text-white text-2xl" />
                         </div>
                     )}
@@ -87,7 +87,7 @@ export default function Header() {
                             quality={100}
                         />
                     ) : (
-                        <div className="w-[50px] h-[50px] bg-purple-500 flex items-center justify-center rounded-full">
+                        <div className="w-[50px] h-[50px] bg-purple-500 flex items-center justify-center rounded-full shadow-md">
                             <FaBuilding className="text-white text-2xl" />
                         </div>
                     )}
@@ -108,7 +108,7 @@ export default function Header() {
                             quality={100}
                         />
                     ) : (
-                        <div className="w-[50px] h-[50px] bg-blue-500 flex items-center justify-center rounded-full">
+                        <div className="w-[50px] h-[50px] bg-blue-500 flex items-center justify-center rounded-full shadow-md">
                             <FaUser className="text-white text-2xl" />
                         </div>
                     )}

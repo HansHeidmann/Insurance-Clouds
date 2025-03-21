@@ -13,13 +13,17 @@ interface FormBuilderProps {
     moveElement: (rowIndex: number, colIndex: number, direction: string) => void
     addRow: () => void;
     addColumn: (rowIndex: number) => void;
+
+    selectedElementRef: React.RefObject<HTMLDivElement | null>; // for FloatingToolbar
 }
 
-const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, formMatrix, selectedElement, selectElement, deleteElement, moveElement, addRow, addColumn }) => {
+const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, formMatrix, selectedElement, selectElement, deleteElement, moveElement, addRow, addColumn, selectedElementRef }) => {
     return (
         <div
             onClick={() => { selectElement(null); }}
-            className="p-16 w-[850px] min-h-[1100px] mx-auto bg-white rounded-2xl shadow-md"
+            className="p-16 w-[850px] min-h-[1100px] mx-auto bg-white rounded-2xl shadow-md
+            hover:cursor-pointer
+            "
         >
 
             <input
@@ -34,20 +38,21 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
                 <div key={rowIndex} className="flex gap-4 mb-4">
                     {row.map((element, colIndex) => (
                         <div
+                            ref={element === selectedElement ? selectedElementRef : null}
                             key={element.id || `${rowIndex}-${colIndex}`}
-                            className={
-                                `flex cursor-pointer bg-gray-100 p-2 drop-shadow-lg rounded-lg box-border
-                                hover:bg-gray-300 transition-colors duration-200
-                                ${element === selectedElement ? "bg-green-200 hover:bg-green-200" : "border-white"}
-                                `
-                            }
+                            className={`
+                                flex box-border rounded-lg drop-shadow-md border-2
+                                transition-colors duration-200
+                                ${element === selectedElement ? "border-blue-400 border-2" : "border-transparent"}
+                                hover:cursor-move
+                              `}
                             onClick={(event) => {
                                 selectElement(element)
                                 event.stopPropagation();
                             }}
                         >
                             {/* Drag & Drop Grip */}
-                            <div className="flex items-center mr-2">
+                            <div className=" hidden  items-center mr-2">
                                 <button
                                     className="cursor-move h-10 px-0.5 bg-white text-gray-500 drop-shadow-md rounded-sm"
                                     onClick={(e) => {
@@ -63,15 +68,17 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
                             </div>
 
                             {/* Center Column - MAIN */}
-                            <div className="bg-white p-2 rounded-md">
+                            <div className="bg-white p-4 rounded-md hover:bg-blue-100">
+                            
+                                <div className="absolute inset-0 hover:cursor-move rounded-md z-10" />
 
                                 {/* Label and Buttons */}
                                 <div className="flex justify-between ">
                                     <div className="flex items-end ">
-                                        <label className="text-lg font-semibold -mb-1.5">{element.label}</label>
-                                        {/* 
-                                <label className="text-xl -mb-1.5 text-red-500">*</label>
-                                */}
+                                        <label className="text-md font-semibold -mb-1.5">{element.label}</label>
+                                        { element.required &&
+                                            <label className="text-xl -mb-1.5 text-red-500">*</label>
+                                            }
                                     </div>
                                     <div className="pl-4 space-x-1">
                                         
@@ -107,39 +114,41 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
                                 <div className="flex flex-col pt-1 space-y-0.5">
 
                                     {(element.type === "textbox") && (
-                                        element.properties.multiline == true ? (
-                                            <textarea
-                                                className="rounded-md placeholder-opacity-90 pl-1 border w-56 h-24 resize-none"
-                                                placeholder="Enter text"
-                                            />
-                                        ) : (
-                                            <input
-                                                type="text"
-                                                className="rounded-md placeholder-opacity-90 pl-1 border w-full"
-                                                placeholder="Enter text"
-                                            />
-                                        )
+                                        <div>
+                                            {element.properties.multiline == true ? (
+                                                <textarea
+                                                    className="rounded-md placeholder-opacity-90 pl-1 border w-56 h-24 resize-none"
+                                                    placeholder="Enter text"
+                                                />
+                                            ) : (
+                                                <input
+                                                    type="text"
+                                                    className="rounded-md placeholder-opacity-90 pl-1 border w-full"
+                                                    placeholder="Enter text"
+                                                />
+                                            )}
+                                        </div>
                                     )}
 
                                     {(element.type === "name") && (
                                         <div className="flex w-min gap-1">
                                             {element.properties.title
-                                                && <input className="rounded-md w-6 placeholder-opacity-90 pl-1 border" placeholder="T"></input>
+                                                && <input disabled className="rounded-md w-6 placeholder-opacity-90 pl-1 border" placeholder="T"></input>
                                             }
                                             {element.properties.firstName
-                                                && <input className="rounded-md w-11 placeholder-opacity-90 pl-1 border" placeholder="First"></input>
+                                                && <input disabled className="rounded-md w-11 placeholder-opacity-90 pl-1 border" placeholder="First"></input>
                                             }
                                             {element.properties.middleInitial
-                                                && <input className="rounded-md w-7 placeholder-opacity-90 pl-1 border" placeholder="M"></input>
+                                                && <input disabled className="rounded-md w-7 placeholder-opacity-90 pl-1 border" placeholder="M"></input>
                                             }
                                             {element.properties.middleName
-                                                && <input className="rounded-md w-14 placeholder-opacity-90 pl-1 border" placeholder="Middle"></input>
+                                                && <input disabled className="rounded-md w-14 placeholder-opacity-90 pl-1 border" placeholder="Middle"></input>
                                             }
                                             {element.properties.lastName
-                                                && <input className="rounded-md w-11 placeholder-opacity-90 pl-1 border" placeholder="Last"></input>
+                                                && <input disabled className="rounded-md w-11 placeholder-opacity-90 pl-1 border" placeholder="Last"></input>
                                             }
                                             {element.properties.suffix
-                                                && <input className="rounded-md w-6 placeholder-opacity-90 pl-1 border" placeholder="S"></input>
+                                                && <input disabled className="rounded-md w-6 placeholder-opacity-90 pl-1 border" placeholder="S"></input>
                                             }
                                         </div>
                                     )}
@@ -228,41 +237,7 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
 
                             </div>
 
-                            {/* Movement Controls */}
-                            <div className="flex items-center ml-2">
-                                <button
-                                    className=" h-10 px-0.5 bg-white hover:bg-cyan-100 text-black text-sm drop-shadow-md rounded-sm"
-                                    onClick={(e) => {
-                                        //selectElement(element)
-                                        //e.stopPropagation();
-                                        moveElement(rowIndex, colIndex, "left")
-                                    }
-                                    }
-                                >
-                                    <FaCaretLeft />
-                                </button>
-
-                                <button
-                                    className=" bg-red-500 h-6 hover:bg-red-300 text-white text-xs drop-shadow-md rounded-lg p-1.5"
-                                    onClick={() => {
-                                        deleteElement(rowIndex, colIndex)
-                                    }
-                                    }
-                                >
-                                    <FaTrash />
-                                </button>
-                                <button
-                                    className=" h-10 px-0.5 bg-white hover:bg-cyan-100 text-black text-sm drop-shadow-md rounded-sm"
-                                    onClick={(e) => {
-                                        selectElement(element)
-                                        e.stopPropagation();
-                                        moveElement(rowIndex, colIndex, "right");
-                                    }
-                                    }
-                                >
-                                    <FaCaretRight />
-                                </button>
-                            </div>
+                            
 
                         </div>
                     ))}
