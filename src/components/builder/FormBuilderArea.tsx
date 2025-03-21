@@ -1,5 +1,5 @@
 import React from "react";
-import { FaEdit, FaPlusCircle, FaTrash, FaCaretLeft, FaCaretRight, FaGripVertical } from "react-icons/fa";
+import { FaEdit, FaPlusCircle, FaGripVertical } from "react-icons/fa";
 import { FormBuilderElement } from "./FormBuilderElement";
 
 
@@ -9,15 +9,15 @@ interface FormBuilderProps {
     formMatrix: FormBuilderElement[][];
     selectedElement: FormBuilderElement | null;
     selectElement: (element: FormBuilderElement | null) => void;
-    deleteElement: (rowIndex: number, colIndex: number) => void;
-    moveElement: (rowIndex: number, colIndex: number, direction: string) => void
+    deleteElement: () => void;
+    moveElement: (direction: string) => void
     addRow: () => void;
     addColumn: (rowIndex: number) => void;
 
     selectedElementRef: React.RefObject<HTMLDivElement | null>; // for FloatingToolbar
 }
 
-const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, formMatrix, selectedElement, selectElement, deleteElement, moveElement, addRow, addColumn, selectedElementRef }) => {
+const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, formMatrix, selectedElement, selectElement, moveElement, addRow, addColumn, selectedElementRef }) => {
     return (
         <div
             onClick={() => { selectElement(null); }}
@@ -58,7 +58,7 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
                                     onClick={(e) => {
                                         selectElement(element)
                                         e.stopPropagation();
-                                        moveElement(rowIndex, colIndex, "left")
+                                        moveElement("left")
                                     }
                                     }
                                 >

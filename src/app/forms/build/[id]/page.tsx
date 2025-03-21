@@ -105,7 +105,22 @@ export default function FormBuilderPage() {
         setSelectedElement(updatedElement);
     };
 
-    const deleteElement = (rowIndex: number, colIndex: number) => {
+    const deleteElement = () => {
+        let rowIndex = -1
+        let colIndex = -1;
+        for (let r = 0; r < formMatrix.length; r++) {
+            for (let c = 0; c < formMatrix[r].length; c++) {
+                if (formMatrix[r][c].id === selectedElement?.id) {
+                    rowIndex = r;
+                    colIndex = c;
+                    console.log(selectedElement);
+                    break; 
+                  }
+            }
+        }
+        if (rowIndex==null || colIndex==null) {
+            return;
+        }
         setFormMatrix(prevMatrix => {
             const newMatrix = [...prevMatrix];
             newMatrix[rowIndex] = newMatrix[rowIndex].filter((_, index) => index !== colIndex);
@@ -117,7 +132,22 @@ export default function FormBuilderPage() {
         });
     };
 
-    const moveElement = (rowIndex: number, colIndex: number, direction: string) => {
+    const moveElement = (direction: string) => {
+        let rowIndex = -1
+        let colIndex = -1;
+        for (let r = 0; r < formMatrix.length; r++) {
+            for (let c = 0; c < formMatrix[r].length; c++) {
+                if (formMatrix[r][c].id === selectedElement?.id) {
+                    rowIndex = r;
+                    colIndex = c;
+                    console.log(selectedElement);
+                    break; 
+                  }
+            }
+        }
+        if (rowIndex==null || colIndex==null) {
+            return;
+        }
         setFormMatrix(prevMatrix => {
             const newMatrix = structuredClone(prevMatrix);
             setSelectedElement(newMatrix[rowIndex][colIndex]);
@@ -239,7 +269,10 @@ export default function FormBuilderPage() {
                 </div>
 
                 {/* Main Area (Flexible Width - Takes Up Remaining Space) */}
-                <div className="flex-grow  h-full overflow-y-auto bg-gray-500 p-8 bg-[url('/builder_bg_tile.png')] bg-repeat bg-[length:25px]">
+                <div 
+                    className="flex-grow  h-full overflow-y-auto bg-gray-500 p-8 bg-[url('/builder_bg_tile.png')] bg-repeat bg-[length:25px]"
+                    onClick={()=>selectElement(null)}
+                >
                     <DndProvider backend={HTML5Backend}>
                         <FormBuilderArea
                             formName={formName}
@@ -261,10 +294,8 @@ export default function FormBuilderPage() {
                     <FloatingToolbar
                         x={toolbarPos.x}
                         y={toolbarPos.y}
-                        onDelete={() => {
-                        const { rowIndex, colIndex } = findElementIndex(formMatrix, selectedElement);
-                        deleteElement(rowIndex, colIndex);
-                        }}
+                        deleteElement={deleteElement}
+                        moveElement={moveElement}
                     />
                 )}
 
