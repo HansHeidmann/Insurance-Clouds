@@ -21,9 +21,7 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
     return (
         <div
             onClick={() => { selectElement(null); }}
-            className="p-16 w-[850px] min-h-[1100px] mx-auto bg-white rounded-2xl shadow-md
-            hover:cursor-pointer
-            "
+            className="p-16 w-[850px] min-h-[1100px] mx-auto bg-white rounded-2xl shadow-md"
         >
 
             <input

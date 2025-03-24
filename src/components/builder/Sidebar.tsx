@@ -321,7 +321,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, formMatrix, selectedElemen
                         <button
                             className="
                             flex px-10 py-3
-                            bg-blue-500 text-white text-lg font-bold shadow-md rounded
+                            bg-black text-white text-lg font-bold shadow-md rounded
                             hover:bg-blue-400 transition
                             "
                             onClick={() => {
