@@ -90,20 +90,30 @@ const FloatingToolbar: React.FC<FloatingToolbarProps> = ({x, y , deleteElement, 
                 <FaXmark className="w-4 h-4 subpixel-antialiased" />
             </button>
 
-
             <ActionSheet
                 visible={showDeleteActionSheet}
                 title="Delete Field?"
                 description="Are you sure you want to remove the selected field?"
                 warning = "This action is permanent"
-                onCancel={() => setShowDeleteActionSheet(false)}
-                onConfirm={() => {
+
+                primaryLabel = "Delete"
+                primaryButtonColorCSS = "bg-red-500"
+                primaryButtonColorHoverCSS = "hover:bg-red-400"
+                primaryAction = {() => {
                     deleteElement();
                     setShowDeleteActionSheet(false);
-
                 }}
-                primaryButtonColorCSS="bg-red-500"
-                />
+
+                secondaryLabel = "Cancel"
+                secondaryButtonColorCSS = "bg-gray-300"
+                secondaryButtonColorHoverCSS = "hover:bg-gray-200"
+                secondaryAction = {() => {
+                    deleteElement();
+                    setShowDeleteActionSheet(false);
+                }}
+            />
+          
+
         </div>
         
     );

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { FormBuilderElement, FormElementType, FormElementFactory } from "./FormBuilderElement";
 import { FaCopy, FaDownload, FaPlusCircle, FaTrash } from "react-icons/fa";
+import { FaXmark } from "react-icons/fa6";
 
 interface SidebarProps {
     activeTab: string;
@@ -248,7 +249,11 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, formMatrix, selectedElemen
                                                     />
                                                     {/* Remove Option Button */}
                                                     <button
-                                                        className="bg-red-500 hover:bg-red-300 text-white text-sm rounded-lg p-2 my-0.5"
+                                                        className="
+                                                        bg-white text-red-500 border-red-500 border
+                                                        hover:bg-red-500 hover:text-white 
+                                                        text-sm rounded-md p-2 my-0.5
+                                                        "
                                                         onClick={() => {
                                                             // Remove the option at index
                                                             const updatedOptions = (editedElement.properties[property] as string[]).filter(
@@ -263,7 +268,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, formMatrix, selectedElemen
                                                             });
                                                         }}
                                                     >
-                                                        <FaTrash />
+                                                        <FaXmark />
                                                     </button>
                                                 </div>
                                             ))}
@@ -280,7 +285,10 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, formMatrix, selectedElemen
                                                         },
                                                     });
                                                 }}
-                                                className="bg-green-400 hover:bg-green-200 w-full p-2 text-white text-sm rounded-lg"
+                                                className="
+                                                bg-white text-green-500 border border-green-400
+                                                hover:bg-green-400 hover:text-white
+                                                w-full p-2  text-sm rounded-lg"
                                             >
                                                 <center><FaPlusCircle /></center>
                                             </button>
