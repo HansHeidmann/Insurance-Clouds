@@ -243,7 +243,10 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
                     <div className="content-center">
                         <button
                             onClick={() => addColumn(rowIndex)}
-                            className="bg-green-400 hover:bg-green-200 h-min p-4 text-white text-sm drop-shadow-md rounded-lg"
+                            className="
+                            bg-white text-green-400 border border-green-400
+                            hover:bg-green-400 hover:text-white
+                            h-min p-4  text-sm shadow rounded-lg"
                         >
                             <FaPlusCircle />
                         </button>
@@ -253,7 +256,10 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
 
             <button
                 onClick={addRow}
-                className="bg-green-400 hover:bg-green-200 w-min p-4 text-white text-sm drop-shadow-md rounded-lg"
+                className="
+                            bg-white text-green-400 border border-green-400
+                            hover:bg-green-400 hover:text-white
+                            h-min p-4  text-sm shadow rounded-lg"
             >
                 <FaPlusCircle />
             </button>

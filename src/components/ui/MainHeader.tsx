@@ -53,7 +53,7 @@ export default function Header() {
             <div className="flex ml-auto gap-0.5 pr-3">
                 {/* Profile Button */}
                 <button
-                    className="p-1 group relative items-center rounded-full border-2 border-transparent transition-all hover:border-green-500 hover:shadow-md"
+                    className="p-1 group relative items-center rounded-full border-2 border-transparent transition-all hover:border-green-500 hover:shadow-md hover:animate-pulse"
                     onClick={() => router.push("/forms")}
                 >
                     {currentUser?.avatar_url ? (
@@ -74,7 +74,7 @@ export default function Header() {
 
                 {/* Organization Button */}
                 <button
-                    className="p-1 group relative items-center rounded-full border-2 border-transparent transition-all hover:border-purple-500 hover:shadow-md"
+                    className="p-1 group relative items-center rounded-full border-2 border-transparent transition-all hover:border-purple-500 hover:shadow-md hover:animate-pulse"
                     onClick={() => router.push("/organization")}
                 >
                     {organization?.avatar_url ? (
@@ -95,7 +95,7 @@ export default function Header() {
 
                 {/* User Button */}
                 <button
-                    className="p-1 group relative items-center rounded-full border-2 border-transparent transition-all hover:border-blue-500 hover:shadow-md"
+                    className="p-1 group relative items-center rounded-full border-2 border-transparent transition-all hover:border-blue-500 hover:shadow-m hover:animate-pulse"
                     onClick={() => router.push("/profile")}
                 >
                     {currentUser?.avatar_url ? (

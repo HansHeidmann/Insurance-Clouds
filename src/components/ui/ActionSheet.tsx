@@ -56,7 +56,7 @@ return createPortal(
         {title && <h2 className="text-xl font-bold mb-4">{title}</h2>}
 
         {warning && (
-            <div className="mb-4 bg-yellow-200 p-4 rounded-md w-min whitespace-nowrap">
+            <div className="mb-4 bg-yellow-200 p-4 rounded-md whitespace-nowrap">
                 <div className="flex gap-2 items-center">
                     <FaTriangleExclamation className="text-lg text-red-500" />
                     <div className="text-sm">{warning}</div>

@@ -95,8 +95,14 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, formMatrix, selectedElemen
                                     return (
                                         <div
                                             key={type}
-                                            className={`size-24 mx-auto bg-white shadow-lg rounded-lg flex items-center justify-center flex-col cursor-pointer border-2"
-                                                }`}
+                                            className={`
+                                                size-24 mx-auto
+                                                bg-white text-black
+                                                hover:bg-blue-100 hover:border-blue-100
+                                                shadow-md rounded-lg 
+                                                flex items-center justify-center flex-col cursor-pointer 
+                                                border border-gray-200"
+                                                `}
                                             onClick={() => {
                                                 if (!editedElement) return;
 

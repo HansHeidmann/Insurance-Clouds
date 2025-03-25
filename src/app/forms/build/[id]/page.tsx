@@ -102,7 +102,7 @@ export default function FormBuilderPage() {
             );
         });
         // Ensure the sidebar also updates with the latest data
-        setSelectedElement(updatedElement);
+        selectElement(updatedElement);
     };
 
     const deleteElement = () => {
@@ -168,8 +168,13 @@ export default function FormBuilderPage() {
 
     const addRow = () => {
         const newElement: FormBuilderElement = FormElementFactory.getDefaultProperties("undefined");
-        setFormMatrix(prevMatrix => [...prevMatrix, [newElement]]);
-        setSelectedElement(newElement);
+        console.log(newElement);
+        
+        setFormMatrix(prevMatrix => {
+            const newMatrix = [...prevMatrix, [newElement]];
+            selectElement(newElement);
+            return newMatrix;
+        });
     };
 
     const addColumn = (rowIndex: number) => {
@@ -177,9 +182,9 @@ export default function FormBuilderPage() {
         setFormMatrix(prevMatrix => {
             const newMatrix = [...prevMatrix];
             newMatrix[rowIndex] = [...newMatrix[rowIndex], newElement];
+            setSelectedElement(newElement); 
             return newMatrix;
         });
-        setSelectedElement(newElement);
     };
 
     return (
@@ -239,7 +244,7 @@ export default function FormBuilderPage() {
                     onClick={() => {
                         //
                     }}
-                    className="ml-auto flex items-center p-3 gap-2 bg-gray-200 text-gray-500 hover:bg-gray-300 hover:text-black hover:scale-105 transition duration-200 "
+                    className="ml-auto flex items-center p-3 gap-2 bg-gray-200 text-gray-500 hover:bg-gray-300 hover:text-black transition duration-200 "
                 >
                     <FaPlay />Preview  
                 </button>
@@ -247,7 +252,7 @@ export default function FormBuilderPage() {
                     onClick={() => {
                         saveForm();
                     }}
-                    className="flex items-center p-3 gap-2 bg-black text-white  hover:bg-black hover:text-yellow-300 hover:scale-105 transition duration-200 "
+                    className="flex items-center p-3 gap-2 bg-black text-white  hover:bg-black hover:text-yellow-300 transition duration-200 "
                 >
                     <FaSave />Save
                 </button>
