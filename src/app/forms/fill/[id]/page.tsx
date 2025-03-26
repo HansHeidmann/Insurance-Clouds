@@ -46,7 +46,7 @@ export default function ViewFormPage() {
                             {formRows.map((row: FormViewerElement[], rowIndex: number) => (
                                 <div key={rowIndex} className="flex gap-4">
                                     {row.map((element: FormViewerElement) => (
-                                        <div key={element.id} className="p-4 bg-white rounded-lg shadow-lg w-full">
+                                        <div key={element.id} className="p-4 bg-white rounded-lg shadow-md w-full">
                                             {/* Label */}
                                             <label className="block text-gray-700 font-semibold">
                                                 {element.label} {element.required && <span className="text-red-500">*</span>}

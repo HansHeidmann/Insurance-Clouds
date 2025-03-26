@@ -64,8 +64,6 @@ export default function FormsPage() {
                 {/* Main Container */}
                 <div className="bg-white p-8 rounded-lg shadow-lg">
 
-                    
-
                     {loading ? (
                         
                         <Image 
@@ -104,7 +102,7 @@ export default function FormsPage() {
                                     className={`
                                         flex h-min w-min whitespace-nowrap border transition mx-auto
                                         bg-white text-green-500 border-green-500
-                                        hover:bg-green-500 hover:text-white 
+                                        hover:bg-green-500 hover:text-white hover:animate-pulse
                                         text-md font-bold rounded-lg py-4 px-4 items-center gap-2 shadow-lg 
                                         ${forms == null ? "animate-pulse" : ""}
                                     `}
@@ -124,7 +122,7 @@ export default function FormsPage() {
                                         <div className="flex flex-col">
                                             <div className="flex flex-col w-min whitespace-nowrap">
                                                 <button className="text-left z-1">
-                                                    <h3 className="text-xl text-blue-500 hover:text-blue-300 font-bold z-10">{form.name}</h3>
+                                                    <h3 className="text-xl text-blue-500 hover:text-black font-bold z-10">{form.name}</h3>
                                                 </button>
                                                 
                                                 <hr className="w-full border-gray-300 mb-2 -mt-0.5 z-0"></hr>
