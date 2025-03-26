@@ -25,3 +25,10 @@ yarn dev
 - Next.js v15 Stable
 - Tailwind 3.4.17
 - Managed PostgreSQL
+
+
+# todo
+- show count of entries 
+- separate page? for list of entries
+- when deleting a form have a popup like github require to type in form name before pressing confirm
+- connect submit form button in viewer to POST route for entries

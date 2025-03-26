@@ -5,12 +5,14 @@ import { useParams } from "next/navigation";
 import Header from "@/components/ui/MainHeader";
 import { Form } from "@/lib/types";
 import { FormViewerElement } from "@/components/viewer/FormViewerElement";
+import Image from "next/image";
 
 export default function ViewFormPage() {
     const { id: formId } = useParams();
     const [form, setForm] = useState<Form | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
 
     useEffect(() => {
         if (!formId) return;
@@ -28,7 +30,7 @@ export default function ViewFormPage() {
             setLoading(false);
         };
 
-        fetchForm();
+        fetchForm(); 
     }, [formId]);
 
     // Ensure form.json exists & maintain row-based structure
@@ -36,42 +38,56 @@ export default function ViewFormPage() {
 
     return (
         <div className="min-h-screen bg-gray-100 flex flex-col">
+            
             <Header />
 
             <div className="flex flex-col m-8 p-8 w-[850px] min-h-[1100px] mx-auto bg-white rounded-2xl shadow-md">
-                <div className="text-3xl font-bold mb-4">{form?.name}</div>
-                <div className="">
-                    {formRows.length > 0 ? (
-                        <div className="space-y-6">
-                            {formRows.map((row: FormViewerElement[], rowIndex: number) => (
-                                <div key={rowIndex} className="flex gap-4">
-                                    {row.map((element: FormViewerElement) => (
-                                        <div key={element.id} className="p-4 bg-white rounded-lg shadow-md w-full">
-                                            {/* Label */}
-                                            <label className="block text-gray-700 font-semibold">
-                                                {element.label} {element.required && <span className="text-red-500">*</span>}
-                                            </label>
+                {loading ? (
+                    <Image 
+                        className="mx-auto"
+                        src="/loading.gif" 
+                        alt="loading" 
+                        width="100" 
+                        height="100" 
+                        quality={100}
+                    />
+                ) : (
+                    <>
+                        <div className="text-3xl font-bold mb-4">{form?.name}</div>
+                        <div className="">
+                            {formRows.length > 0 ? (
+                                <div className="space-y-6">
+                                    {formRows.map((row: FormViewerElement[], rowIndex: number) => (
+                                        <div key={rowIndex} className="flex gap-4">
+                                            {row.map((element: FormViewerElement) => (
+                                                <div key={element.id} className="p-4 bg-white rounded-lg shadow-md w-full">
+                                                    {/* Label */}
+                                                    <label className="block text-gray-700 font-semibold">
+                                                        {element.label} {element.required && <span className="text-red-500">*</span>}
+                                                    </label>
 
-                                            {/* Help Text */}
-                                            {element.helpText && <p className="text-sm text-gray-500">{element.helpText}</p>}
+                                                    {/* Help Text */}
+                                                    {element.helpText && <p className="text-sm text-gray-500">{element.helpText}</p>}
 
-                                            {/* Render Input Field */}
-                                            {renderFormField(element)}
+                                                    {/* Render Input Field */}
+                                                    {renderFormField(element)}
+                                                </div>
+                                            ))}
                                         </div>
                                     ))}
                                 </div>
-                            ))}
+                            ) : (
+                                <p className="text-sm text-gray-500">No form data available.</p>
+                            )}
                         </div>
-                    ) : (
-                        <p className="text-sm text-gray-500">No form data available.</p>
-                    )}
-                </div>
 
-                <button 
-                    className="mx-auto mt-8 px-8 py-4 font-bold text-xl bg-blue-500 text-white rounded-lg shadow-lg"
-                >
-                    Submit
-                </button>
+                        <button 
+                            className="mx-auto mt-8 px-8 py-4 font-bold text-xl bg-blue-500 text-white rounded-lg shadow-lg"
+                        >
+                            Submit
+                        </button>
+                    </>
+                )}
             
             </div>
 

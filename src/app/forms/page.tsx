@@ -59,11 +59,8 @@ export default function FormsPage() {
             {/* gray bg */}
             <div className="p-8 max-w-5xl mx-auto">
 
-            <h1 className="text-2xl font-bold text-black mb-4">All Forms</h1>
-               
                 {/* Main Container */}
                 <div className="bg-white p-8 rounded-lg shadow-lg">
-
                     {loading ? (
                         
                         <Image 
@@ -96,105 +93,127 @@ export default function FormsPage() {
 
                         <div className="space-y-4">
 
+
+                            <div>
+                                <h1 className="text-3xl font-bold text-gray-800 mb-1">All Forms</h1>
+                                <p className="text-gray-500">Create and manage forms for your organization</p>
+                            </div>
+                            
                             <div className="flex">
                             
                                 <button
                                     className={`
-                                        flex h-min w-min whitespace-nowrap border transition mx-auto
+                                        flex h-min w-min whitespace-nowrap border  mx-auto
                                         bg-white text-green-500 border-green-500
-                                        hover:bg-green-500 hover:text-white hover:animate-pulse
-                                        text-md font-bold rounded-lg py-4 px-4 items-center gap-2 shadow-lg 
+                                        hover:bg-green-500 hover:text-white
+                                        text-md font-bold rounded-lg py-4 px-4 items-center gap-2 shadow-md 
+                                        justify-center
                                         ${forms == null ? "animate-pulse" : ""}
                                     `}
                                     onClick={() => createForm()}
                                 >
-                                    <FaPlusCircle className="w-6 h-6" />
-                                    New Form
+                                    <FaPlusCircle className="w-6 h-6" />New Form
                                 </button>
 
                             </div>
                             
 
                             {forms?.map((form) => (
-                                <div key={form.id} className="bg-white hover:bg-blue-400 p-0.5 rounded-lg shadow-md transition border border-gray-200">
-                                    <div className="flex bg-white p-4 justify-between items-center rounded-md">
-                                        {/* Form Info */}
+                                <div 
+                                    key={form.id} 
+                                    className="bg-white p-0.5 rounded-lg transition border border-gray-200"
+                                    style={{ 
+                                        boxShadow: "0px 0px 5px 0px rgba(0, 0, 0, 0.1)",
+                                        transition: "box-shadow 0.2s ease-in-out"
+                                    }}
+                                    onMouseOver={(e) => {
+                                        e.currentTarget.style.boxShadow = "0px 0px 20px 0px rgba(0, 0, 0, 0.2)";
+                                    }}
+                                    onMouseOut={(e) => {
+                                        e.currentTarget.style.boxShadow = "0px 0px 5px 0px rgba(0, 0, 0, 0.1)";
+                                    }}
+                                    onClick={() => router.push(`/forms/fill/${form.id}`)}
+                                >
+                                    <div className="flex bg-white p-4 justify-between items-start rounded-md">
+                                        {/* Form Info - Left Side */}
                                         <div className="flex flex-col">
                                             <div className="flex flex-col w-min whitespace-nowrap">
                                                 <button className="text-left z-1">
-                                                    <h3 className="text-xl text-blue-500 hover:text-black font-bold z-10">{form.name}</h3>
+                                                    <h3 className="text-xl text-blue-600 hover:text-blue-500 font-bold z-10">{form.name}</h3>
                                                 </button>
-                                                
                                                 <hr className="w-full border-gray-300 mb-2 -mt-0.5 z-0"></hr>
                                             </div>
-                                            
-                                            <div>
-                                                
-                                            </div>
-                                            <div className="text-sm text-gray-600">
-                                                {(() => {
-                                                    const date = new Date(form.created_at).toLocaleString()
-                                                    const author = members?.find(member => member.id === form.author_id);
-                                                    return <div>Created on: {date} by {author ? `${author.first_name} ${author.last_name}` : "Unknown"}</div>;
-                                                })()}
-                                            </div>
-                                            <div className="text-sm text-gray-600">
-                                                {(() => {
-                                                    const date = new Date(form.edited_at).toLocaleString()
-                                                    const author = members?.find(member => member.id === form.editor_id);
-                                                    return <div>Last edited: {date} by {author ? `${author.first_name} ${author.last_name}` : "Unknown"}</div>;
-                                                })()}
-                                            </div>
-                                           
-                                            
-                                        </div>
 
-                                        {/* Actions */}
-                                        <div className="flex flex-col gap-2">
-
-                                            <div className="flex gap-2">
+                                            {/* Actions Row */}
+                                            <div className="flex gap-2 mt-2">
                                                 <button
                                                     onClick={() => router.push(`/forms/fill/${form.id}`)}
-                                                    className="
-                                                    px-4 py-2 text-lg border font-semibold rounded-lg flex items-center gap-2
+                                                    className="px-4 py-2 text-xs border rounded-lg flex items-center gap-2
                                                     bg-white text-[#52c8fa] border-[#52c8fa]
                                                     hover:bg-[#52c8fa] hover:text-white"
                                                 >
-                                                    <FaEye className="w-5 h-4" />
+                                                    <FaEye className="w-5 h-4" />View
                                                 </button>
                                                 <button
                                                     onClick={()=>{}}
                                                     className="
-                                                    px-4 py-2 text-lg border font-semibold rounded-lg flex items-center gap-2
+                                                    px-4 py-2 text-xs border rounded-lg flex items-center gap-2
                                                     bg-white text-[#91cc43] border-[#91cc43]
                                                     hover:bg-[#91cc43] hover:text-white
                                                     "
                                                 >
-                                                    <FaShareAlt className="w-5 h-4" />
+                                                    <FaShareAlt className="w-5 h-4" />Share
                                                 </button>
-                                            </div>
-                                           
-                                            <div className="flex gap-2">
                                                 <button
                                                     onClick={() => router.push(`/forms/build/${form.id}`)}
                                                     className="
-                                                    px-4 py-2 text-lg border font-semibold rounded-lg flex items-center gap-2
+                                                    px-4 py-2 text-xs border rounded-lg flex items-center gap-2
                                                     bg-white text-[#fcad03] border-[#fcad03]
                                                     hover:bg-[#fcad03] hover:text-white
                                                     "
                                                 >
-                                                    <FaHammer className="w-5 h-4" />
+                                                    <FaHammer className="w-5 h-4" />Build
                                                 </button>
                                                 <button
                                                     onClick={() => {}}
                                                     className="
-                                                    px-4 py-2 text-lg border font-semibold rounded-lg flex items-center gap-2
+                                                    px-4 py-2 text-xs border rounded-lg flex items-center gap-2
                                                     bg-white text-red-500 border-red-500
                                                     hover:bg-red-500 hover:text-white
                                                     "
                                                 >
-                                                    <FaTrash className="w-5 h-4"/>
+                                                    <FaTrash className="w-5 h-4"/>Delete
                                                 </button>
+                                            </div>
+                                        </div>
+
+                                        {/* Timestamps - Right Side */}
+                                        <div className="flex flex-row items-end gap-2 ml-8">
+                                            <div className="text-sm bg-gray-50 rounded-lg p-3 border border-gray-100">
+                                                {(() => {
+                                                    const date = new Date(form.created_at).toLocaleString()
+                                                    const author = members?.find(member => member.id === form.author_id);
+                                                    return (
+                                                        <div className="flex flex-col">
+                                                            <span className="text-gray-400 text-xs uppercase tracking-wider">Created</span>
+                                                            <span className="text-gray-700 font-medium">{date}</span>
+                                                            <span className="text-gray-500">by {author ? `${author.first_name} ${author.last_name}` : "Unknown"}</span>
+                                                        </div>
+                                                    );
+                                                })()}
+                                            </div>
+                                            <div className="text-sm bg-gray-50 rounded-lg p-3 border border-gray-100">
+                                                {(() => {
+                                                    const date = new Date(form.edited_at).toLocaleString()
+                                                    const author = members?.find(member => member.id === form.editor_id);
+                                                    return (
+                                                        <div className="flex flex-col">
+                                                            <span className="text-gray-400 text-xs uppercase tracking-wider">Last Edited</span>
+                                                            <span className="text-gray-700 font-medium">{date}</span>
+                                                            <span className="text-gray-500">by {author ? `${author.first_name} ${author.last_name}` : "Unknown"}</span>
+                                                        </div>
+                                                    );
+                                                })()}
                                             </div>
                                         </div>
                                     </div>
