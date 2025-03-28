@@ -29,6 +29,7 @@ export default function FormBuilderPage() {
     const [selectedElement, setSelectedElement] = useState<FormBuilderElement | null>(null);
     const [formName, setFormName] = useState<string>("");
     const [formMatrix, setFormMatrix] = useState<FormBuilderElement[][]>([]);
+    const [formLoaded, setFormLoaded] = useState(false);
 
     // Load Form (when page has finished loading)
     useEffect(() => {
@@ -43,6 +44,7 @@ export default function FormBuilderPage() {
             if (res.ok) {
                 setFormName(data.name);
                 setFormMatrix(data.json);
+                setFormLoaded(true);
             } else {
                 console.error("Error loading form:", data.error);    
             }
@@ -52,10 +54,17 @@ export default function FormBuilderPage() {
     }, [formId, router]);
 
     useEffect(() => {
-        if (formMatrix.length === 0) {
-            addRow(0);
+        if (formLoaded && formMatrix.length === 0) {
+            const newElement: FormBuilderElement = FormElementFactory.getDefaultProperties("undefined");
+            setFormMatrix(prevMatrix => {
+                const newMatrix = [...prevMatrix];
+                // Insert new row at the specified index
+                newMatrix.splice(0, 0, [newElement]);
+                selectElement(newElement);
+                return newMatrix;
+            });
         }
-    });
+    }, [formLoaded, formMatrix.length]);
 
     // FloatingToolbar
     const selectedElementRef = useRef<HTMLDivElement | null>(null);
