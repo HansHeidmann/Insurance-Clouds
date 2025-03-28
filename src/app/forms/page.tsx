@@ -117,7 +117,7 @@ export default function FormsPage() {
 
                             </div>
                             
-
+                            
                             {forms?.map((form) => (
                                 <div 
                                     key={form.id} 
@@ -132,13 +132,18 @@ export default function FormsPage() {
                                     onMouseOut={(e) => {
                                         e.currentTarget.style.boxShadow = "0px 0px 5px 0px rgba(0, 0, 0, 0.1)";
                                     }}
-                                    onClick={() => router.push(`/forms/fill/${form.id}`)}
                                 >
                                     <div className="flex bg-white p-4 justify-between items-start rounded-md">
                                         {/* Form Info - Left Side */}
                                         <div className="flex flex-col">
                                             <div className="flex flex-col w-min whitespace-nowrap">
-                                                <button className="text-left z-1">
+                                                <button 
+                                                    className="text-left z-1"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        router.push(`/forms/fill/${form.id}`);
+                                                    }}
+                                                >
                                                     <h3 className="text-xl text-blue-600 hover:text-blue-500 font-bold z-10">{form.name}</h3>
                                                 </button>
                                                 <hr className="w-full border-gray-300 mb-2 -mt-0.5 z-0"></hr>
@@ -147,7 +152,10 @@ export default function FormsPage() {
                                             {/* Actions Row */}
                                             <div className="flex gap-2 mt-2">
                                                 <button
-                                                    onClick={() => router.push(`/forms/fill/${form.id}`)}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        router.push(`/forms/fill/${form.id}`);
+                                                    }}
                                                     className="px-4 py-2 text-xs border rounded-lg flex items-center gap-2
                                                     bg-white text-[#52c8fa] border-[#52c8fa]
                                                     hover:bg-[#52c8fa] hover:text-white"
@@ -155,32 +163,33 @@ export default function FormsPage() {
                                                     <FaEye className="w-5 h-4" />View
                                                 </button>
                                                 <button
-                                                    onClick={()=>{}}
-                                                    className="
-                                                    px-4 py-2 text-xs border rounded-lg flex items-center gap-2
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                    }}
+                                                    className="px-4 py-2 text-xs border rounded-lg flex items-center gap-2
                                                     bg-white text-[#91cc43] border-[#91cc43]
-                                                    hover:bg-[#91cc43] hover:text-white
-                                                    "
+                                                    hover:bg-[#91cc43] hover:text-white"
                                                 >
                                                     <FaShareAlt className="w-5 h-4" />Share
                                                 </button>
                                                 <button
-                                                    onClick={() => router.push(`/forms/build/${form.id}`)}
-                                                    className="
-                                                    px-4 py-2 text-xs border rounded-lg flex items-center gap-2
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        router.push(`/forms/build/${form.id}`);
+                                                    }}
+                                                    className="px-4 py-2 text-xs border rounded-lg flex items-center gap-2
                                                     bg-white text-[#fcad03] border-[#fcad03]
-                                                    hover:bg-[#fcad03] hover:text-white
-                                                    "
+                                                    hover:bg-[#fcad03] hover:text-white"
                                                 >
                                                     <FaHammer className="w-5 h-4" />Build
                                                 </button>
                                                 <button
-                                                    onClick={() => {}}
-                                                    className="
-                                                    px-4 py-2 text-xs border rounded-lg flex items-center gap-2
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                    }}
+                                                    className="px-4 py-2 text-xs border rounded-lg flex items-center gap-2
                                                     bg-white text-red-500 border-red-500
-                                                    hover:bg-red-500 hover:text-white
-                                                    "
+                                                    hover:bg-red-500 hover:text-white"
                                                 >
                                                     <FaTrash className="w-5 h-4"/>Delete
                                                 </button>

@@ -51,6 +51,11 @@ export default function FormBuilderPage() {
         fetchForm();
     }, [formId, router]);
 
+    useEffect(() => {
+        if (formMatrix.length === 0) {
+            addRow(0);
+        }
+    });
 
     // FloatingToolbar
     const selectedElementRef = useRef<HTMLDivElement | null>(null);
@@ -166,23 +171,30 @@ export default function FormBuilderPage() {
         })
     }
 
-    const addRow = () => {
+    const addRow = (rowIndex: number) => {
         const newElement: FormBuilderElement = FormElementFactory.getDefaultProperties("undefined");
-        console.log(newElement);
         
         setFormMatrix(prevMatrix => {
-            const newMatrix = [...prevMatrix, [newElement]];
+            const newMatrix = [...prevMatrix];
+            // Insert new row at the specified index
+            newMatrix.splice(rowIndex, 0, [newElement]);
             selectElement(newElement);
             return newMatrix;
         });
     };
 
-    const addColumn = (rowIndex: number) => {
+    const addColumn = (rowIndex: number, colIndex: number) => {
         const newElement: FormBuilderElement = FormElementFactory.getDefaultProperties("undefined");
+        
         setFormMatrix(prevMatrix => {
             const newMatrix = [...prevMatrix];
-            newMatrix[rowIndex] = [...newMatrix[rowIndex], newElement];
-            setSelectedElement(newElement); 
+            // Insert new element at the specified column index in the specified row
+            newMatrix[rowIndex] = [
+                ...newMatrix[rowIndex].slice(0, colIndex),
+                newElement,
+                ...newMatrix[rowIndex].slice(colIndex)
+            ];
+            selectElement(newElement);
             return newMatrix;
         });
     };
