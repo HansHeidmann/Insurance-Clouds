@@ -30,5 +30,5 @@ yarn dev
 # todo
 - show count of entries 
 - separate page? for list of entries
-- when deleting a form have a popup like github require to type in form name before pressing confirm
+- when deleting a form have a popup 
 - connect submit form button in viewer to POST route for entries

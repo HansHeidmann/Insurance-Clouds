@@ -5,10 +5,12 @@ import {
     FaArrowLeft,
     FaArrowRight,
     FaGripLinesVertical,
+    FaEyeSlash,
 } from "react-icons/fa";
 import { FaArrowsLeftRightToLine, FaXmark } from "react-icons/fa6";
 
 import ActionSheet from "../ui/ActionSheet";
+import { FormBuilderElement } from "./FormBuilderElement";
 
 
 
@@ -16,10 +18,13 @@ interface FloatingToolbarProps {
     x: number;
     y: number;
     deleteElement: () => void;
-    moveElement: (direction: string) => void
+    moveElement: (direction: string) => void;
+    selectElement: (element: FormBuilderElement | null) => void;
+    selectedElement: FormBuilderElement | null;
+    updateElement: (updatedElement: FormBuilderElement) => void;
 }
 
-const FloatingToolbar: React.FC<FloatingToolbarProps> = ({x, y , deleteElement, moveElement}) => {
+const FloatingToolbar: React.FC<FloatingToolbarProps> = ({x, y, selectElement, selectedElement, deleteElement, moveElement, updateElement}) => {
 
     const [showDeleteActionSheet, setShowDeleteActionSheet] = useState(false);
         
@@ -34,6 +39,21 @@ const FloatingToolbar: React.FC<FloatingToolbarProps> = ({x, y , deleteElement, 
             }}
             className="flex items-center bg-white border border-gray-300 rounded-xl shadow-xl px-3 py-2 space-x-2 transition-all"
         >
+
+            {/* Hide Toolbar Button */}
+            <button
+                    onClick={() => {
+                        selectElement(null);
+                    }}
+                    className="p-2 rounded-md transition-colors hover:bg-gray-600 hover:text-white"
+                    title="Hide Toolbar"
+            >
+                <FaEyeSlash className="w-4 h-4" />
+            </button>
+
+            {/* Divider */}
+            <div className="w-px h-5 bg-gray-300 mx-1" />
+
             {/* Move Left */}
             <button
                     onClick={()=>{moveElement("left")}}
@@ -57,11 +77,15 @@ const FloatingToolbar: React.FC<FloatingToolbarProps> = ({x, y , deleteElement, 
 
             {/* Expand */}
             <button
-                onClick={()=>{}}
+                onClick={()=>
+                    {
+                        selectedElement!.widthCSS = "w-increaseBy25Percent"
+                        updateElement(selectedElement!)
+                    }}
                 className="p-2 rounded-md transition-colors hover:bg-indigo-500 hover:text-white"
                 title="Expand"
             >
-                <FaArrowsLeftRightToLine className="w-4 h-4" />
+                <FaArrowsLeftRightToLine className="w-4 h-5" />
             </button>
 
             {/* Divider */}
@@ -69,12 +93,16 @@ const FloatingToolbar: React.FC<FloatingToolbarProps> = ({x, y , deleteElement, 
 
             {/* Shrink */}
             <button
-                onClick={()=>{}}
+                onClick={()=>
+                    {
+                        selectedElement!.widthCSS = "w-decreaseBy25Percent"
+                        updateElement(selectedElement!)
+                    }}
                 className="p-2 rounded-md flex items-center transition-colors hover:bg-purple-400 hover:text-white"
                 title="Shrink"
             >
                 <FaArrowRight className="w-2 h-2" />
-                <FaGripLinesVertical className="w-2 h-3 " />
+                <FaGripLinesVertical className="w-2.5 h-2.5 " />
                 <FaArrowLeft className="w-2 h-2" />
             </button>
 
@@ -108,7 +136,6 @@ const FloatingToolbar: React.FC<FloatingToolbarProps> = ({x, y , deleteElement, 
                 secondaryButtonColorCSS = "bg-gray-300"
                 secondaryButtonColorHoverCSS = "hover:bg-gray-200"
                 secondaryAction = {() => {
-                    deleteElement();
                     setShowDeleteActionSheet(false);
                 }}
             />

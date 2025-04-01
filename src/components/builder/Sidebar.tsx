@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { FormBuilderElement, FormElementType, FormElementFactory } from "./FormBuilderElement";
-import { FaCopy, FaDownload, FaPlusCircle, FaTrash } from "react-icons/fa";
+import { FaCopy, FaDownload, FaPlusCircle } from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6";
 
 interface SidebarProps {

@@ -208,6 +208,39 @@ export default function FormBuilderPage() {
         });
     };
 
+    const swapElements = (sourceRow: number, sourceCol: number, targetRow: number, targetCol: number) => {
+        setFormMatrix(prevMatrix => {
+            // Validate indices
+            if (sourceRow < 0 || sourceRow >= prevMatrix.length ||
+                targetRow < 0 || targetRow >= prevMatrix.length ||
+                sourceCol < 0 || sourceCol >= prevMatrix[sourceRow].length ||
+                targetCol < 0 || targetCol >= prevMatrix[targetRow].length) {
+                console.error('Invalid indices:', { sourceRow, sourceCol, targetRow, targetCol });
+                return prevMatrix;
+            }
+
+            // Create a new matrix with a deep clone
+            const newMatrix = structuredClone(prevMatrix);
+            
+            // Get the elements to swap
+            const sourceElement = newMatrix[sourceRow][sourceCol];
+            const targetElement = newMatrix[targetRow][targetCol];
+
+            // Perform the swap
+            newMatrix[sourceRow][sourceCol] = targetElement;
+            newMatrix[targetRow][targetCol] = sourceElement;
+
+            // Update the selected element reference if it was one of the swapped elements
+            if (selectedElement?.id === sourceElement.id) {
+                selectElement(newMatrix[targetRow][targetCol]);
+            } else if (selectedElement?.id === targetElement.id) {
+                selectElement(newMatrix[sourceRow][sourceCol]);
+            }
+
+            return newMatrix;
+        });
+    };
+
     return (
         <div className="h-screen flex flex-col flex-1">
 
@@ -265,7 +298,7 @@ export default function FormBuilderPage() {
                     onClick={() => {
                         //
                     }}
-                    className="ml-auto flex items-center p-3 gap-2 bg-gray-200 text-gray-500 hover:bg-gray-300 hover:text-black transition duration-200 "
+                    className="ml-auto flex items-center py-3 px-6 gap-2 bg-gray-200 text-gray-500 hover:bg-gray-300 hover:text-black transition duration-200 "
                 >
                     <FaPlay />Preview  
                 </button>
@@ -273,7 +306,7 @@ export default function FormBuilderPage() {
                     onClick={() => {
                         saveForm();
                     }}
-                    className="flex items-center p-3 gap-2 bg-black text-white  hover:bg-black hover:text-yellow-300 transition duration-200 "
+                    className="flex items-center py-3 px-6 gap-2 bg-black text-white  hover:bg-black hover:text-yellow-300 transition duration-200 "
                 >
                     <FaSave />Save
                 </button>
@@ -304,10 +337,9 @@ export default function FormBuilderPage() {
                             selectedElement={selectedElement}
                             selectElement={selectElement}
                             deleteElement={deleteElement}
-                            moveElement={moveElement}
                             addRow={addRow}
                             addColumn={addColumn}
-
+                            swapElements={swapElements}
                             selectedElementRef={selectedElementRef}
                         />
                     </DndProvider>
@@ -317,8 +349,11 @@ export default function FormBuilderPage() {
                     <FloatingToolbar
                         x={toolbarPos.x}
                         y={toolbarPos.y}
+                        selectElement={selectElement}
+                        selectedElement={selectedElement}
                         deleteElement={deleteElement}
                         moveElement={moveElement}
+                        updateElement={updateElement}
                     />
                 )}
 
