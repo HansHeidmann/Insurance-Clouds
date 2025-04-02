@@ -83,6 +83,7 @@ const DraggableElement: React.FC<{
                 ${isSelected ? "bg-blue-100" : "border-transparent"}
                 ${isOver ? "bg-blue-300" : ""}
                 hover:cursor-move
+                ${element.widthCSS}
             `}
             onClick={(event) => {
                 onSelect();
