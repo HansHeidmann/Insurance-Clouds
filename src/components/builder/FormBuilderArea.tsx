@@ -68,29 +68,30 @@ const DraggableElement: React.FC<{
     return (
         <div 
             ref={(node) => {
-                const dragDropRef = drag(drop(node));
+                //const dragDropRef = drag(drop(node));
                 
                 if (isSelected && selectedElementRef) {
                     (selectedElementRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
                 }
-                
-                return dragDropRef;
             }}
-            style={{ opacity: isDragging ? 0.5 : 1 }}
+            style={{ 
+                opacity: isDragging ? 0.5 : 1,
+                width: `${element.width}%`,
+                flex: `0 0 ${element.width}%`
+            }}
             className={`
                 flex box-border rounded-lg drop-shadow-md border-2
                 transition-colors duration-200
                 ${isSelected ? "bg-blue-100" : "border-transparent"}
                 ${isOver ? "bg-blue-300" : ""}
                 hover:cursor-move
-                ${element.widthCSS}
             `}
             onClick={(event) => {
                 onSelect();
                 event.stopPropagation();
             }}
         >
-            <div className="bg-white p-4 rounded-md hover:bg-blue-100">
+            <div className="bg-white p-4 rounded-md hover:bg-blue-100 w-full">
                 <div className="absolute inset-0 hover:cursor-move rounded-md z-10" />
 
                 <div className="flex justify-between ">
@@ -255,7 +256,7 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
     return (
         <div
             onClick={() => { selectElement(null); }}
-            className="p-16 pb-12 w-[850px] min-h-[1100px] mx-auto bg-white rounded-2xl shadow-md relative"
+            className="p-16 pb-12 w-[850px] min-h-[1100px] mx-auto bg-white rounded-2xl shadow-md "
         >
 
             <input
@@ -266,7 +267,7 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
             />
 
             {formMatrix.map((row, rowIndex) => (
-                <div key={rowIndex} className="flex gap-4 mb-4 relative">
+                <div key={rowIndex} className="flex gap-4 mb-4 relative bg-yellow-100 w-full">
                     {/* Horizontal insert line above row */}
                     <div 
                         className="absolute w-full h-4 -top-4 group hover:bg-green-100 cursor-pointer z-10"
@@ -290,7 +291,7 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
                     </div>
 
                     {/* Container for elements and vertical insert lines */}
-                    <div className="flex items-center">
+                    <div className="flex items-center w-full">
                         {/* First vertical insert line */}
                         <div 
                             className="h-full w-4 group hover:bg-green-100 cursor-pointer z-10"

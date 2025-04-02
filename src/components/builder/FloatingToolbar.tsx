@@ -79,7 +79,11 @@ const FloatingToolbar: React.FC<FloatingToolbarProps> = ({x, y, selectElement, s
             <button
                 onClick={()=>
                     {
-                        selectedElement!.widthCSS = "w-full"
+                        if (selectedElement!.width == null) {
+                            selectedElement!.width = 100;
+                        } else {
+                            selectedElement!.width = Math.round(selectedElement!.width * 1.1);
+                        }
                         updateElement(selectedElement!)
                     }}
                 className="p-2 rounded-md transition-colors hover:bg-indigo-500 hover:text-white"
@@ -95,7 +99,11 @@ const FloatingToolbar: React.FC<FloatingToolbarProps> = ({x, y, selectElement, s
             <button
                 onClick={()=>
                     {
-                        selectedElement!.widthCSS = "w-min"
+                        if (selectedElement!.width == null) {
+                            selectedElement!.width = 100;
+                        } else {
+                            selectedElement!.width = Math.round(selectedElement!.width / 1.1);
+                        }
                         updateElement(selectedElement!)
                     }}
                 className="p-2 rounded-md flex items-center transition-colors hover:bg-purple-400 hover:text-white"

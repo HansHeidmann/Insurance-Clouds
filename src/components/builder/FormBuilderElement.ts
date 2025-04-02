@@ -25,7 +25,7 @@ export interface FormBuilderElement {
     helpText?: string;
     required: boolean;
     properties: Record<string, boolean | string | string[]>;
-    widthCSS: string;
+    width: number;
 }
 
 export class FormElementFactory {
@@ -37,7 +37,7 @@ export class FormElementFactory {
             helpText: "",
             required: true,
             properties: FormElementFactory.getDefaultPropertiesForType(type),
-            widthCSS: ""
+            width: 100,
         };
     }
 
