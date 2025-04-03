@@ -37,7 +37,7 @@ export class FormElementFactory {
             helpText: "",
             required: true,
             properties: FormElementFactory.getDefaultPropertiesForType(type),
-            width: 100,
+            width: 50,
         };
     }
 

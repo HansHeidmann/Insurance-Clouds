@@ -68,11 +68,13 @@ const DraggableElement: React.FC<{
     return (
         <div 
             ref={(node) => {
-                //const dragDropRef = drag(drop(node));
+                const dragDropRef = drag(drop(node));
                 
                 if (isSelected && selectedElementRef) {
                     (selectedElementRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
                 }
+                
+                return dragDropRef;
             }}
             style={{ 
                 opacity: isDragging ? 0.5 : 1,
@@ -291,7 +293,7 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
                     </div>
 
                     {/* Container for elements and vertical insert lines */}
-                    <div className="flex items-center w-full">
+                    <div className="flex w-full">
                         {/* First vertical insert line */}
                         <div 
                             className="h-full w-4 group hover:bg-green-100 cursor-pointer z-10"
