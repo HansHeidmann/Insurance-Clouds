@@ -21,6 +21,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, formMatrix, selectedElemen
     }, [selectedElement]);
 
 
+
     const elementIcons: Record<FormElementType, string> = {
         undefined: "error.png",
         textbox: "textbox.png",
@@ -299,7 +300,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, formMatrix, selectedElemen
                                                 <center><FaPlusCircle /></center>
                                             </button>
                                         </>
-                                    ) : (
+                                    ) : typeof value === "boolean" ? (
                                         /* If the property is a boolean (like "multiline"), show a single checkbox */
                                         <div className="flex items-center gap-2">
                                             <input
@@ -323,15 +324,55 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, formMatrix, selectedElemen
                                             </label>
 
                                         </div>
+                                    ) : typeof value === "number" ? (
+                                        // if its min or max characters, show nothing becaise its handled in the textbox section
+                                        (property === "minCharacters" || property === "maxCharacters") ? (<></>) : (
+                                            <div className="flex items-center gap-2">
+                                                Error: Unknown property type
+                                            </div>
+                                        )
+                                    ) : (
+                                        <div className="flex items-center gap-2">
+                                           Error: Unknown property type
+                                        </div>
                                     )}
                                 </div>
                             ))}
                         </div>
 
+                        {editedElement.type === "textbox" && (
+                            <>
+                                <label className="block text-md font-semibold">Number of Characters</label>
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        className="w-24 p-1 border rounded"
+                                        type="text"
+                                        placeholder="Minimum"
+                                       
+                                        onChange={(e) => {
+                                            setEditedElement({
+                                                ...editedElement,
+                                                properties: {
+                                                    ...editedElement.properties,
+                                                    minCharacters: parseInt(e.target.value),
+                                                },
+                                            })
+                                        }}
+                                    />
+                                    <span className="text-md">to</span>
+                                    <input
+                                        className="w-24 p-1 border rounded"
+                                        type="text"
+                                        placeholder="Maximum"
+                                    />
+                                </div>
+                            </>
+                        )}
+
 
 
                         {/* Save Button */}
-                        <div className="flex justify-center mt-4">
+                        <div className="flex justify-center mt-8">
                         <button
                             className="
                             flex px-10 py-3

@@ -195,9 +195,12 @@ export default function FormBuilderPage() {
     const addColumn = (rowIndex: number, colIndex: number) => {
 
         const rowPercentWidthFull = formMatrix[rowIndex].reduce((acc, element) => acc + element.width, 0);
+        if (rowPercentWidthFull + 10+ (100 - rowPercentWidthFull) / 2 > 100) {
+            return;
+        }
         const newElement: FormBuilderElement = FormElementFactory.getDefaultProperties("undefined");
         newElement.width = (100 - rowPercentWidthFull) / 2;
-        
+
         setFormMatrix(prevMatrix => {
             const newMatrix = [...prevMatrix];
             // Insert new element at the specified column index in the specified row

@@ -24,7 +24,7 @@ export interface FormBuilderElement {
     label: string;
     helpText?: string;
     required: boolean;
-    properties: Record<string, boolean | string | string[]>;
+    properties: Record<string, boolean | number | string | string[]>;
     width: number;
 }
 
@@ -41,24 +41,30 @@ export class FormElementFactory {
         };
     }
 
-    static getDefaultPropertiesForType(type: FormElementType): Record<string, boolean | string | string[]> {
+    static getDefaultPropertiesForType(type: FormElementType): Record<string, boolean | number | string| string[]> {
         switch (type) {
             case "textbox":
-                return { multiline: false };
+                return { multiline: false, minCharacters: 0, maxCharacters: -1 };
             case "name":
                 return { title: false, firstName: true, middleInitial: false, middleName: false, lastName: true, suffix: false };
             case "address":
                 return { addressLine1: true, addressLine2: true, city: true, state: true, zip: true };
             case "phone":
+                return {}
             case "email":
-            case "number":
+                return {}
+            case "number":  
+                return { integer: true, decimal: true, percent: true }
             case "url":
+                return {}
             case "signature":
                 return {};
             case "date":
                 return { day: true, month: true, year: true };
             case "choices":
+                return { options: ["Choice X", "Choice Y", "Choice Z"] };
             case "options":
+                return { options: ["Choice 1", "Choice 2", "Choice 3"] };
             case "checkboxes":
                 return { options: ["Choice A", "Choice B", "Choice C"] };
             case "calculation":
