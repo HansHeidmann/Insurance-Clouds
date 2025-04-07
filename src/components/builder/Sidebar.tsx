@@ -348,7 +348,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, formMatrix, selectedElemen
                                         className="w-24 p-1 border rounded"
                                         type="text"
                                         placeholder="Minimum"
-                                       
+                                        value={Number(editedElement.properties.minCharacters)}
                                         onChange={(e) => {
                                             setEditedElement({
                                                 ...editedElement,
@@ -364,6 +364,16 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, formMatrix, selectedElemen
                                         className="w-24 p-1 border rounded"
                                         type="text"
                                         placeholder="Maximum"
+                                        value={Number(editedElement.properties.maxCharacters)}
+                                        onChange={(e) => {
+                                            setEditedElement({
+                                                ...editedElement,
+                                                properties: {
+                                                    ...editedElement.properties,
+                                                    maxCharacters: parseInt(e.target.value),
+                                                },
+                                            })
+                                        }}
                                     />
                                 </div>
                             </>
