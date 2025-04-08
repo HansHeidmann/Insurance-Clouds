@@ -32,3 +32,4 @@ yarn dev
 - separate page? for list of entries
 - when deleting a form have a popup 
 - connect submit form button in viewer to POST route for entries
+- show this field (always, when, roles)

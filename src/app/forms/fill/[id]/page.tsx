@@ -41,6 +41,22 @@ export default function ViewFormPage() {
             
             <Header />
 
+
+
+
+            {/* Remove below when done */}
+            <div className=" absolute top-0 left-0 w-1/4 p-4 bg-white ">
+                <div className=" bg-white rounded-lg h-full overflow-y-auto">
+                    <pre className="whitespace-pre-wrap text-sm text-black">
+                        {JSON.stringify(form, null, 2)}
+                    </pre>
+                </div>
+            </div>
+            {/* Remove above when done */}
+
+
+
+
             <div className="flex flex-col m-8 p-8 w-[850px] min-h-[1100px] mx-auto bg-white rounded-2xl shadow-md">
                 {loading ? (
                     <Image 
