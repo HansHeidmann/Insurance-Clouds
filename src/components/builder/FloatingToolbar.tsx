@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import {
     FaCaretLeft,
     FaCaretRight,
-    FaArrowLeft,
-    FaArrowRight,
-    FaGripLinesVertical,
     FaEyeSlash,
+    FaCut,
+    FaCopy,
+    FaPaste,
+    FaRegCopy,
+    FaRegHandScissors,
 } from "react-icons/fa";
-import { FaArrowsLeftRightToLine, FaXmark } from "react-icons/fa6";
+import { FaArrowLeftLong, FaArrowRightLong, FaArrowsLeftRightToLine, FaRegPaste, FaScissors, FaXmark } from "react-icons/fa6";
 
 import ActionSheet from "../ui/ActionSheet";
 import { FormBuilderElement } from "./FormBuilderElement";
@@ -22,12 +24,22 @@ interface FloatingToolbarProps {
     selectElement: (element: FormBuilderElement | null) => void;
     selectedElement: FormBuilderElement | null;
     updateElement: (updatedElement: FormBuilderElement) => void;
+    justifyRowElements: () => void;
+    cutElement: () => void;
+    copyElement: () => void;
+    pasteElement: () => void;
 }
 
-const FloatingToolbar: React.FC<FloatingToolbarProps> = ({x, y, selectElement, selectedElement, deleteElement, moveElement, updateElement}) => {
+const FloatingToolbar: React.FC<FloatingToolbarProps> = ({
+    x, y, selectElement, selectedElement, deleteElement, moveElement, updateElement, justifyRowElements,
+    cutElement, copyElement, pasteElement
+}) => {
 
     const [showDeleteActionSheet, setShowDeleteActionSheet] = useState(false);
-        
+
+    const buttonBaseStyle = "p-2 flex flex-col items-center rounded-md transition-colors text-xs";
+    const iconSize = "w-4 h-4 mb-1";
+
     return (
         <div
             style={{
@@ -37,7 +49,7 @@ const FloatingToolbar: React.FC<FloatingToolbarProps> = ({x, y, selectElement, s
                 transform: "translate(-50%, -100%)",
                 zIndex: 100,
             }}
-            className="flex items-center bg-white border border-gray-300 rounded-xl shadow-xl px-3 py-2 space-x-2 transition-all"
+            className="flex items-center bg-white border border-gray-300 rounded-xl shadow-xl transition-all p-1"
         >
 
             {/* Hide Toolbar Button */}
@@ -45,85 +57,133 @@ const FloatingToolbar: React.FC<FloatingToolbarProps> = ({x, y, selectElement, s
                     onClick={() => {
                         selectElement(null);
                     }}
-                    className="p-2 rounded-md transition-colors hover:bg-gray-600 hover:text-white"
+                    className={`${buttonBaseStyle} hover:bg-gray-600 hover:text-white`}
                     title="Hide Toolbar"
             >
-                <FaEyeSlash className="w-4 h-4" />
+                <FaEyeSlash className={iconSize} />
+                <span>Hide</span>
             </button>
-
             {/* Divider */}
-            <div className="w-px h-5 bg-gray-300 mx-1" />
+            <div className="w-px h-10 bg-gray-300 mx-1" />
+
 
             {/* Move Left */}
             <button
                     onClick={()=>{moveElement("left")}}
-                    className="p-2 rounded-md transition-colors hover:bg-blue-500 hover:text-white"
+                    className={`${buttonBaseStyle} hover:bg-blue-500 hover:text-white`}
                     title="Move Left"
             >
-                <FaCaretLeft className="w-4 h-4" />
+                <FaCaretLeft className={iconSize} />
+                <span>Left</span>
             </button>
-
+            {/* Divider */}
+            <div className="w-px h-10 bg-gray-300 mx-1" />
             {/* Move Right */}
             <button
                 onClick={()=>{moveElement("right")}}
-                className="p-2 rounded-md transition-colors hover:bg-blue-500 hover:text-white"
+                className={`${buttonBaseStyle} hover:bg-blue-500 hover:text-white`}
                 title="Move Right"
             >
-                <FaCaretRight className="w-4 h-4" />
+                <FaCaretRight className={iconSize} />
+                <span>Right</span>
             </button>
-
             {/* Divider */}
-            <div className="w-px h-5 bg-gray-300 mx-1" />
+            <div className="w-px h-10 bg-gray-300 mx-1" />
+
+
+            {/* Cut */}
+            <button
+                onClick={cutElement}
+                className={`${buttonBaseStyle} hover:bg-orange-500 hover:text-white`}
+                title="Cut"
+            >
+                <FaCut className={iconSize} />
+                <span>Cut</span>
+            </button>
+            {/* Divider */}
+            <div className="w-px h-10 bg-gray-300 mx-1" />
+            {/* Copy */}
+            <button
+                onClick={copyElement}
+                className={`${buttonBaseStyle} hover:bg-cyan-500 hover:text-white`}
+                title="Copy"
+            >
+                <FaRegCopy className={iconSize} />
+                <span>Copy</span>
+            </button>
+            {/* Divider */}
+            <div className="w-px h-10 bg-gray-300 mx-1" />
+            {/* Paste */}
+            <button
+                onClick={pasteElement}
+                className={`${buttonBaseStyle} hover:bg-green-500 hover:text-white`}
+                title="Paste"
+            >
+                <FaRegPaste className={iconSize} />
+                <span>Paste</span>
+            </button>
+            {/* Divider */}
+            <div className="w-px h-10 bg-gray-300 mx-1" />
+
 
             {/* Expand */}
             <button
                 onClick={()=>
                     {
-                        if (selectedElement!.width == null) {
-                            selectedElement!.width = 100;
-                        } else {
-                            selectedElement!.width = Math.round(selectedElement!.width * 1.1);
-                        }
-                        updateElement(selectedElement!)
+                        if (!selectedElement) return;
+                        const currentWidth = selectedElement.width ?? 100;
+                        updateElement({...selectedElement, width: Math.round(currentWidth * 1.1)});
                     }}
-                className="p-2 rounded-md transition-colors hover:bg-indigo-500 hover:text-white"
+                className={`${buttonBaseStyle} hover:bg-indigo-500 hover:text-white`}
                 title="Expand"
             >
-                <FaArrowsLeftRightToLine className="w-4 h-5" />
+                <FaArrowRightLong className={iconSize} />
+                <span>Expand</span>
             </button>
-
             {/* Divider */}
-            <div className="w-px h-5 bg-gray-300 mx-1" />
+            <div className="w-px h-10 bg-gray-300 mx-1" />
 
             {/* Shrink */}
             <button
                 onClick={()=>
                     {
-                        if (selectedElement!.width == null) {
-                            selectedElement!.width = 100;
-                        } else {
-                            selectedElement!.width = Math.round(selectedElement!.width / 1.1);
-                        }
-                        updateElement(selectedElement!)
+                        if (!selectedElement) return;
+                        const currentWidth = selectedElement.width ?? 100;
+                        updateElement({...selectedElement, width: Math.max(10, Math.round(currentWidth / 1.1))});
                     }}
-                className="p-2 rounded-md flex items-center transition-colors hover:bg-purple-400 hover:text-white"
+                className={`${buttonBaseStyle} hover:bg-purple-400 hover:text-white`}
                 title="Shrink"
             >
-                <FaArrowRight className="w-2 h-2" />
-                <FaGripLinesVertical className="w-2.5 h-2.5 " />
-                <FaArrowLeft className="w-2 h-2" />
+                <FaArrowLeftLong className={iconSize} />
+                <span>Shrink</span>
             </button>
-
             {/* Divider */}
-            <div className="w-px h-5 bg-gray-300 mx-1" />
+            <div className="w-px h-10 bg-gray-300 mx-1" />
+
+
+            {/* Justify */}
+            <button
+                onClick={()=> {
+                        justifyRowElements()
+                    }}
+                className={`${buttonBaseStyle} hover:bg-teal-500 hover:text-white`}
+                title="Justify Row"
+            >
+                <FaArrowsLeftRightToLine className={iconSize} />
+                <span>Justify</span>
+            </button>
+            {/* Divider */}
+            <div className="w-px h-10 bg-gray-300 mx-1" />
+
 
             {/* Delete */}
             <button
                 onClick={()=>setShowDeleteActionSheet(true)}
-                className="p-2 rounded-md text-black-600 transition-colors hover:bg-red-500 hover:text-white"
+                className={`${buttonBaseStyle} hover:bg-red-500 hover:text-white`}
                 title="Delete"
             >
-                <FaXmark className="w-4 h-4 subpixel-antialiased" />
+                <FaXmark className={`${iconSize} subpixel-antialiased`} />
+                <span>Delete</span>
             </button>
 
             <ActionSheet
@@ -147,10 +207,10 @@ const FloatingToolbar: React.FC<FloatingToolbarProps> = ({x, y, selectElement, s
                     setShowDeleteActionSheet(false);
                 }}
             />
-          
+
 
         </div>
-        
+
     );
 };
 

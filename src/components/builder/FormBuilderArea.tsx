@@ -76,15 +76,16 @@ const DraggableElement: React.FC<{
                 
                 return dragDropRef;
             }}
+
             style={{ 
                 opacity: isDragging ? 0.5 : 1,
                 width: `${element.width}%`,
                 flex: `0 0 ${element.width}%`
             }}
             className={`
-                flex box-border rounded-lg drop-shadow-md border-2
+                flex box-border rounded-lg drop-shadow-md border-2 border-gray-100
                 transition-colors duration-200
-                ${isSelected ? "bg-blue-100" : "border-transparent"}
+                ${isSelected ? "bg-blue-100 border-blue-200" : "border-transparent"}
                 ${isOver ? "bg-blue-300" : ""}
                 hover:cursor-move
             `}
@@ -269,10 +270,10 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
             />
 
             {formMatrix.map((row, rowIndex) => (
-                <div key={rowIndex} className="flex gap-4 mb-4 relative bg-yellow-100 w-full">
+                <div key={rowIndex} className="flex gap-4 mb-2 relative w-full">
                     {/* Horizontal insert line above row */}
                     <div 
-                        className="absolute w-full h-4 -top-4 group hover:bg-green-100 cursor-pointer z-10"
+                        className="absolute w-full h-2 -top-2 group hover:bg-green-200 cursor-pointer z-10"
                         onMouseEnter={() => setHoverPosition({row: rowIndex, col: -1, type: 'horizontal'})}
                         onMouseLeave={() => setHoverPosition(null)}
                         onClick={(e) => {
@@ -286,7 +287,7 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
                             transition-opacity duration-200
                         `}>
                             <div className="h-0.5 w-full bg-green-400 absolute top-1/2 -translate-y-1/2" />
-                            <div className="bg-green-400 rounded-full p-1.5 text-white relative z-10">
+                            <div className="bg-green-400 rounded-full p-1 text-white relative z-10">
                                 <FaPlus size={14} />
                             </div>
                         </div>
@@ -296,7 +297,7 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
                     <div className="flex w-full">
                         {/* First vertical insert line */}
                         <div 
-                            className="h-full w-4 group hover:bg-green-100 cursor-pointer z-10"
+                            className="h-full w-2 group hover:bg-green-200 cursor-pointer z-10"
                             onMouseEnter={() => setHoverPosition({
                                 row: rowIndex,
                                 col: 0,
@@ -320,7 +321,7 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
                                 `}
                             >
                                 {/* Centered Plus Button */}
-                                <div className="z-10 bg-green-400  text-white rounded-full p-1.5 shadow-md">
+                                <div className="z-10 bg-green-400  text-white rounded-full p-1 shadow-md">
                                     <FaPlus size={14} />
                                 </div>
                             </div>
@@ -342,7 +343,7 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
 
                                 {/* Vertical insert line after each element */}
                                 <div 
-                                    className="h-full w-4 group hover:bg-green-100 cursor-pointer z-10"
+                                    className="h-full w-2 group hover:bg-green-200 cursor-pointer z-10"
                                     onMouseEnter={() => setHoverPosition({
                                         row: rowIndex,
                                         col: colIndex + 1,
@@ -365,7 +366,7 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
                                         top-1/2 -translate-y-1/2
                                     `}>
                                         {/* Centered Plus Button */}
-                                        <div className="z-10 bg-green-400  text-white rounded-full p-1.5 shadow-md">
+                                        <div className="z-10 bg-green-400  text-white rounded-full p-1 shadow-md">
                                             <FaPlus size={14} />
                                         </div>
                                     </div>
@@ -378,7 +379,7 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
 
             {/* Horizontal insert line below all rows */}
             <div 
-                className="relative w-full h-4 -mt-4 group hover:bg-green-100 cursor-pointer z-10"
+                className="relative w-full h-2 -mt-2 group hover:bg-green-200 cursor-pointer z-10"
                 onMouseEnter={() => setHoverPosition({
                     row: formMatrix.length,
                     col: -1,
@@ -396,7 +397,7 @@ const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, fo
                     transition-opacity duration-200
                 `}>
                     <div className="h-0.5 w-full bg-green-400 absolute top-1/2 -translate-y-1/2" />
-                    <div className="bg-green-400 rounded-full p-1.5 text-white relative z-10">
+                    <div className="bg-green-400 rounded-full p-1 text-white relative z-10">
                         <FaPlus size={14} />
                     </div>
                 </div>

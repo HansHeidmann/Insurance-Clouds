@@ -247,6 +247,49 @@ export default function FormBuilderPage() {
         });
     };
 
+    const justifyRowElements = () => {
+        // Get the row index of the selected element
+        console.log("justifyRowElements");
+        
+        let rowIndex = -1;
+        for (let r = 0; r < formMatrix.length; r++) {
+            for (let c = 0; c < formMatrix[r].length; c++) {
+                if (formMatrix[r][c].id === selectedElement?.id) {
+                    rowIndex = r;
+                    break;
+                }
+            }
+        }
+        if (rowIndex == -1) {
+            return;
+        }
+
+        // Get the row elements
+        const rowElements = formMatrix[rowIndex];
+
+        // set the width of each element to the same width
+        for (let i = 0; i < rowElements.length; i++) {
+            rowElements[i].width = 90 / rowElements.length;
+        }
+
+        // update the form matrix
+        setFormMatrix(prevMatrix => {
+            const newMatrix = structuredClone(prevMatrix);
+            newMatrix[rowIndex] = rowElements;
+            return newMatrix;
+        });
+    }
+
+
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+
     return (
         <div className="h-screen flex flex-col flex-1">
 
@@ -360,6 +403,7 @@ export default function FormBuilderPage() {
                         deleteElement={deleteElement}
                         moveElement={moveElement}
                         updateElement={updateElement}
+                        justifyRowElements={justifyRowElements}
                     />
                 )}
 

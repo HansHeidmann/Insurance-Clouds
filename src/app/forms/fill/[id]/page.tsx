@@ -42,15 +42,11 @@ export default function ViewFormPage() {
             <Header />
 
 
-
-
             {/* Remove below when done */}
-            <div className=" absolute top-0 left-0 w-1/4 p-4 bg-white ">
-                <div className=" bg-white rounded-lg h-full overflow-y-auto">
-                    <pre className="whitespace-pre-wrap text-sm text-black">
-                        {JSON.stringify(form, null, 2)}
-                    </pre>
-                </div>
+            <div className=" absolute h-full overflow-y-auto top-[86px] left-0 w-1/4 p-4 bg-black text-green-300">
+                <pre className="whitespace-pre-wrap text-sm text-green-400 ">
+                    {JSON.stringify(form, null, 2)}
+                </pre>
             </div>
             {/* Remove above when done */}
 
@@ -76,7 +72,14 @@ export default function ViewFormPage() {
                                     {formRows.map((row: FormViewerElement[], rowIndex: number) => (
                                         <div key={rowIndex} className="flex gap-4">
                                             {row.map((element: FormViewerElement) => (
-                                                <div key={element.id} className="p-4 bg-white rounded-lg shadow-md w-full">
+                                                <div 
+                                                    style={{ 
+                                                        width: `${element.width}%`,
+                                                        flex: `0 0 ${element.width}%`
+                                                    }}
+                                                    key={element.id} 
+                                                    className="p-4 bg-white rounded-lg shadow-md"
+                                                >
                                                     {/* Label */}
                                                     <label className="block text-gray-700 font-semibold">
                                                         {element.label} {element.required && <span className="text-red-500">*</span>}

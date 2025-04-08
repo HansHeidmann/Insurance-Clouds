@@ -20,10 +20,11 @@ export type FormElementType =
 
 
 export interface FormViewerElement {
-    id: UUID;
+    id: string;
     type: FormElementType;
     label: string;
     helpText?: string;
     required: boolean;
-    properties: Record<string, boolean | string | string[]>;
+    properties: Record<string, boolean | number | string | string[]>;
+    width: number;
 }
