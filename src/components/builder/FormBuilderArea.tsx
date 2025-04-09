@@ -83,10 +83,8 @@ const DraggableElement: React.FC<{
                 flex: `0 0 ${element.width}%`
             }}
             className={`
-                flex box-border rounded-lg drop-shadow-md border-2 border-gray-100
+                flex box-border rounded-lg drop-shadow-md 
                 transition-colors duration-200
-                ${isSelected ? "bg-blue-100 border-blue-200" : "border-transparent"}
-                ${isOver ? "bg-blue-300" : ""}
                 hover:cursor-move
             `}
             onClick={(event) => {
@@ -94,17 +92,28 @@ const DraggableElement: React.FC<{
                 event.stopPropagation();
             }}
         >
-            <div className="bg-white p-4 rounded-md hover:bg-blue-100 w-full">
-                <div className="absolute inset-0 hover:cursor-move rounded-md z-10" />
+            <div className={`
+                p-4 rounded-md hover:bg-blue-100 w-full border-2 
+                ${isSelected ? "border-blue-400" : "border-transparent"}
+                ${isOver ? "bg-blue-200" : "bg-white"}
+            `}
+            >
+                <div 
+                    className={`absolute inset-0 hover:cursor-move rounded-md z-10
+                    ${element.type === "undefined" ? "bg-green-100 border-2 border-dashed border-green-300" : "border-green-200"}
+                    `}
+                />
 
-                <div className="flex justify-between ">
-                    <div className="flex items-end ">
-                        <label className="text-md font-semibold -mb-1.5">{element.label}</label>
-                        { element.required &&
-                            <label className="text-xl -mb-1.5 text-red-500">*</label>
-                        }
+                {element.type !== "undefined" && (
+                    <div className="flex justify-between ">
+                        <div className="flex items-end ">
+                            <label className="text-md font-semibold -mb-1.5">{element.label}</label>
+                            { element.required &&
+                                <label className="text-xl -mb-1.5 text-red-500">*</label>
+                            }
+                        </div>
                     </div>
-                </div>
+                )}
 
                 {element.helpText ?
                     <>
