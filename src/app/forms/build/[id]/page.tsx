@@ -410,6 +410,9 @@ export default function FormBuilderPage() {
                         y={toolbarPos.y}
                         selectElement={selectElement}
                         selectedElement={selectedElement}
+                        cutElement={() => {}}   // TODO
+                        copyElement={() => {}}  // TODO
+                        pasteElement={() => {}} // TODO
                         deleteElement={deleteElement}
                         moveElement={moveElement}
                         updateElement={updateElement}

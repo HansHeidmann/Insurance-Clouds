@@ -11,8 +11,7 @@ import { FaArrowLeftLong, FaArrowRightLong, FaArrowsLeftRightToLine, FaRegPaste,
 import ActionSheet from "../ui/ActionSheet";
 import { FormBuilderElement } from "./FormBuilderElement";
 
-
-
+// Properties for the FloatingToolbar component
 interface FloatingToolbarProps {
     x: number;
     y: number;
@@ -27,16 +26,24 @@ interface FloatingToolbarProps {
     pasteElement: () => void;
 }
 
+// FloatingToolbar component definition
 const FloatingToolbar: React.FC<FloatingToolbarProps> = ({
     x, y, selectElement, selectedElement, deleteElement, moveElement, updateElement, justifyRowElements,
     cutElement, copyElement, pasteElement
 }) => {
 
+    // State to manage the visibility of the delete confirmation action sheet
     const [showDeleteActionSheet, setShowDeleteActionSheet] = useState(false);
 
+    // Styles (Tailwind CSS) for the toolbar buttons and icons
     const buttonBaseStyle = "p-2 flex flex-col items-center rounded-md transition-colors text-xs";
     const iconSize = "w-4 h-4 mb-1";
 
+
+
+    //
+    // FloatingToolbar
+    //
     return (
         <div
             style={{
@@ -57,6 +64,7 @@ const FloatingToolbar: React.FC<FloatingToolbarProps> = ({
                     className={`${buttonBaseStyle} hover:bg-gray-600 hover:text-white`}
                     title="Hide Toolbar"
             >
+                {/* Icon and Label */}
                 <FaEyeSlash className={iconSize} />
                 <span>Hide</span>
             </button>
@@ -93,58 +101,52 @@ const FloatingToolbar: React.FC<FloatingToolbarProps> = ({
 
             {/* Cut */}
             <button
+                // Handle click event for the cut button
                 onClick={cutElement}
                 className={`${buttonBaseStyle} hover:bg-orange-500 hover:text-white`}
                 title="Cut"
             >
+                {/* Icon and Label */}
                 <FaCut className={iconSize} />
                 <span>Cut</span>
             </button>
+
             {/* Divider */}
             <div className="w-px h-10 bg-gray-300 mx-1" />
-            {/* Copy */}
+
+            {/* Copy Button */}
             <button
+                // Handle click event for the copy button
                 onClick={copyElement}
                 className={`${buttonBaseStyle} hover:bg-cyan-500 hover:text-white`}
                 title="Copy"
             >
+                {/* Icon and Label */}
                 <FaRegCopy className={iconSize} />
                 <span>Copy</span>
             </button>
+
             {/* Divider */}
             <div className="w-px h-10 bg-gray-300 mx-1" />
-            {/* Paste */}
+
+            {/* Paste Button*/}
             <button
+                // Handle click event for the paste button
                 onClick={pasteElement}
                 className={`${buttonBaseStyle} hover:bg-green-500 hover:text-white`}
                 title="Paste"
             >
+                {/* Icon and Label */}
                 <FaRegPaste className={iconSize} />
                 <span>Paste</span>
             </button>
-            {/* Divider */}
-            <div className="w-px h-10 bg-gray-300 mx-1" />
+           
+           {/* Divider */}
+           <div className="w-px h-10 bg-gray-300 mx-1" />
 
-
-            {/* Expand */}
+            {/* Shrink Button */}
             <button
-                onClick={()=>
-                    {
-                        if (!selectedElement) return;
-                        const currentWidth = selectedElement.width ?? 100;
-                        updateElement({...selectedElement, width: Math.round(currentWidth * 1.1)});
-                    }}
-                className={`${buttonBaseStyle} hover:bg-indigo-500 hover:text-white`}
-                title="Expand"
-            >
-                <FaArrowRightLong className={iconSize} />
-                <span>Expand</span>
-            </button>
-            {/* Divider */}
-            <div className="w-px h-10 bg-gray-300 mx-1" />
-
-            {/* Shrink */}
-            <button
+                // Handle click event for the shrink button                
                 onClick={()=>
                     {
                         if (!selectedElement) return;
@@ -154,38 +156,82 @@ const FloatingToolbar: React.FC<FloatingToolbarProps> = ({
                 className={`${buttonBaseStyle} hover:bg-purple-400 hover:text-white`}
                 title="Shrink"
             >
+                {/* Icon and Label */}
                 <FaArrowLeftLong className={iconSize} />
                 <span>Shrink</span>
             </button>
+           
+            {/* Divider */}
+            <div className="w-px h-10 bg-gray-300 mx-1" />
+
+            {/* Expand Button */}
+            <button
+                // Handle click event for the expand button
+                onClick={()=>
+                    {
+                        if (!selectedElement) return;
+                        const currentWidth = selectedElement.width ?? 100;
+                        updateElement({...selectedElement, width: Math.round(currentWidth * 1.1)});
+                    }}
+                className={`${buttonBaseStyle} hover:bg-indigo-500 hover:text-white`}
+                title="Expand"
+            >
+                {/* Icon and Label */}
+                <FaArrowRightLong className={iconSize} />
+                <span>Expand</span>
+            </button>
+            
+            
+
             {/* Divider */}
             <div className="w-px h-10 bg-gray-300 mx-1" />
 
 
-            {/* Justify */}
+            {/* Justify Button */}
             <button
+                // Handle click event for the justify button
                 onClick={()=> {
                         justifyRowElements()
                     }}
                 className={`${buttonBaseStyle} hover:bg-teal-500 hover:text-white`}
                 title="Justify Row"
             >
+                {/* Icon and Label */}
                 <FaArrowsLeftRightToLine className={iconSize} />
                 <span>Justify</span>
             </button>
+
             {/* Divider */}
             <div className="w-px h-10 bg-gray-300 mx-1" />
 
-
-            {/* Delete */}
+            {/* Delete Button */}
             <button
-                onClick={()=>setShowDeleteActionSheet(true)}
-                className={`${buttonBaseStyle} hover:bg-red-500 hover:text-white`}
-                title="Delete"
+                // Handle click event for the delete button
+                onClick={ ()=> {
+                    if (!selectedElement) return;
+                    // If the selected element is "Untitled", delete it immediately
+                    if (selectedElement.label === "Untitled") {
+                        deleteElement();
+                        selectElement(null);
+                    }
+                    else {
+                        // If the selected element has a label, show the delete confirmation action sheet
+                        setShowDeleteActionSheet(true);
+                    }
+                  
+                }}
+                className={`${buttonBaseStyle} hover:bg-red-500 hover:text-white`} // styling
+                title="Delete" // hover text
             >
+                {/* Icon and Label */}
                 <FaXmark className={`${iconSize} subpixel-antialiased`} />
                 <span>Delete</span>
             </button>
 
+
+
+
+            {/* Fullscreen Pop-up Action Sheet for Delete Confirmation */}
             <ActionSheet
                 visible={showDeleteActionSheet}
                 title="Delete Field?"
