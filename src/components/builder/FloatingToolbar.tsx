@@ -4,12 +4,9 @@ import {
     FaCaretRight,
     FaEyeSlash,
     FaCut,
-    FaCopy,
-    FaPaste,
     FaRegCopy,
-    FaRegHandScissors,
 } from "react-icons/fa";
-import { FaArrowLeftLong, FaArrowRightLong, FaArrowsLeftRightToLine, FaRegPaste, FaScissors, FaXmark } from "react-icons/fa6";
+import { FaArrowLeftLong, FaArrowRightLong, FaArrowsLeftRightToLine, FaRegPaste, FaXmark } from "react-icons/fa6";
 
 import ActionSheet from "../ui/ActionSheet";
 import { FormBuilderElement } from "./FormBuilderElement";
@@ -66,8 +63,9 @@ const FloatingToolbar: React.FC<FloatingToolbarProps> = ({
             {/* Divider */}
             <div className="w-px h-10 bg-gray-300 mx-1" />
 
-
-            {/* Move Left */}
+            
+            {/* 
+     
             <button
                     onClick={()=>{moveElement("left")}}
                     className={`${buttonBaseStyle} hover:bg-blue-500 hover:text-white`}
@@ -76,9 +74,9 @@ const FloatingToolbar: React.FC<FloatingToolbarProps> = ({
                 <FaCaretLeft className={iconSize} />
                 <span>Left</span>
             </button>
-            {/* Divider */}
+ 
             <div className="w-px h-10 bg-gray-300 mx-1" />
-            {/* Move Right */}
+
             <button
                 onClick={()=>{moveElement("right")}}
                 className={`${buttonBaseStyle} hover:bg-blue-500 hover:text-white`}
@@ -87,8 +85,10 @@ const FloatingToolbar: React.FC<FloatingToolbarProps> = ({
                 <FaCaretRight className={iconSize} />
                 <span>Right</span>
             </button>
-            {/* Divider */}
-            <div className="w-px h-10 bg-gray-300 mx-1" />
+   
+            <div className="w-px h-10 bg-gray-300 mx-1" /> 
+
+            */}
 
 
             {/* Cut */}

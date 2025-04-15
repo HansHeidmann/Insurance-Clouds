@@ -87,10 +87,16 @@ export default function FormBuilderPage() {
             return;
         }
 
+        let matrixToSave = structuredClone(formMatrix);
+        // remove all the Untitled placeholder elements
+        matrixToSave = matrixToSave.map(row => row.filter(element => element.label !== "Untitled"));
+        // remove all the empty rows
+        matrixToSave = matrixToSave.filter(row => row.length > 0);
+         
         const res = await fetch(`/api/v1/forms/${formId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ name: formName, json: formMatrix }),
+            body: JSON.stringify({ name: formName, json: matrixToSave }),
         });
 
         const data = await res.json();
@@ -267,9 +273,13 @@ export default function FormBuilderPage() {
         // Get the row elements
         const rowElements = formMatrix[rowIndex];
 
-        // set the width of each element to the same width
-        for (let i = 0; i < rowElements.length; i++) {
-            rowElements[i].width = 90 / rowElements.length;
+        if (rowElements.length == 1) {
+            rowElements[0].width = 100-2.22;
+        } else {
+            // set the width of each element to the same width
+            for (let i = 0; i < rowElements.length; i++) {
+                rowElements[i].width = (100 - 1.5*rowElements.length) / rowElements.length;
+            }
         }
 
         // update the form matrix

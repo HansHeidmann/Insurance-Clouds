@@ -19,7 +19,7 @@ export type FormElementType =
     | "file";
 
 
-export interface FormViewerElement {
+export interface FormFillerElement {
     id: string;
     type: FormElementType;
     label: string;

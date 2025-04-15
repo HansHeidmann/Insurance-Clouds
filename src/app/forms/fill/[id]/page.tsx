@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Header from "@/components/ui/MainHeader";
 import { Form } from "@/lib/types";
-import { FormViewerElement } from "@/components/viewer/FormViewerElement";
+import { FormFillerElement } from "@/components/filler/FormFillerElement";
 import Image from "next/image";
 
 export default function ViewFormPage() {
@@ -69,9 +69,9 @@ export default function ViewFormPage() {
                         <div className="">
                             {formRows.length > 0 ? (
                                 <div className="space-y-6">
-                                    {formRows.map((row: FormViewerElement[], rowIndex: number) => (
+                                    {formRows.map((row: FormFillerElement[], rowIndex: number) => (
                                         <div key={rowIndex} className="flex gap-4">
-                                            {row.map((element: FormViewerElement) => (
+                                            {row.map((element: FormFillerElement) => (
                                                 <div 
                                                     style={{ 
                                                         width: `${element.width}%`,
@@ -115,7 +115,7 @@ export default function ViewFormPage() {
     );
 }
 
-const renderFormField = (element: FormViewerElement) => {
+const renderFormField = (element: FormFillerElement) => {
     switch (element.type) {
 /*
         export type FormElementType =

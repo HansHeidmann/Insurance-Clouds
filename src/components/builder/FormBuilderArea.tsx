@@ -94,13 +94,14 @@ const DraggableElement: React.FC<{
         >
             <div className={`
                 p-4 rounded-md hover:bg-blue-100 w-full border-2 
-                ${isSelected ? "border-blue-400" : "border-transparent"}
+                ${isSelected ? "border-blue-300 bg-blue-50" : "border-transparent"}
                 ${isOver ? "bg-blue-200" : "bg-white"}
             `}
             >
                 <div 
-                    className={`absolute inset-0 hover:cursor-move rounded-md z-10
-                    ${element.type === "undefined" ? "bg-green-100 border-2 border-dashed border-green-300" : "border-green-200"}
+                    className={`
+                        absolute inset-0 hover:cursor-move rounded-md z-10 border-2
+                        ${!isOver && element.type === "undefined" ? "border-dashed border-green-200 bg-green-50" : "border-transparent"}
                     `}
                 />
 
