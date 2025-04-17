@@ -13,8 +13,8 @@ import { FormBuilderElement } from "./FormBuilderElement";
 
 // Properties for the FloatingToolbar component
 interface FloatingToolbarProps {
-    x: number;
-    y: number;
+    x: number;  // X position of the toolbar on screen
+    y: number;  // Y position of the toolbar on screen
     deleteElement: () => void;
     moveElement: (direction: string) => void;
     selectElement: (element: FormBuilderElement | null) => void;
@@ -58,6 +58,7 @@ const FloatingToolbar: React.FC<FloatingToolbarProps> = ({
 
             {/* Hide Toolbar Button */}
             <button
+                    // Handle click event for the hide button
                     onClick={() => {
                         selectElement(null);
                     }}
@@ -68,6 +69,8 @@ const FloatingToolbar: React.FC<FloatingToolbarProps> = ({
                 <FaEyeSlash className={iconSize} />
                 <span>Hide</span>
             </button>
+
+
             {/* Divider */}
             <div className="w-px h-10 bg-gray-300 mx-1" />
 

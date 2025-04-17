@@ -2,18 +2,21 @@ import React, { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { FormBuilderElement } from "./FormBuilderElement";
 import { useDrag, useDrop } from 'react-dnd';
+import { FaCloudArrowUp, FaFile } from "react-icons/fa6";
+
 
 interface DragItem {
-    type: string;
-    rowIndex: number;
-    colIndex: number;
-    element: FormBuilderElement;
-    id: string;
+    type: string;   // The type of the item being dragged 
+    rowIndex: number;   // The row index of the element being dragged
+    colIndex: number;   // The column index of the element being dragged
+    element: FormBuilderElement; // The element being dragged
+    id: string; // UUID of the element
 }
 
+// See apps/forms/build/page.tsx for props info
 interface FormBuilderProps {
-    formName: string;
-    setFormName: (element: string) => void;
+    formName: string; 
+    setFormName: (element: string) => void; 
     formMatrix: FormBuilderElement[][];
     selectedElement: FormBuilderElement | null;
     selectElement: (element: FormBuilderElement | null) => void;
@@ -25,15 +28,19 @@ interface FormBuilderProps {
     selectedElementRef: React.RefObject<HTMLDivElement | null>; // for FloatingToolbar
 }
 
+// Drag & Drop Element
 const DraggableElement: React.FC<{
     element: FormBuilderElement;
-    rowIndex: number;
-    colIndex: number;
-    isSelected: boolean;
+    rowIndex: number;   // Row index of the element in formMatrix
+    colIndex: number;   // Column index of the element in formMatrix
+    isSelected: boolean; // is this the selected element?
     onSelect: () => void;
-    selectedElementRef: React.RefObject<HTMLDivElement | null> | null;
+    selectedElementRef: React.RefObject<HTMLDivElement | null> | null;  // DOM reference for the selected element
     swapElements: (sourceRow: number, sourceCol: number, targetRow: number, targetCol: number) => void;
 }> = ({ element, rowIndex, colIndex, isSelected, onSelect, selectedElementRef, swapElements }) => {
+    
+    // useDrag hook to make the element draggable (from React DnD)
+    // This allows the element to be dragged and dropped
     const [{ isDragging }, drag] = useDrag(() => ({
         type: 'formElement',
         item: { 
@@ -48,6 +55,8 @@ const DraggableElement: React.FC<{
         }),
     }), [element, rowIndex, colIndex]);
 
+    // useDrop hook to make the element droppable (from React DnD)
+    // This allows the element to accept drops from other draggable elements
     const [{ isOver }, drop] = useDrop(() => ({
         accept: 'formElement',
         drop: (item: DragItem) => {
@@ -65,9 +74,12 @@ const DraggableElement: React.FC<{
         }),
     }), [element.id, rowIndex, colIndex, swapElements]);
 
+
+    // Render the draggable element
     return (
         <div 
             ref={(node) => {
+                
                 const dragDropRef = drag(drop(node));
                 
                 if (isSelected && selectedElementRef) {
@@ -251,6 +263,17 @@ const DraggableElement: React.FC<{
                         </div>
                     )}
 
+                    {element.type === "file" && (
+                        <div className="flex flex-col gap-2">
+                            <FaCloudArrowUp/>Drag and Drop something here
+                            <button className="px-4 py-2 bg-blue-500 text-white rounded-md">
+                                <FaCloudArrowUp/>Browse Files
+                            </button>
+                        </div>
+                    )}          
+
+   
+
                 </div>
 
             </div>
@@ -258,6 +281,12 @@ const DraggableElement: React.FC<{
     );
 };
 
+
+
+// FormBuilderArea component
+// This component is responsible for rendering the form builder area
+// It includes the form name input, the form matrix, and the draggable elements
+// It also handles adding new rows and columns to the form matrix
 const FormBuilderArea: React.FC<FormBuilderProps> = ({ formName, setFormName, formMatrix, selectedElement, selectElement, addRow, addColumn, selectedElementRef, swapElements }) => {
     const [hoverPosition, setHoverPosition] = useState<{
         row: number, 

@@ -68,9 +68,9 @@ export default function ViewFormPage() {
                         <div className="text-3xl font-bold mb-4">{form?.name}</div>
                         <div className="">
                             {formRows.length > 0 ? (
-                                <div className="space-y-6">
+                                <div className="space-y-2">
                                     {formRows.map((row: FormFillerElement[], rowIndex: number) => (
-                                        <div key={rowIndex} className="flex gap-4">
+                                        <div key={rowIndex} className="flex gap-2">
                                             {row.map((element: FormFillerElement) => (
                                                 <div 
                                                     style={{ 
@@ -373,7 +373,14 @@ const renderFormField = (element: FormFillerElement) => {
             );
 
         case "file":
-            return <input type="file" className="mt-2 w-full" />;
+            return (
+                <div className="mt-2 w-full px-3 py-2 border rounded-md flex items-center justify-between">
+                    <span className="text-gray-500">No file chosen</span>
+                    <button className="px-4 py-2 bg-blue-500 text-white rounded-md">
+                        Attach File
+                    </button>
+                </div>
+            );
 
         case "signature":
             return (
