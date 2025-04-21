@@ -12,11 +12,12 @@ import Sidebar from "@/components/builder/Sidebar";
 import { FormBuilderElement, FormElementFactory } from "@/components/builder/FormBuilderElement";
 
 import { FaEdit, FaEye, FaPlay, FaSave } from "react-icons/fa";
-import { FaGear } from "react-icons/fa6";
+import { FaGear, FaX, FaXmark } from "react-icons/fa6";
 
 import { useRouter, useParams } from "next/navigation";
 import Header from "@/components/ui/MainHeader";
 import FloatingToolbar from "@/components/builder/FloatingToolbar";
+import FormFillerArea from "@/components/filler/FormFillerArea";
 
 
 
@@ -30,6 +31,8 @@ export default function FormBuilderPage() {
     const [formName, setFormName] = useState<string>("");
     const [formMatrix, setFormMatrix] = useState<FormBuilderElement[][]>([]);
     const [formLoaded, setFormLoaded] = useState(false);
+
+    const [showingPreview, setShowingPreview] = useState(false);
 
     // Load Form (when page has finished loading)
     useEffect(() => {
@@ -355,7 +358,7 @@ export default function FormBuilderPage() {
                 </button>
                 <button
                     onClick={() => {
-                        //
+                        setShowingPreview(true);
                     }}
                     className="ml-auto flex items-center py-3 px-6 gap-2 bg-gray-200 text-gray-500 hover:bg-gray-300 hover:text-black transition duration-200 "
                 >
@@ -418,6 +421,46 @@ export default function FormBuilderPage() {
                         updateElement={updateElement}
                         justifyRowElements={justifyRowElements}
                     />
+                )}
+
+                {showingPreview && (
+                    <div
+                        className="fixed inset-0 bg-blue-50 bg-opacity-70 flex items-center justify-center z-50"
+                        onClick={() => {
+                            setShowingPreview(false)
+                        }}    
+                    >
+                        <div 
+                            className="h-full p-4 rounded-lg"
+                            onClick={(event) => {
+                                event.stopPropagation();
+                            }}
+                        >
+                            <div className="bg-gray-400 h-full p-4 overflow-hidden rounded-md">
+                                {/* Close Button */}
+                                <div className="flex justify-end">
+                                    <button
+                                        className="
+                                        mb-4 p-1
+                                        bg-red-500 text-white
+                                        hover:bg-black hover:text-white
+                                         font-bold px-4 py-2 rounded-lg flex items-center gap-2"
+                                        onClick={() => setShowingPreview(false)}
+                                    >
+                                        <FaXmark className="w-5 h-5"/>
+                                    </button>
+                                </div>
+
+                                {/* Form Filler Area */}
+                                <div className="h-full overflow-y-auto drop-shadow-lg rounded-lg">
+                                    <FormFillerArea
+                                        formName={formName}
+                                        formMatrix={formMatrix}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 )}
 
 

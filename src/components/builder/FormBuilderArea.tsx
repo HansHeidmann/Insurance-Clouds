@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaUpload } from "react-icons/fa";
 import { FormBuilderElement } from "./FormBuilderElement";
 import { useDrag, useDrop } from 'react-dnd';
-import { FaCloudArrowUp, FaFile } from "react-icons/fa6";
+import { FaCloudArrowUp, FaFile, FaMagnifyingGlass } from "react-icons/fa6";
 
 
 interface DragItem {
@@ -264,10 +264,12 @@ const DraggableElement: React.FC<{
                     )}
 
                     {element.type === "file" && (
-                        <div className="flex flex-col gap-2">
-                            <FaCloudArrowUp/>Drag and Drop something here
-                            <button className="px-4 py-2 bg-blue-500 text-white rounded-md">
-                                <FaCloudArrowUp/>Browse Files
+                        <div className="flex flex-col items-center m-0 p-4 gap-y-2 border-2 border-dashed border-gray-300">
+                            <FaCloudArrowUp className="w-16 h-16 text-gray-600"/>
+                            <div className="text-md font-se">Drag and Drop something here</div>
+                            <div className="text-sm text-gray-600">- or -</div>
+                            <button className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md">
+                                <FaUpload className="w-3 h-3"/>Browse Files
                             </button>
                         </div>
                     )}          
