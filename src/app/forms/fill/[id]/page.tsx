@@ -32,6 +32,7 @@ export default function ViewFormPage() {
 
         fetchForm(); 
     }, [formId]);
+  
 
     // Ensure form.json exists & maintain row-based structure
     const formRows = Array.isArray(form?.json) ? form.json : [];
@@ -44,6 +45,7 @@ export default function ViewFormPage() {
 
             {/* Remove below when done */}
             <div className=" absolute h-full overflow-y-auto top-[86px] left-0 w-1/4 p-4 bg-black text-green-300">
+                <p>** FOR DEBUG ** (hide this sidebar for prod.)</p>
                 <pre className="whitespace-pre-wrap text-sm text-green-400 ">
                     {JSON.stringify(form, null, 2)}
                 </pre>

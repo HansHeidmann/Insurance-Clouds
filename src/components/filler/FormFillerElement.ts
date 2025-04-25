@@ -27,4 +27,6 @@ export interface FormFillerElement {
     required: boolean;
     properties: Record<string, boolean | number | string | string[]>;
     width: number;
+
 }
+
