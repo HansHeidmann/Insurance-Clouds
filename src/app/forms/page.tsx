@@ -71,23 +71,36 @@ export default function FormsPage() {
                             height="100" 
                             quality={100}
                         />
-
+                    ) : organization == null ? (
+                        <div className="flex flex-col items-center justify-center space-y-4 h-64">
+                            <h1 className="text-3xl font-bold text-gray-800 mb-1 text-center">No Organization Found</h1>
+                            <p className="text-gray-500 text-center">You need to create or join an organization before you can create a Form.</p>
+                            <button
+                                className={`
+                                    flex h-min w-min whitespace-nowrap bg-green-500 hover:bg-green-300 text-white 
+                                    text-md font-bold rounded-lg py-4 px-4 items-center gap-2 shadow-lg 
+                                    animate-pulse
+                                `}
+                                onClick={() => router.push("/organization")}
+                            >
+                                <FaPlusCircle className="w-6 h-6 text-white" />
+                                Join Organization
+                            </button>
+                        </div>
                     ) : forms?.length === 0 ? (
-                        <div className="space-y-2">
+                        <div className="flex flex-col items-center justify-center space-y-4 h-64">
                             <p className="text-gray-500 text-center">No forms found for this organization.</p>
-                            <div className="flex">
-                                <button
-                                    className={`
-                                        flex h-min w-min whitespace-nowrap bg-green-500 hover:bg-green-300 text-white 
-                                        text-md font-bold rounded-lg py-4 px-4 items-center gap-2 shadow-lg 
-                                        animate-pulse
-                                    `}
-                                    onClick={() => createForm()}
-                                >
-                                    <FaPlusCircle className="w-6 h-6 text-white" />
-                                    New Form
-                                </button>
-                            </div>
+                            <button
+                                className={`
+                                    flex h-min w-min whitespace-nowrap bg-green-500 hover:bg-green-300 text-white 
+                                    text-md font-bold rounded-lg py-4 px-4 items-center gap-2 shadow-lg 
+                                    animate-pulse
+                                `}
+                                onClick={() => createForm()}
+                            >
+                                <FaPlusCircle className="w-6 h-6 text-white" />
+                                New Form
+                            </button>
                         </div>
                     ) : (
 

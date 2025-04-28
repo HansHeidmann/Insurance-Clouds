@@ -7,6 +7,7 @@ import Image from "next/image";
 import { Organization, User, Member } from "@/lib/types";
 import  DatabaseService  from "@/lib/DatabaseService";
 import Header from "@/components/ui/MainHeader";
+import { FaPersonWalkingArrowRight } from "react-icons/fa6";
 
 export default function OrganizationPage() {
     const router = useRouter();
@@ -111,10 +112,11 @@ export default function OrganizationPage() {
                             quality={100}
                         />
 
+
                     ) : currentUser && organization && members ? (
                         <>
                             
-                            
+
                             {/* Members List */}
                             <div className="flex flex-col shadow-md rounded-lg overflow-hidden">
 
@@ -172,6 +174,41 @@ export default function OrganizationPage() {
                                     <div className="text-center p-4 text-gray-500">No members found.</div>
                                 )}
                             </div>
+
+                          
+                            <div className="text-center my-8">
+                                <div className="flex items-center justify-center gap-2">
+                                    <span className="text-gray-600 font-bold">Join Code:</span>
+                                    <input
+                                        type="text"
+                                        value={organization.id}
+                                        readOnly
+                                        className="px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-800 font-bold text-center cursor-default"
+                                    />
+                                    <button
+                                        className="px-3 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600"
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(organization.id);
+                                            alert("Access code copied to clipboard!");
+                                        }}
+                                    >
+                                        Copy
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-center">
+                                <button
+                                    className="flex flex-col justify-center items-center px-4 py-2 w-48 bg-red-500 text-white font-semibold rounded-lg"
+                                    onClick={async () => {
+                                        // 
+                                    }}
+                                >
+                                    <FaPersonWalkingArrowRight className="w-7 h-7" />
+                                    Leave Organization
+                                </button>
+                            </div>
+
                         </>
                     ) : (
                         <>

@@ -6,6 +6,7 @@ import Header from "@/components/ui/MainHeader";
 import { Form } from "@/lib/types";
 import { FormFillerElement } from "@/components/filler/FormFillerElement";
 import Image from "next/image";
+import { FaCloudArrowUp, FaUpload } from "react-icons/fa6";
 
 export default function ViewFormPage() {
     const { id: formId } = useParams();
@@ -376,11 +377,37 @@ const renderFormField = (element: FormFillerElement) => {
 
         case "file":
             return (
-                <div className="mt-2 w-full px-3 py-2 border rounded-md flex items-center justify-between">
-                    <span className="text-gray-500">No file chosen</span>
-                    <button className="px-4 py-2 bg-blue-500 text-white rounded-md">
-                        Attach File
+                <div className="flex flex-col items-center m-0 p-4 gap-y-2 border-2 border-dashed border-gray-300">
+                    <FaCloudArrowUp className="w-16 h-16 text-gray-600" />
+                    <div className="text-md font-se">Drag and Drop something here</div>
+                    <div className="text-sm text-gray-600">- or -</div>
+                    <button
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-md"
+                        onClick={() => document.getElementById(`file-input-${element.id}`)?.click()}
+                    >
+                        <FaUpload className="w-3 h-3" /> Browse Files
                     </button>
+                    <input
+                        id={`file-input-${element.id}`}
+                        type="file"
+                        className="hidden"
+                        onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                                const file = e.target.files[0];
+                                const fileName = file.name;
+
+                                // Simulate upload process
+                                const uploadElement = document.getElementById(`upload-status-${element.id}`);
+                                if (uploadElement) {
+                                    uploadElement.textContent = "Uploading...";
+                                    setTimeout(() => {
+                                        uploadElement.textContent = fileName;
+                                    }, 2000); // Simulate 2-second upload
+                                }
+                            }
+                        }}
+                    />
+                    <div id={`upload-status-${element.id}`} className="text-sm text-gray-600"></div>
                 </div>
             );
 
