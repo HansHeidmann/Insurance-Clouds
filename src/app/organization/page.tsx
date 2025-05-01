@@ -183,7 +183,8 @@ export default function OrganizationPage() {
                                         type="text"
                                         value={organization.id}
                                         readOnly
-                                        className="px-4 py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-800 font-bold text-center cursor-default"
+                                        className=" py-2 border border-gray-300 rounded-lg bg-gray-100 text-gray-800 font-bold text-center cursor-default"
+                                        style={{ width: `${organization.id.length +2}ch` }}
                                     />
                                     <button
                                         className="px-3 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600"
