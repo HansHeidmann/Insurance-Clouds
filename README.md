@@ -26,3 +26,4 @@ yarn dev
 - Tailwind 3.4.17
 - Managed PostgreSQL
 
+
