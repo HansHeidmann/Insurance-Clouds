@@ -1,7 +1,6 @@
 # Insurance Clouds
 Created by Hans Heidmann for Insurance Clouds™
 
-
 ## Features
 - create or join an organization
 - create dynamic forms
